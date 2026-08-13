@@ -77,19 +77,19 @@ def seq_global_atual():
 # REGRAS COMERCIAIS
 # -----------------------------
 RESULTADOS = [
-    "CONTATO REALIZADO",
-    "SEM RETORNO",
+    "NÃO CONSEGUI CONTATO",
+    "CLIENTE RESPONDEU",
     "AGUARDANDO CLIENTE",
-    "RETORNO SOLICITADO",
+    "RETORNAR EM OUTRA DATA",
     "REUNIÃO AGENDADA",
-    "PROPOSTA SOLICITADA",
+    "SOLICITOU PROPOSTA",
     "PROPOSTA ENVIADA",
     "EM NEGOCIAÇÃO",
     "FECHADO",
     "SEM INTERESSE",
-    "SEM SUCESSO NO CONTATO",
     "NÃO UTILIZA TRANSPORTE",
     "JÁ UTILIZA AZUL",
+    "CONTATO INVÁLIDO",
     "OUTRO",
 ]
 
@@ -107,45 +107,51 @@ ACOES_SUGERIDAS = [
 ]
 
 STATUS_ATIVOS = [
-    "TENTATIVA DE CONTATO",
+    "1ª TENTATIVA SEM RETORNO",
+    "2ª TENTATIVA SEM RETORNO",
     "AGUARDANDO CLIENTE",
-    "RETORNO PENDENTE",
+    "RETORNO AGENDADO",
     "EM ANDAMENTO",
     "REUNIÃO AGENDADA",
+    "PROPOSTA SOLICITADA",
     "PROPOSTA ENVIADA",
-    "NEGOCIAÇÃO",
-    "SEM RETORNO",
-    "SEM SUCESSO NO CONTATO",
+    "EM NEGOCIAÇÃO",
+    "CONTATO INVÁLIDO",
 ]
 
 STATUS_ENCERRADOS = [
-    "FECHADO",
+    "FECHADO / GANHO",
     "SEM INTERESSE",
     "NÃO UTILIZA TRANSPORTE",
     "JÁ UTILIZA AZUL",
 ]
 
 RESULTADOS_AGUARDANDO = {
-    "SEM RETORNO",
+    "NÃO CONSEGUI CONTATO",
+    "CLIENTE RESPONDEU",
     "AGUARDANDO CLIENTE",
-    "RETORNO SOLICITADO",
-    "SEM SUCESSO NO CONTATO",
+    "RETORNAR EM OUTRA DATA",
+    "REUNIÃO AGENDADA",
+    "SOLICITOU PROPOSTA",
+    "PROPOSTA ENVIADA",
+    "EM NEGOCIAÇÃO",
+    "CONTATO INVÁLIDO",
+    "OUTRO",
 }
 
 MAPA_STATUS = {
-    "CONTATO REALIZADO": "EM ANDAMENTO",
-    "SEM RETORNO": "SEM RETORNO",
+    "CLIENTE RESPONDEU": "EM ANDAMENTO",
     "AGUARDANDO CLIENTE": "AGUARDANDO CLIENTE",
-    "RETORNO SOLICITADO": "RETORNO PENDENTE",
+    "RETORNAR EM OUTRA DATA": "RETORNO AGENDADO",
     "REUNIÃO AGENDADA": "REUNIÃO AGENDADA",
-    "PROPOSTA SOLICITADA": "EM ANDAMENTO",
+    "SOLICITOU PROPOSTA": "PROPOSTA SOLICITADA",
     "PROPOSTA ENVIADA": "PROPOSTA ENVIADA",
-    "EM NEGOCIAÇÃO": "NEGOCIAÇÃO",
-    "FECHADO": "FECHADO",
+    "EM NEGOCIAÇÃO": "EM NEGOCIAÇÃO",
+    "FECHADO": "FECHADO / GANHO",
     "SEM INTERESSE": "SEM INTERESSE",
-    "SEM SUCESSO NO CONTATO": "SEM SUCESSO NO CONTATO",
     "NÃO UTILIZA TRANSPORTE": "NÃO UTILIZA TRANSPORTE",
     "JÁ UTILIZA AZUL": "JÁ UTILIZA AZUL",
+    "CONTATO INVÁLIDO": "CONTATO INVÁLIDO",
     "OUTRO": "EM ANDAMENTO",
 }
 
@@ -404,8 +410,9 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
         1 for c in dados["contatos"]
         if int(c.get("empresa_id", 0) or 0) == int(empresa_id)
         and c.get("tipo_contato") != "HISTÓRICO IMPORTADO"
+        and c.get("resultado") == "NÃO CONSEGUI CONTATO"
     )
-    tentativa_atual = tentativas_anteriores + 1
+    tentativa_sem_retorno = tentativas_anteriores + 1 if resultado == "NÃO CONSEGUI CONTATO" else tentativas_anteriores
 
     seqs = [
         int(c.get("seq_global") or 0)
@@ -414,19 +421,31 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
     ]
     seq = (max(seqs) if seqs else 0) + 1
 
-    status_novo = MAPA_STATUS.get(resultado, "EM ANDAMENTO")
+    # Status automático conforme o resultado.
+    if resultado == "NÃO CONSEGUI CONTATO":
+        if tentativa_sem_retorno == 1:
+            status_novo = "1ª TENTATIVA SEM RETORNO"
+        elif tentativa_sem_retorno == 2:
+            status_novo = "2ª TENTATIVA SEM RETORNO"
+        else:
+            status_novo = "SEM INTERESSE"
+    else:
+        status_novo = MAPA_STATUS.get(resultado, "EM ANDAMENTO")
+
     retorno_apos = None
     agendamento_pendente = 0
     data_agendamento_iso = None
 
+    # Data específica sempre tem prioridade.
     if data_agendamento:
-        agendamento_pendente = 1
         data_agendamento_iso = data_agendamento.isoformat()
-    elif resultado in RESULTADOS_AGUARDANDO:
-        if tentativa_atual >= 3:
-            status_novo = "SEM INTERESSE"
-        else:
-            retorno_apos = seq + 20
+        agendamento_pendente = 1
+        if status_novo not in STATUS_ENCERRADOS:
+            status_novo = "RETORNO AGENDADO"
+
+    # Se não houver data específica, todo status ativo volta após 20 contatos.
+    elif status_novo not in STATUS_ENCERRADOS:
+        retorno_apos = seq + 20
 
     dados["contatos"].append({
         "id": proximo_id(dados["contatos"]),
@@ -456,7 +475,42 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
             break
 
     salvar_database(dados)
-    return status_novo, tentativa_atual, retorno_apos
+    return status_novo, tentativa_sem_retorno, retorno_apos
+
+def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefone3,
+                      status, observacao, proxima_acao, data_agendamento=None):
+    """Salva qualquer edição do cadastro e sincroniza imediatamente no database.json."""
+    dados = carregar_database()
+    encontrado = False
+
+    for emp in dados["empresas"]:
+        if int(emp.get("id", 0) or 0) == int(empresa_id):
+            emp["nome"] = str(nome or "").strip().upper()
+            emp["documento"] = formatar_documento(documento)
+            emp["telefone1"] = formatar_telefone(telefone1)
+            emp["telefone2"] = formatar_telefone(telefone2)
+            emp["telefone3"] = formatar_telefone(telefone3)
+            emp["status"] = status
+            emp["observacao_atual"] = str(observacao or "").strip()
+            emp["proxima_acao"] = str(proxima_acao or "").strip()
+
+            if data_agendamento:
+                emp["data_agendamento"] = data_agendamento.isoformat()
+                emp["agendamento_pendente"] = 1
+                if status not in STATUS_ENCERRADOS:
+                    emp["status"] = "RETORNO AGENDADO"
+            elif status in STATUS_ENCERRADOS:
+                emp["data_agendamento"] = None
+                emp["agendamento_pendente"] = 0
+                emp["retorno_apos_seq"] = None
+
+            encontrado = True
+            break
+
+    if not encontrado:
+        raise ValueError("Empresa não encontrada.")
+
+    salvar_database(dados)
 
 # -----------------------------
 # IMPORTAÇÃO LIVRE / EM LOTE
@@ -554,6 +608,114 @@ def eh_duplicado(documento, telefones, empresas):
             if tels_novos & existentes:
                 return True
     return False
+
+
+def painel_edicao_empresa(empresa, prefixo="editar"):
+    """Painel reutilizável para editar cadastro/status em qualquer tela."""
+    empresa_id = int(empresa["id"])
+    with st.expander("✏️ Editar dados deste cliente", expanded=False):
+        c1, c2 = st.columns(2)
+        nome = c1.text_input(
+            "Empresa / Cliente",
+            value=str(empresa.get("nome") or ""),
+            key=f"{prefixo}_{empresa_id}_nome"
+        )
+        documento = c2.text_input(
+            "CPF/CNPJ",
+            value=str(empresa.get("documento") or ""),
+            key=f"{prefixo}_{empresa_id}_documento"
+        )
+
+        c1, c2, c3 = st.columns(3)
+        tel1 = c1.text_input(
+            "Telefone 1",
+            value=str(empresa.get("telefone1") or ""),
+            key=f"{prefixo}_{empresa_id}_tel1"
+        )
+        tel2 = c2.text_input(
+            "Telefone 2",
+            value=str(empresa.get("telefone2") or ""),
+            key=f"{prefixo}_{empresa_id}_tel2"
+        )
+        tel3 = c3.text_input(
+            "Telefone 3",
+            value=str(empresa.get("telefone3") or ""),
+            key=f"{prefixo}_{empresa_id}_tel3"
+        )
+
+        status_opcoes = [
+            "SEM CONTATO",
+            "1ª TENTATIVA SEM RETORNO",
+            "2ª TENTATIVA SEM RETORNO",
+            "AGUARDANDO CLIENTE",
+            "RETORNO AGENDADO",
+            "EM ANDAMENTO",
+            "REUNIÃO AGENDADA",
+            "PROPOSTA SOLICITADA",
+            "PROPOSTA ENVIADA",
+            "EM NEGOCIAÇÃO",
+            "CONTATO INVÁLIDO",
+            "FECHADO / GANHO",
+            "SEM INTERESSE",
+            "NÃO UTILIZA TRANSPORTE",
+            "JÁ UTILIZA AZUL",
+        ]
+        atual_status = str(empresa.get("status") or "SEM CONTATO")
+        if atual_status not in status_opcoes:
+            status_opcoes.insert(1, atual_status)
+
+        status = st.selectbox(
+            "Status",
+            status_opcoes,
+            index=status_opcoes.index(atual_status),
+            key=f"{prefixo}_{empresa_id}_status"
+        )
+
+        observacao = st.text_area(
+            "Última observação",
+            value=str(empresa.get("observacao_atual") or ""),
+            key=f"{prefixo}_{empresa_id}_obs"
+        )
+        proxima_acao = st.text_input(
+            "Próxima ação",
+            value=str(empresa.get("proxima_acao") or ""),
+            key=f"{prefixo}_{empresa_id}_acao"
+        )
+
+        tem_agendamento_atual = bool(empresa.get("data_agendamento"))
+        usar_data = st.checkbox(
+            "Manter/definir data específica de retorno",
+            value=tem_agendamento_atual,
+            key=f"{prefixo}_{empresa_id}_usar_data"
+        )
+        data_ag = None
+        if usar_data:
+            valor_data = date.today()
+            if empresa.get("data_agendamento"):
+                try:
+                    valor_data = pd.to_datetime(empresa.get("data_agendamento")).date()
+                except Exception:
+                    pass
+            data_ag = st.date_input(
+                "Data de retorno",
+                value=valor_data,
+                format="DD/MM/YYYY",
+                key=f"{prefixo}_{empresa_id}_data"
+            )
+
+        if st.button(
+            "💾 Salvar edição",
+            type="primary",
+            use_container_width=True,
+            key=f"{prefixo}_{empresa_id}_salvar"
+        ):
+            atualizar_empresa(
+                empresa_id, nome, documento, tel1, tel2, tel3,
+                status, observacao, proxima_acao, data_ag
+            )
+            st.success("Dados atualizados no database.json.")
+            st.rerun()
+
 
 # -----------------------------
 # VISUAL
@@ -1034,10 +1196,37 @@ if menu == "📊 Dashboard":
         status_tbl = empresas["status"].value_counts().rename_axis("Status").reset_index(name="Quantidade")
         st.dataframe(status_tbl, use_container_width=True, hide_index=True)
 
+        with st.expander("✏️ Edição rápida de cliente"):
+            busca_dash = st.text_input(
+                "Buscar cliente para editar",
+                key="dash_busca_edicao"
+            )
+            if busca_dash.strip():
+                termo = busca_dash.strip().lower()
+                candidatos = empresas[
+                    empresas["nome"].fillna("").str.lower().str.contains(termo, regex=False)
+                    | empresas["documento"].fillna("").str.lower().str.contains(termo, regex=False)
+                    | empresas["telefone1"].fillna("").str.lower().str.contains(termo, regex=False)
+                ].head(20)
+                if candidatos.empty:
+                    st.info("Nenhum cliente encontrado.")
+                else:
+                    mapa = {
+                        f"{r['nome']} — {r['documento'] or r['telefone1'] or ''}": int(r["id"])
+                        for _, r in candidatos.iterrows()
+                    }
+                    esc = st.selectbox(
+                        "Cliente",
+                        list(mapa.keys()),
+                        key="dash_cliente_edicao"
+                    )
+                    emp_row = empresas[empresas["id"] == mapa[esc]].iloc[0]
+                    painel_edicao_empresa(emp_row, prefixo="dash_editar")
+
 # ---------------- FILA ÚNICA DE CONTATOS ----------------
 elif menu == "📞 Fila de contatos":
     st.subheader("📞 Fila de contatos")
-    st.caption("Prioridades, retornos e novos contatos em uma única tela de trabalho.")
+    st.caption("Prioridades, retornos antigos e novos contatos em uma única tela de trabalho.")
 
     hoje = date.today()
     hoje_ts = pd.Timestamp(hoje)
@@ -1048,6 +1237,19 @@ elif menu == "📞 Fila de contatos":
         base["data_agendamento"], errors="coerce"
     ).dt.normalize()
 
+    # Identifica empresas que já tiveram alguma tentativa REAL dentro do novo app.
+    if not contatos.empty:
+        operacionais = contatos[
+            contatos["tipo_contato"] != "HISTÓRICO IMPORTADO"
+        ].copy()
+        ids_trabalhados_app = set(
+            pd.to_numeric(operacionais["empresa_id"], errors="coerce")
+            .dropna().astype(int).tolist()
+        )
+    else:
+        ids_trabalhados_app = set()
+
+    # 1) Agendamentos atrasados.
     atrasados = base[
         (base["agendamento_pendente"] == 1) &
         base["ag_dt"].notna() &
@@ -1055,6 +1257,7 @@ elif menu == "📞 Fila de contatos":
         (~base["status"].isin(STATUS_ENCERRADOS))
     ].copy()
 
+    # 2) Agendamentos de hoje.
     hoje_ag = base[
         (base["agendamento_pendente"] == 1) &
         base["ag_dt"].notna() &
@@ -1062,19 +1265,30 @@ elif menu == "📞 Fila de contatos":
         (~base["status"].isin(STATUS_ENCERRADOS))
     ].copy()
 
+    # 3) Retornos automáticos liberados após 20 contatos.
     automaticos = base[
         base["retorno_apos_seq"].notna() &
-        (base["retorno_apos_seq"] <= seq_atual) &
+        (pd.to_numeric(base["retorno_apos_seq"], errors="coerce") <= seq_atual) &
         (~base["status"].isin(STATUS_ENCERRADOS))
     ].copy()
 
+    # 4) Carteira antiga importada que ainda precisa de continuidade.
+    # Só entram aqui os registros que ainda NÃO foram trabalhados dentro do novo app.
+    retornos_importados = base[
+        base["status"].isin(STATUS_RETORNO_IMPORTADO) &
+        (~base["id"].astype(int).isin(ids_trabalhados_app)) &
+        (base["agendamento_pendente"].fillna(0) != 1) &
+        (base["retorno_apos_seq"].isna())
+    ].copy()
+
+    # 5) Novos sem qualquer contato.
     novos = base[
         (base["status"] == "SEM CONTATO") &
         (base["agendamento_pendente"].fillna(0) != 1)
     ].copy()
 
-    # Cards de prioridade visíveis sempre no topo.
-    c1,c2,c3,c4 = st.columns(4)
+    # Cards sempre visíveis.
+    c1,c2,c3,c4,c5 = st.columns(5)
     with c1:
         card("🔴 Atrasados", len(atrasados), "permanecem até serem tratados")
     with c2:
@@ -1082,24 +1296,33 @@ elif menu == "📞 Fila de contatos":
     with c3:
         card("🔄 Retornos", len(automaticos), "liberados após 20 contatos")
     with c4:
+        card("📂 Retornos antigos", len(retornos_importados), "carteira importada pendente")
+    with c5:
         card("🆕 Novos", len(novos), "ainda sem contato")
 
-    # Ordem da fila: atrasados > hoje > retorno automático > novos.
+    # Ordem:
+    # atrasados > hoje > retorno automático > retorno antigo > novos
     atrasados["_prioridade"] = 1
     hoje_ag["_prioridade"] = 2
     automaticos["_prioridade"] = 3
-    novos["_prioridade"] = 4
+    retornos_importados["_prioridade"] = 4
+    novos["_prioridade"] = 5
 
     fila_df = pd.concat(
-        [atrasados, hoje_ag, automaticos, novos],
+        [atrasados, hoje_ag, automaticos, retornos_importados, novos],
         ignore_index=True
     ).drop_duplicates(subset=["id"], keep="first")
 
     if fila_df.empty:
         st.success("Não há contatos pendentes na fila.")
     else:
+        # Nos retornos antigos, prioriza quem teve contato mais antigo primeiro.
+        fila_df["_data_primeiro"] = pd.to_datetime(
+            fila_df["data_primeiro_contato"], errors="coerce"
+        )
+
         fila_df = fila_df.sort_values(
-            ["_prioridade","ag_dt","nome"],
+            ["_prioridade", "ag_dt", "_data_primeiro", "nome"],
             na_position="last"
         ).reset_index(drop=True)
 
@@ -1107,11 +1330,11 @@ elif menu == "📞 Fila de contatos":
         empresa_id = int(atual["id"])
         tent = tentativas_empresa(empresa_id) + 1
 
-        # Mensagem da última gravação.
         msg = st.session_state.pop("flash_contato", None)
         if msg:
             st.success(msg)
 
+        # Identificação clara do tipo de item da fila.
         if atual["_prioridade"] == 1:
             st.error(
                 f"🔴 PRIORIDADE — retorno atrasado desde "
@@ -1121,6 +1344,10 @@ elif menu == "📞 Fila de contatos":
             st.warning("🟠 PRIORIDADE — retorno agendado para hoje")
         elif atual["_prioridade"] == 3:
             st.info("🔄 RETORNO AUTOMÁTICO — cliente liberado após 20 novos contatos")
+        elif atual["_prioridade"] == 4:
+            st.info(
+                f"📂 RETORNO DA CARTEIRA ANTIGA — status atual: {atual['status']}"
+            )
         else:
             st.info("🆕 NOVO CONTATO")
 
@@ -1128,36 +1355,53 @@ elif menu == "📞 Fila de contatos":
         with c1:
             st.markdown(f"### {atual['nome']}")
             st.write(f"**CPF/CNPJ:** {atual['documento'] or '-'}")
+
             telefones = [
                 t for t in [
                     atual["telefone1"], atual["telefone2"], atual["telefone3"]
-                ] if t and str(t).lower() != "nan"
+                ]
+                if t and str(t).lower() != "nan"
             ]
-            st.write(f"**Telefone(s):** {' | '.join(telefones) if telefones else '-'}")
+            st.write(
+                f"**Telefone(s):** {' | '.join(telefones) if telefones else '-'}"
+            )
+            st.write(f"**Status atual:** {atual['status']}")
 
             if atual["agendamento_pendente"] == 1 and pd.notna(atual["ag_dt"]):
                 st.write(
-                    f"**Retorno agendado:** {atual['ag_dt'].strftime('%d/%m/%Y')}"
+                    f"**Retorno agendado:** "
+                    f"{atual['ag_dt'].strftime('%d/%m/%Y')}"
                 )
                 if atual["proxima_acao"]:
                     st.write(f"**Ação prevista:** {atual['proxima_acao']}")
 
         with c2:
-            card("Na fila", f"1/{len(fila_df)}", "próximo da prioridade")
+            card(
+                "Na fila",
+                f"1/{len(fila_df)}",
+                "próximo da prioridade"
+            )
 
         if atual["observacao_atual"]:
-            st.info(f"**Última observação:** {atual['observacao_atual']}")
+            st.info(
+                f"**Última observação:** {atual['observacao_atual']}"
+            )
 
-        # Histórico aparece para retorno; em cliente novo, só aparece se houver algo importado.
-        hist_cliente = contatos[contatos["empresa_id"] == empresa_id]
+        painel_edicao_empresa(atual, prefixo="fila_editar")
+
+        hist_cliente = contatos[
+            contatos["empresa_id"] == empresa_id
+        ] if not contatos.empty else pd.DataFrame()
+
         if not hist_cliente.empty:
             with st.expander("Ver histórico deste cliente"):
                 historico_cliente(contatos, empresa_id)
 
-        # As chaves incluem o ID do cliente. Ao avançar, o próximo cliente recebe campos novos/limpos.
+        # Cada cliente usa chaves próprias; ao avançar, o próximo vem limpo.
         prefixo = f"fila_{empresa_id}"
 
         st.markdown(f"**Tentativa {min(tent, 3)} de 3**")
+
         c1,c2 = st.columns(2)
         data_contato = c1.date_input(
             "Data do contato *",
@@ -1189,6 +1433,7 @@ elif menu == "📞 Fila de contatos":
             ACOES_SUGERIDAS,
             key=f"{prefixo}_acao"
         )
+
         if acao_escolhida == "OUTRO":
             acao = st.text_input(
                 "Descreva a próxima ação",
@@ -1200,7 +1445,7 @@ elif menu == "📞 Fila de contatos":
 
         st.caption(
             "Resultados de espera retornam automaticamente à fila após 20 novos contatos. "
-            "Na 3ª tentativa sem retorno, o cliente é encerrado automaticamente como SEM INTERESSE."
+            "Na 3ª tentativa sem contato, o cliente é encerrado automaticamente como SEM INTERESSE."
         )
 
         agendar = st.checkbox(
@@ -1208,6 +1453,7 @@ elif menu == "📞 Fila de contatos":
             value=False,
             key=f"{prefixo}_agendar"
         )
+
         data_ag = None
         if agendar:
             data_ag = st.date_input(
@@ -1233,7 +1479,7 @@ elif menu == "📞 Fila de contatos":
                 empresa_id, data_contato, tipo, resultado, obs, acao, data_ag
             )
 
-            if status_novo == "SEM INTERESSE" and resultado in RESULTADOS_AGUARDANDO:
+            if status_novo == "SEM INTERESSE" and resultado == "NÃO CONSEGUI CONTATO":
                 mensagem = (
                     f"{atual['nome']}: 3ª tentativa sem retorno. "
                     "Cliente encerrado automaticamente como SEM INTERESSE."
@@ -1253,13 +1499,10 @@ elif menu == "📞 Fila de contatos":
 
             st.session_state["flash_contato"] = mensagem
 
-            # Limpa qualquer estado do cliente recém-salvo.
             for chave in list(st.session_state.keys()):
                 if chave.startswith(prefixo):
                     del st.session_state[chave]
 
-            # O rerun recalcula a fila. Como o cliente atual mudou de status/pendência,
-            # o próximo registro assume imediatamente a tela.
             st.rerun()
 
 # ---------------- IMPORTAÇÃO EM LOTE ----------------
@@ -1404,6 +1647,22 @@ elif menu == "🏢 Empresas / Clientes":
     st.caption(f"{len(mostrar)} registro(s)")
     st.dataframe(mostrar, use_container_width=True, hide_index=True, height=600)
 
+    if not view.empty:
+        opcoes_edicao = {}
+        for _, r in view.head(200).iterrows():
+            rotulo = f"{r['nome']} — {r['documento'] or r['telefone1'] or ''}"
+            opcoes_edicao[rotulo] = int(r["id"])
+
+        st.markdown("### ✏️ Editar cliente")
+        escolhido = st.selectbox(
+            "Selecione um cliente da lista",
+            list(opcoes_edicao.keys()),
+            key="empresa_edicao_selecionada"
+        )
+        emp_id = opcoes_edicao[escolhido]
+        emp_row = empresas[empresas["id"] == emp_id].iloc[0]
+        painel_edicao_empresa(emp_row, prefixo="empresas_editar")
+
 # ---------------- NOVA EMPRESA ----------------
 elif menu == "➕ Nova Empresa":
     st.subheader("➕ Nova Empresa / Cliente")
@@ -1522,5 +1781,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(str(e))
 
-st.sidebar.caption("Gestão Comercial • JSON")
+st.sidebar.caption("Gestão Comercial • JSON V3")
 
