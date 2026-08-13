@@ -1,198 +1,77 @@
 
 import streamlit as st
 import pandas as pd
-import sqlite3
 import re
 import io
+import json
 import altair as alt
-import base64
-import requests
-import threading
 from pathlib import Path
 from datetime import date, datetime, timedelta
 
 st.set_page_config(page_title="Gestão Comercial", page_icon="📈", layout="wide")
 
-DB_PATH = Path("database/comercial.db")
-DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+DATABASE_PATH = Path("database.json")
 ARQUIVO_INICIAL = Path("celso comercial.xlsx")
 
-GITHUB_LOCK = threading.RLock()
+def carregar_database():
+    """Carrega a base JSON local. Se não existir, cria uma estrutura vazia."""
+    if not DATABASE_PATH.exists():
+        dados = {
+            "metadata": {
+                "app": "Gestão Comercial",
+                "database_version": 1,
+                "format": "json"
+            },
+            "empresas": [],
+            "contatos": []
+        }
+        salvar_database(dados)
+        return dados
 
-def github_config():
-    """Lê as credenciais do Streamlit Secrets. Em uso local, a sincronização é opcional."""
     try:
-        token = str(st.secrets.get("GITHUB_TOKEN", "")).strip()
-        repo = str(st.secrets.get("GITHUB_REPO", "")).strip()
-        app_branch = str(st.secrets.get("GITHUB_APP_BRANCH", "main")).strip() or "main"
-        data_branch = str(st.secrets.get("GITHUB_DATA_BRANCH", "database")).strip() or "database"
-        db_repo_path = str(st.secrets.get("GITHUB_DB_PATH", "database/comercial.db")).strip() or "database/comercial.db"
+        with open(DATABASE_PATH, "r", encoding="utf-8") as f:
+            dados = json.load(f)
+        dados.setdefault("metadata", {})
+        dados.setdefault("empresas", [])
+        dados.setdefault("contatos", [])
+        return dados
     except Exception:
-        token = repo = ""
-        app_branch = "main"
-        data_branch = "database"
-        db_repo_path = "database/comercial.db"
-    return token, repo, app_branch, data_branch, db_repo_path
-
-def github_ativo():
-    token, repo, *_ = github_config()
-    return bool(token and repo)
-
-def github_headers():
-    token, *_ = github_config()
-    return {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-    }
-
-def garantir_branch_dados():
-    """Cria a branch de dados a partir da branch do app, se ainda não existir."""
-    if not github_ativo():
-        return False, "GitHub não configurado."
-
-    token, repo, app_branch, data_branch, _ = github_config()
-    headers = github_headers()
-
-    ref_data = requests.get(
-        f"https://api.github.com/repos/{repo}/git/ref/heads/{data_branch}",
-        headers=headers, timeout=20
-    )
-    if ref_data.status_code == 200:
-        return True, "Branch de dados disponível."
-
-    ref_app = requests.get(
-        f"https://api.github.com/repos/{repo}/git/ref/heads/{app_branch}",
-        headers=headers, timeout=20
-    )
-    if ref_app.status_code != 200:
-        return False, f"Não foi possível localizar a branch {app_branch}."
-
-    sha = ref_app.json()["object"]["sha"]
-    criar = requests.post(
-        f"https://api.github.com/repos/{repo}/git/refs",
-        headers=headers,
-        json={"ref": f"refs/heads/{data_branch}", "sha": sha},
-        timeout=20
-    )
-    if criar.status_code in (200, 201):
-        return True, "Branch de dados criada."
-    return False, f"Falha ao criar branch de dados: {criar.status_code}"
-
-def _github_get_file(path_repo):
-    token, repo, _, data_branch, _ = github_config()
-    r = requests.get(
-        f"https://api.github.com/repos/{repo}/contents/{path_repo}",
-        headers=github_headers(),
-        params={"ref": data_branch},
-        timeout=30
-    )
-    if r.status_code == 404:
-        return None
-    r.raise_for_status()
-    return r.json()
-
-def _github_download_db_sem_lock():
-    if not github_ativo():
-        return False, "Sincronização GitHub não configurada."
-
-    ok, msg = garantir_branch_dados()
-    if not ok:
-        return False, msg
-
-    _, _, _, _, db_repo_path = github_config()
-    info = _github_get_file(db_repo_path)
-    if not info:
-        return False, "A base ainda não existe na branch de dados."
-
-    conteudo = info.get("content")
-    if conteudo:
-        dados = base64.b64decode(conteudo)
-    else:
-        download_url = info.get("download_url")
-        if not download_url:
-            return False, "Não foi possível obter o conteúdo da base."
-        r = requests.get(download_url, headers=github_headers(), timeout=30)
-        r.raise_for_status()
-        dados = r.content
-
-    tmp = DB_PATH.with_suffix(".download")
-    tmp.write_bytes(dados)
-
-    # Valida se o arquivo recebido é realmente SQLite antes de substituir.
-    try:
-        con = sqlite3.connect(tmp)
-        con.execute("PRAGMA schema_version").fetchone()
-        con.close()
-    except Exception:
-        tmp.unlink(missing_ok=True)
-        return False, "A base recebida do GitHub não é um SQLite válido."
-
-    tmp.replace(DB_PATH)
-    return True, "Base carregada do GitHub com sucesso."
-
-def carregar_base_github():
-    with GITHUB_LOCK:
-        return _github_download_db_sem_lock()
-
-def _github_upload_file_sem_lock(local_path, repo_path, mensagem):
-    if not github_ativo():
-        return False, "Sincronização GitHub não configurada."
-
-    ok, msg = garantir_branch_dados()
-    if not ok:
-        return False, msg
-
-    token, repo, _, data_branch, _ = github_config()
-    headers = github_headers()
-
-    info = _github_get_file(repo_path)
-    sha = info.get("sha") if info else None
-
-    payload = {
-        "message": mensagem,
-        "content": base64.b64encode(Path(local_path).read_bytes()).decode("ascii"),
-        "branch": data_branch,
-    }
-    if sha:
-        payload["sha"] = sha
-
-    r = requests.put(
-        f"https://api.github.com/repos/{repo}/contents/{repo_path}",
-        headers=headers,
-        json=payload,
-        timeout=45
-    )
-    if r.status_code not in (200, 201):
-        return False, f"Falha ao salvar no GitHub ({r.status_code})."
-    return True, "Base salva no GitHub."
-
-def salvar_base_github():
-    """Atualiza a base oficial e um backup diário na mesma branch de dados."""
-    with GITHUB_LOCK:
-        if not github_ativo():
-            return False, "Modo local: dados salvos apenas neste computador."
-
-        _, _, _, _, db_repo_path = github_config()
-        ok, msg = _github_upload_file_sem_lock(
-            DB_PATH, db_repo_path, "Atualiza base comercial"
+        # Segurança: não sobrescreve silenciosamente um JSON corrompido.
+        raise RuntimeError(
+            "Não foi possível abrir database.json. "
+            "Confira se o arquivo existe e se o JSON está válido."
         )
-        if not ok:
-            return False, msg
 
-        backup_path = f"database/backups/comercial_{date.today().strftime('%Y-%m-%d')}.db"
-        _github_upload_file_sem_lock(
-            DB_PATH, backup_path, f"Backup comercial {date.today().strftime('%d/%m/%Y')}"
-        )
-        return True, "Base sincronizada e backup diário atualizado."
+def salvar_database(dados):
+    """Grava de forma atômica para reduzir risco de corrupção."""
+    tmp = DATABASE_PATH.with_suffix(".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=2)
+    tmp.replace(DATABASE_PATH)
 
-def sincronizar_antes_de_gravar():
-    """Busca a versão mais recente antes de escrever, reduzindo risco de sobrescrever dados."""
-    if github_ativo():
-        with GITHUB_LOCK:
-            ok, _ = _github_download_db_sem_lock()
-            return ok
-    return True
+def proximo_id(lista):
+    if not lista:
+        return 1
+    return max(int(item.get("id", 0) or 0) for item in lista) + 1
+
+def proxima_seq_global():
+    dados = carregar_database()
+    seqs = [
+        int(c.get("seq_global") or 0)
+        for c in dados["contatos"]
+        if c.get("seq_global") is not None
+    ]
+    return (max(seqs) if seqs else 0) + 1
+
+def seq_global_atual():
+    dados = carregar_database()
+    seqs = [
+        int(c.get("seq_global") or 0)
+        for c in dados["contatos"]
+        if c.get("seq_global") is not None
+    ]
+    return max(seqs) if seqs else 0
 
 # -----------------------------
 # REGRAS COMERCIAIS
@@ -271,76 +150,20 @@ MAPA_STATUS = {
 }
 
 # -----------------------------
-# BANCO
+# BANCO JSON
 # -----------------------------
-def conectar():
-    con = sqlite3.connect(DB_PATH, check_same_thread=False)
-    con.row_factory = sqlite3.Row
-    return con
-
-def coluna_existe(con, tabela, coluna):
-    cols = [r[1] for r in con.execute(f"PRAGMA table_info({tabela})").fetchall()]
-    return coluna in cols
-
 def criar_banco():
-    with conectar() as con:
-        con.execute("""
-            CREATE TABLE IF NOT EXISTS empresas (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                documento TEXT,
-                nome TEXT NOT NULL,
-                telefone1 TEXT,
-                telefone2 TEXT,
-                telefone3 TEXT,
-                status TEXT DEFAULT 'SEM CONTATO',
-                observacao_atual TEXT,
-                data_primeiro_contato TEXT,
-                criado_em TEXT NOT NULL,
-                origem TEXT DEFAULT 'APP'
-            )
-        """)
-        con.execute("""
-            CREATE TABLE IF NOT EXISTS contatos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                empresa_id INTEGER NOT NULL,
-                data_contato TEXT NOT NULL,
-                tipo_contato TEXT NOT NULL,
-                resultado TEXT,
-                status_novo TEXT,
-                observacao TEXT,
-                proxima_acao TEXT,
-                data_proxima_acao TEXT,
-                criado_em TEXT NOT NULL,
-                FOREIGN KEY (empresa_id) REFERENCES empresas(id)
-            )
-        """)
-
-        # Migração segura para quem já testou V1/V2.
-        alteracoes_empresas = {
-            "retorno_apos_seq": "INTEGER",
-            "data_agendamento": "TEXT",
-            "agendamento_pendente": "INTEGER DEFAULT 0",
-            "proxima_acao": "TEXT",
-        }
-        for col, tipo in alteracoes_empresas.items():
-            if not coluna_existe(con, "empresas", col):
-                con.execute(f"ALTER TABLE empresas ADD COLUMN {col} {tipo}")
-
-        if not coluna_existe(con, "contatos", "seq_global"):
-            con.execute("ALTER TABLE contatos ADD COLUMN seq_global INTEGER")
-
-        con.execute("CREATE INDEX IF NOT EXISTS idx_empresas_nome ON empresas(nome)")
-        con.execute("CREATE INDEX IF NOT EXISTS idx_empresas_documento ON empresas(documento)")
-        con.execute("CREATE INDEX IF NOT EXISTS idx_contatos_data ON contatos(data_contato)")
-        con.execute("CREATE INDEX IF NOT EXISTS idx_contatos_seq ON contatos(seq_global)")
-
-def proxima_seq_global(con):
-    atual = con.execute("SELECT COALESCE(MAX(seq_global),0) FROM contatos").fetchone()[0]
-    return int(atual or 0) + 1
-
-def seq_global_atual():
-    with conectar() as con:
-        return int(con.execute("SELECT COALESCE(MAX(seq_global),0) FROM contatos").fetchone()[0] or 0)
+    # Mantido apenas por compatibilidade com o restante do app.
+    if not DATABASE_PATH.exists():
+        salvar_database({
+            "metadata": {
+                "app": "Gestão Comercial",
+                "database_version": 1,
+                "format": "json"
+            },
+            "empresas": [],
+            "contatos": []
+        })
 
 # -----------------------------
 # FORMATAÇÃO / VALIDAÇÃO
@@ -414,17 +237,19 @@ def excel_data(v):
 # IMPORTAÇÃO INICIAL
 # -----------------------------
 def importar_planilha_inicial():
+    """
+    O app final já deve vir com database.json preenchido.
+    Esta função apenas mantém compatibilidade e evita reimportação duplicada.
+    """
+    dados = carregar_database()
+    if dados["empresas"]:
+        return
     if not ARQUIVO_INICIAL.exists():
         return
-
-    with conectar() as con:
-        if con.execute("SELECT COUNT(*) FROM empresas").fetchone()[0] > 0:
-            return
 
     df = pd.read_excel(ARQUIVO_INICIAL, dtype=object)
     df.columns = [str(c).strip().upper() for c in df.columns]
     agora = datetime.now().isoformat(timespec="seconds")
-    registros = []
 
     for _, r in df.iterrows():
         nome = str(r.get("NOME", "") or "").strip()
@@ -446,154 +271,192 @@ def importar_planilha_inicial():
             obs = ""
 
         data1 = excel_data(r.get("DATA 1º CONTATO", None))
-        registros.append((
-            documento, nome, tel1, tel2, tel3, status, obs,
-            data1, agora, "PLANILHA INICIAL", None, None, 0, ""
-        ))
+        empresa_id = proximo_id(dados["empresas"])
 
-    with conectar() as con:
-        con.executemany("""
-            INSERT INTO empresas
-            (documento,nome,telefone1,telefone2,telefone3,status,observacao_atual,
-             data_primeiro_contato,criado_em,origem,retorno_apos_seq,
-             data_agendamento,agendamento_pendente,proxima_acao)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-        """, registros)
+        dados["empresas"].append({
+            "id": empresa_id,
+            "documento": documento,
+            "nome": nome,
+            "telefone1": tel1,
+            "telefone2": tel2,
+            "telefone3": tel3,
+            "status": status,
+            "observacao_atual": obs,
+            "data_primeiro_contato": data1,
+            "criado_em": agora,
+            "origem": "PLANILHA INICIAL",
+            "retorno_apos_seq": None,
+            "data_agendamento": None,
+            "agendamento_pendente": 0,
+            "proxima_acao": ""
+        })
 
-        # Histórico importado não entra nos KPIs/tentativas da operação nova.
-        empresas_hist = con.execute("""
-            SELECT id, data_primeiro_contato, status, observacao_atual
-            FROM empresas WHERE data_primeiro_contato IS NOT NULL
-        """).fetchall()
+        if data1:
+            dados["contatos"].append({
+                "id": proximo_id(dados["contatos"]),
+                "empresa_id": empresa_id,
+                "data_contato": data1,
+                "tipo_contato": "HISTÓRICO IMPORTADO",
+                "resultado": "CONTATO REGISTRADO NA PLANILHA",
+                "status_novo": status,
+                "observacao": obs,
+                "proxima_acao": "",
+                "data_proxima_acao": None,
+                "criado_em": agora,
+                "seq_global": None
+            })
 
-        for e in empresas_hist:
-            con.execute("""
-                INSERT INTO contatos
-                (empresa_id,data_contato,tipo_contato,resultado,status_novo,
-                 observacao,proxima_acao,data_proxima_acao,criado_em,seq_global)
-                VALUES (?,?,?,?,?,?,?,?,?,NULL)
-            """, (
-                e["id"], e["data_primeiro_contato"], "HISTÓRICO IMPORTADO",
-                "CONTATO REGISTRADO NA PLANILHA", e["status"],
-                e["observacao_atual"], "", None, agora
-            ))
+    salvar_database(dados)
 
 # -----------------------------
 # DADOS
 # -----------------------------
 def carregar_empresas():
-    with conectar() as con:
-        return pd.read_sql_query("SELECT * FROM empresas ORDER BY nome", con)
+    dados = carregar_database()
+    df = pd.DataFrame(dados["empresas"])
+    if df.empty:
+        return pd.DataFrame(columns=[
+            "id","documento","nome","telefone1","telefone2","telefone3","status",
+            "observacao_atual","data_primeiro_contato","criado_em","origem",
+            "retorno_apos_seq","data_agendamento","agendamento_pendente","proxima_acao"
+        ])
+    for col in [
+        "documento","nome","telefone1","telefone2","telefone3","status",
+        "observacao_atual","data_primeiro_contato","criado_em","origem",
+        "retorno_apos_seq","data_agendamento","agendamento_pendente","proxima_acao"
+    ]:
+        if col not in df.columns:
+            df[col] = None
+    return df.sort_values("nome").reset_index(drop=True)
 
 def carregar_contatos():
-    with conectar() as con:
-        return pd.read_sql_query("""
-            SELECT c.*, e.nome, e.documento, e.telefone1, e.telefone2, e.telefone3
-            FROM contatos c
-            JOIN empresas e ON e.id=c.empresa_id
-            ORDER BY COALESCE(c.seq_global,0) DESC, c.id DESC
-        """, con)
+    dados = carregar_database()
+    contatos_df = pd.DataFrame(dados["contatos"])
+    empresas_df = carregar_empresas()
+
+    if contatos_df.empty:
+        return pd.DataFrame(columns=[
+            "id","empresa_id","data_contato","tipo_contato","resultado","status_novo",
+            "observacao","proxima_acao","data_proxima_acao","criado_em","seq_global",
+            "nome","documento","telefone1","telefone2","telefone3"
+        ])
+
+    for col in [
+        "id","empresa_id","data_contato","tipo_contato","resultado","status_novo",
+        "observacao","proxima_acao","data_proxima_acao","criado_em","seq_global"
+    ]:
+        if col not in contatos_df.columns:
+            contatos_df[col] = None
+
+    if not empresas_df.empty:
+        contatos_df = contatos_df.merge(
+            empresas_df[["id","nome","documento","telefone1","telefone2","telefone3"]],
+            left_on="empresa_id",
+            right_on="id",
+            how="left",
+            suffixes=("", "_empresa")
+        )
+        if "id_empresa" in contatos_df.columns:
+            contatos_df = contatos_df.drop(columns=["id_empresa"])
+
+    contatos_df["_seq_sort"] = pd.to_numeric(contatos_df["seq_global"], errors="coerce").fillna(0)
+    contatos_df = contatos_df.sort_values(
+        ["_seq_sort","id"], ascending=[False,False]
+    ).drop(columns=["_seq_sort"]).reset_index(drop=True)
+    return contatos_df
 
 def tentativas_empresa(empresa_id):
-    with conectar() as con:
-        # Contamos as tentativas operacionais reais, excluindo histórico importado.
-        return int(con.execute("""
-            SELECT COUNT(*) FROM contatos
-            WHERE empresa_id=? AND tipo_contato <> 'HISTÓRICO IMPORTADO'
-        """, (empresa_id,)).fetchone()[0] or 0)
+    dados = carregar_database()
+    return sum(
+        1 for c in dados["contatos"]
+        if int(c.get("empresa_id", 0) or 0) == int(empresa_id)
+        and c.get("tipo_contato") != "HISTÓRICO IMPORTADO"
+    )
 
 def salvar_empresa(documento, nome, telefones, status="SEM CONTATO", obs="", origem="APP"):
-    with GITHUB_LOCK:
-        sincronizar_antes_de_gravar()
-        with conectar() as con:
-            con.execute("""
-                INSERT INTO empresas
-                (documento,nome,telefone1,telefone2,telefone3,status,
-                 observacao_atual,criado_em,origem,agendamento_pendente)
-                VALUES (?,?,?,?,?,?,?,?,?,0)
-            """, (
-                formatar_documento(documento),
-                nome.strip().upper(),
-                formatar_telefone(telefones[0] if len(telefones)>0 else ""),
-                formatar_telefone(telefones[1] if len(telefones)>1 else ""),
-                formatar_telefone(telefones[2] if len(telefones)>2 else ""),
-                status, obs.strip(),
-                datetime.now().isoformat(timespec="seconds"), origem
-            ))
-        salvar_base_github()
+    dados = carregar_database()
+    empresa_id = proximo_id(dados["empresas"])
+    dados["empresas"].append({
+        "id": empresa_id,
+        "documento": formatar_documento(documento),
+        "nome": nome.strip().upper(),
+        "telefone1": formatar_telefone(telefones[0] if len(telefones)>0 else ""),
+        "telefone2": formatar_telefone(telefones[1] if len(telefones)>1 else ""),
+        "telefone3": formatar_telefone(telefones[2] if len(telefones)>2 else ""),
+        "status": status,
+        "observacao_atual": obs.strip(),
+        "data_primeiro_contato": None,
+        "criado_em": datetime.now().isoformat(timespec="seconds"),
+        "origem": origem,
+        "retorno_apos_seq": None,
+        "data_agendamento": None,
+        "agendamento_pendente": 0,
+        "proxima_acao": ""
+    })
+    salvar_database(dados)
 
 def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
                       proxima_acao="", data_agendamento=None):
-    """
-    Regra:
-    - Resultado define o status automaticamente.
-    - Se resultado for de espera e NÃO houver data específica:
-      volta depois de 20 novos contatos.
-    - Na 3ª tentativa sem retorno/aguardando: SEM INTERESSE.
-    - Se houver data específica: vira pendência agendada e permanece até nova atualização.
-    """
-    with GITHUB_LOCK:
-        sincronizar_antes_de_gravar()
-        agora = datetime.now().isoformat(timespec="seconds")
+    dados = carregar_database()
+    agora = datetime.now().isoformat(timespec="seconds")
 
-        with conectar() as con:
-            tentativas_anteriores = int(con.execute("""
-                SELECT COUNT(*) FROM contatos
-                WHERE empresa_id=? AND tipo_contato <> 'HISTÓRICO IMPORTADO'
-            """, (empresa_id,)).fetchone()[0] or 0)
-            tentativa_atual = tentativas_anteriores + 1
+    tentativas_anteriores = sum(
+        1 for c in dados["contatos"]
+        if int(c.get("empresa_id", 0) or 0) == int(empresa_id)
+        and c.get("tipo_contato") != "HISTÓRICO IMPORTADO"
+    )
+    tentativa_atual = tentativas_anteriores + 1
 
-            seq = proxima_seq_global(con)
-            status_novo = MAPA_STATUS.get(resultado, "EM ANDAMENTO")
+    seqs = [
+        int(c.get("seq_global") or 0)
+        for c in dados["contatos"]
+        if c.get("seq_global") is not None
+    ]
+    seq = (max(seqs) if seqs else 0) + 1
 
-            retorno_apos = None
-            agendamento_pendente = 0
-            data_agendamento_iso = None
+    status_novo = MAPA_STATUS.get(resultado, "EM ANDAMENTO")
+    retorno_apos = None
+    agendamento_pendente = 0
+    data_agendamento_iso = None
 
-            if data_agendamento:
-                agendamento_pendente = 1
-                data_agendamento_iso = data_agendamento.isoformat()
-            elif resultado in RESULTADOS_AGUARDANDO:
-                if tentativa_atual >= 3:
-                    status_novo = "SEM INTERESSE"
-                else:
-                    retorno_apos = seq + 20
+    if data_agendamento:
+        agendamento_pendente = 1
+        data_agendamento_iso = data_agendamento.isoformat()
+    elif resultado in RESULTADOS_AGUARDANDO:
+        if tentativa_atual >= 3:
+            status_novo = "SEM INTERESSE"
+        else:
+            retorno_apos = seq + 20
 
-            con.execute("""
-                INSERT INTO contatos
-                (empresa_id,data_contato,tipo_contato,resultado,status_novo,observacao,
-                 proxima_acao,data_proxima_acao,criado_em,seq_global)
-                VALUES (?,?,?,?,?,?,?,?,?,?)
-            """, (
-                empresa_id, data_contato.isoformat(), tipo, resultado, status_novo,
-                obs.strip(), proxima_acao.strip(),
-                data_agendamento_iso, agora, seq
-            ))
+    dados["contatos"].append({
+        "id": proximo_id(dados["contatos"]),
+        "empresa_id": int(empresa_id),
+        "data_contato": data_contato.isoformat(),
+        "tipo_contato": tipo,
+        "resultado": resultado,
+        "status_novo": status_novo,
+        "observacao": obs.strip(),
+        "proxima_acao": proxima_acao.strip(),
+        "data_proxima_acao": data_agendamento_iso,
+        "criado_em": agora,
+        "seq_global": seq,
+        "usuario": st.session_state.get("usuario_logado", "")
+    })
 
-            con.execute("""
-                UPDATE empresas
-                SET status=?,
-                    observacao_atual=?,
-                    data_primeiro_contato=COALESCE(data_primeiro_contato, ?),
-                    retorno_apos_seq=?,
-                    data_agendamento=?,
-                    agendamento_pendente=?,
-                    proxima_acao=?
-                WHERE id=?
-            """, (
-                status_novo, obs.strip(), data_contato.isoformat(),
-                retorno_apos, data_agendamento_iso,
-                agendamento_pendente, proxima_acao.strip(), empresa_id
-            ))
+    for emp in dados["empresas"]:
+        if int(emp.get("id", 0) or 0) == int(empresa_id):
+            emp["status"] = status_novo
+            emp["observacao_atual"] = obs.strip()
+            if not emp.get("data_primeiro_contato"):
+                emp["data_primeiro_contato"] = data_contato.isoformat()
+            emp["retorno_apos_seq"] = retorno_apos
+            emp["data_agendamento"] = data_agendamento_iso
+            emp["agendamento_pendente"] = agendamento_pendente
+            emp["proxima_acao"] = proxima_acao.strip()
+            break
 
-        ok_sync, msg_sync = salvar_base_github()
-        if github_ativo() and not ok_sync:
-            st.error(
-                "O contato foi salvo localmente, mas a sincronização com o GitHub falhou. "
-                "Use 'Carregar base de dados' antes de continuar e confira a configuração."
-            )
-
-        return status_novo, tentativa_atual, retorno_apos
+    salvar_database(dados)
+    return status_novo, tentativa_atual, retorno_apos
 
 # -----------------------------
 # IMPORTAÇÃO LIVRE / EM LOTE
@@ -922,24 +785,58 @@ def gerar_excel_completo(empresas, contatos):
 # -----------------------------
 # APP
 # -----------------------------
-# Na nuvem, a base oficial do GitHub é carregada antes de qualquer leitura.
-if github_ativo():
-    ok_pull, _msg_pull = carregar_base_github()
-
 criar_banco()
 importar_planilha_inicial()
 
-# Se a branch de dados ainda não tinha base, publica a base inicial.
-if github_ativo():
-    _, _, _, _, _db_repo_path = github_config()
-    try:
-        if _github_get_file(_db_repo_path) is None:
-            salvar_base_github()
-    except Exception:
-        pass
-
 empresas = carregar_empresas()
 contatos = carregar_contatos()
+
+
+# -----------------------------
+# LOGIN
+# -----------------------------
+def credenciais():
+    """
+    Usuários ficam nos Secrets do Streamlit.
+    Exemplo:
+    [usuarios]
+    celso = "..."
+    jessica = "..."
+    vanessa = "..."
+    """
+    try:
+        usuarios = dict(st.secrets["usuarios"])
+        return {str(k).lower(): str(v) for k, v in usuarios.items()}
+    except Exception:
+        return {}
+
+if "autenticado" not in st.session_state:
+    st.session_state.autenticado = False
+
+if not st.session_state.autenticado:
+    st.title("🔐 Gestão Comercial")
+    st.caption("Acesso ao sistema")
+
+    with st.form("login"):
+        usuario = st.text_input("Usuário").strip().lower()
+        senha = st.text_input("Senha", type="password")
+        entrar = st.form_submit_button("Entrar", type="primary", use_container_width=True)
+
+    if entrar:
+        usuarios = credenciais()
+        if usuario in usuarios and senha == usuarios[usuario]:
+            st.session_state.autenticado = True
+            st.session_state.usuario_logado = usuario
+            st.rerun()
+        else:
+            st.error("Usuário ou senha inválidos.")
+    st.stop()
+
+st.sidebar.write(f"👤 **{st.session_state.get('usuario_logado','').title()}**")
+if st.sidebar.button("Sair", use_container_width=True):
+    st.session_state.clear()
+    st.rerun()
+
 
 st.title("📈 Gestão Comercial")
 st.caption("Prospecção, retornos, agendamentos e acompanhamento da carteira comercial.")
@@ -1612,24 +1509,18 @@ elif menu == "📈 Relatórios":
 
 st.sidebar.divider()
 st.sidebar.markdown("**Base de dados**")
-if github_ativo():
-    st.sidebar.success("☁️ Base GitHub conectada")
+if DATABASE_PATH.exists():
+    st.sidebar.success("✅ database.json carregado")
 else:
-    st.sidebar.warning("💻 Modo local")
+    st.sidebar.error("⚠️ database.json não encontrado")
 
 if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
-    if github_ativo():
-        ok, msg = carregar_base_github()
-        if ok:
-            st.sidebar.success(msg)
-            st.rerun()
-        else:
-            st.sidebar.error(msg)
-    else:
-        st.sidebar.info(
-            "No computador local, a base já está no arquivo database/comercial.db. "
-            "No deploy, configure os Secrets do GitHub para habilitar a recuperação."
-        )
+    try:
+        carregar_database()
+        st.sidebar.success("Base recarregada com sucesso.")
+        st.rerun()
+    except Exception as e:
+        st.sidebar.error(str(e))
 
-st.sidebar.caption("Gestão Comercial • FINAL")
+st.sidebar.caption("Gestão Comercial • JSON")
 
