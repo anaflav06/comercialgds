@@ -528,6 +528,224 @@ def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefon
 
     salvar_database(dados)
 
+
+def atualizar_empresas_em_lote(df_editado):
+    dados = carregar_database()
+    mapa = {int(e.get("id", 0)): e for e in dados["empresas"]}
+
+    for _, row in df_editado.iterrows():
+        emp_id = int(row["ID"])
+        emp = mapa.get(emp_id)
+        if not emp:
+            continue
+
+        emp["documento"] = formatar_documento(row.get("CPF/CNPJ", ""))
+        emp["nome"] = str(row.get("Empresa / Cliente", "") or "").strip().upper()
+        emp["telefone1"] = formatar_telefone(row.get("Telefone 1", ""))
+        emp["telefone2"] = formatar_telefone(row.get("Telefone 2", ""))
+        emp["telefone3"] = formatar_telefone(row.get("Telefone 3", ""))
+        emp["status"] = str(row.get("Status", "") or "").strip().upper()
+        emp["observacao_atual"] = str(row.get("Última observação", "") or "").strip()
+        emp["proxima_acao"] = str(row.get("Próxima ação", "") or "").strip()
+
+        ag = row.get("Agendamento", "")
+        if pd.notna(ag) and str(ag).strip():
+            dt = pd.to_datetime(ag, dayfirst=True, errors="coerce")
+            if pd.notna(dt):
+                emp["data_agendamento"] = dt.date().isoformat()
+                emp["agendamento_pendente"] = 1
+        elif emp["status"] in STATUS_ENCERRADOS:
+            emp["data_agendamento"] = None
+            emp["agendamento_pendente"] = 0
+            emp["retorno_apos_seq"] = None
+
+    salvar_database(dados)
+
+def atualizar_contatos_em_lote(df_editado):
+    dados = carregar_database()
+    mapa = {int(c.get("id", 0)): c for c in dados["contatos"]}
+
+    for _, row in df_editado.iterrows():
+        contato_id = int(row["ID contato"])
+        c = mapa.get(contato_id)
+        if not c:
+            continue
+
+        dt = pd.to_datetime(row.get("Data", ""), dayfirst=True, errors="coerce")
+        if pd.notna(dt):
+            c["data_contato"] = dt.date().isoformat()
+
+        c["tipo_contato"] = str(row.get("Tipo", "") or "").strip().upper()
+        c["resultado"] = str(row.get("Resultado", "") or "").strip().upper()
+        c["status_novo"] = str(row.get("Status", "") or "").strip().upper()
+        c["observacao"] = str(row.get("Observação", "") or "").strip()
+        c["proxima_acao"] = str(row.get("Próxima ação", "") or "").strip()
+
+        rt = pd.to_datetime(row.get("Retorno", ""), dayfirst=True, errors="coerce")
+        c["data_proxima_acao"] = rt.date().isoformat() if pd.notna(rt) else None
+
+    # Sincroniza a empresa com o contato operacional mais recente.
+    ultimos = {}
+    for c in dados["contatos"]:
+        if c.get("tipo_contato") == "HISTÓRICO IMPORTADO":
+            continue
+        eid = int(c.get("empresa_id", 0) or 0)
+        seq = int(c.get("seq_global") or 0)
+        if eid not in ultimos or seq >= int(ultimos[eid].get("seq_global") or 0):
+            ultimos[eid] = c
+
+    for emp in dados["empresas"]:
+        eid = int(emp.get("id", 0) or 0)
+        if eid in ultimos:
+            c = ultimos[eid]
+            emp["status"] = c.get("status_novo") or emp.get("status")
+            emp["observacao_atual"] = c.get("observacao") or ""
+            emp["proxima_acao"] = c.get("proxima_acao") or ""
+            emp["data_agendamento"] = c.get("data_proxima_acao")
+            emp["agendamento_pendente"] = 1 if c.get("data_proxima_acao") else 0
+
+    salvar_database(dados)
+
+def editor_empresas(df_base, key_prefix):
+    if df_base.empty:
+        st.info("Nenhum registro encontrado.")
+        return
+
+    tabela = df_base[[
+        "id","documento","nome","telefone1","telefone2","telefone3",
+        "status","observacao_atual","data_primeiro_contato","proxima_acao","data_agendamento"
+    ]].copy()
+
+    tabela["data_primeiro_contato"] = tabela["data_primeiro_contato"].apply(data_br)
+    tabela["data_agendamento"] = tabela["data_agendamento"].apply(data_br)
+    tabela.columns = [
+        "ID","CPF/CNPJ","Empresa / Cliente","Telefone 1","Telefone 2","Telefone 3",
+        "Status","Última observação","1º contato","Próxima ação","Agendamento"
+    ]
+
+    status_opcoes = [
+        "SEM CONTATO","1ª TENTATIVA SEM RETORNO","2ª TENTATIVA SEM RETORNO",
+        "AGUARDANDO CLIENTE","RETORNO AGENDADO","EM ANDAMENTO",
+        "REUNIÃO AGENDADA","PROPOSTA SOLICITADA","PROPOSTA ENVIADA",
+        "EM NEGOCIAÇÃO","CONTATO INVÁLIDO","FECHADO / GANHO",
+        "SEM INTERESSE","NÃO UTILIZA TRANSPORTE","JÁ UTILIZA AZUL"
+    ]
+
+    editado = st.data_editor(
+        tabela,
+        use_container_width=True,
+        hide_index=True,
+        num_rows="fixed",
+        height=560,
+        key=f"{key_prefix}_editor",
+        column_config={
+            "ID": st.column_config.NumberColumn("ID", disabled=True),
+            "Status": st.column_config.SelectboxColumn(
+                "Status", options=status_opcoes, required=True
+            ),
+        },
+    )
+
+    if st.button(
+        "💾 Salvar alterações da tabela",
+        type="primary",
+        use_container_width=True,
+        key=f"{key_prefix}_salvar"
+    ):
+        atualizar_empresas_em_lote(editado)
+        st.success("Alterações salvas no database.json e atualizadas no app.")
+        st.rerun()
+
+def editor_contatos(df_base, key_prefix):
+    if df_base.empty:
+        st.info("Nenhum contato encontrado.")
+        return
+
+    tabela = df_base[[
+        "id","data_contato","nome","documento","tipo_contato","resultado",
+        "status_novo","observacao","proxima_acao","data_proxima_acao"
+    ]].copy()
+
+    tabela["data_contato"] = tabela["data_contato"].apply(data_br)
+    tabela["data_proxima_acao"] = tabela["data_proxima_acao"].apply(data_br)
+    tabela.columns = [
+        "ID contato","Data","Empresa / Cliente","CPF/CNPJ","Tipo","Resultado",
+        "Status","Observação","Próxima ação","Retorno"
+    ]
+
+    editado = st.data_editor(
+        tabela,
+        use_container_width=True,
+        hide_index=True,
+        num_rows="fixed",
+        height=520,
+        key=f"{key_prefix}_editor",
+        column_config={
+            "ID contato": st.column_config.NumberColumn("ID contato", disabled=True),
+            "Empresa / Cliente": st.column_config.TextColumn("Empresa / Cliente", disabled=True),
+            "CPF/CNPJ": st.column_config.TextColumn("CPF/CNPJ", disabled=True),
+        },
+    )
+
+    if st.button(
+        "💾 Salvar alterações da tabela",
+        type="primary",
+        use_container_width=True,
+        key=f"{key_prefix}_salvar"
+    ):
+        atualizar_contatos_em_lote(editado)
+        st.success("Alterações salvas no database.json.")
+        st.rerun()
+
+def obter_ultimo_contato_operacional():
+    dados = carregar_database()
+    contatos_ops = [
+        c for c in dados["contatos"]
+        if c.get("tipo_contato") != "HISTÓRICO IMPORTADO"
+    ]
+    if not contatos_ops:
+        return None
+    contatos_ops.sort(
+        key=lambda c: (int(c.get("seq_global") or 0), int(c.get("id") or 0)),
+        reverse=True
+    )
+    return contatos_ops[0]
+
+def editar_ultimo_contato():
+    ult = obter_ultimo_contato_operacional()
+    if not ult:
+        st.info("Ainda não há contato anterior para editar.")
+        return
+
+    dados = carregar_database()
+    empresa = next(
+        (e for e in dados["empresas"]
+         if int(e.get("id", 0) or 0) == int(ult.get("empresa_id", 0) or 0)),
+        None
+    )
+    if not empresa:
+        st.warning("Cliente do último contato não encontrado.")
+        return
+
+    st.markdown(f"### ⬅️ Editar contato anterior — {empresa.get('nome','')}")
+    st.caption("Altere o que faltou e salve. Isso atualiza o histórico e a situação atual do cliente.")
+
+    tabela = pd.DataFrame([{
+        "id": ult.get("id"),
+        "data_contato": ult.get("data_contato"),
+        "nome": empresa.get("nome"),
+        "documento": empresa.get("documento"),
+        "tipo_contato": ult.get("tipo_contato"),
+        "resultado": ult.get("resultado"),
+        "status_novo": ult.get("status_novo"),
+        "observacao": ult.get("observacao"),
+        "proxima_acao": ult.get("proxima_acao"),
+        "data_proxima_acao": ult.get("data_proxima_acao"),
+    }])
+
+    editor_contatos(tabela, key_prefix=f"ultimo_contato_{ult.get('id')}")
+
+
 # -----------------------------
 # IMPORTAÇÃO LIVRE / EM LOTE
 # -----------------------------
@@ -778,90 +996,7 @@ def historico_cliente(contatos, empresa_id):
     if hist.empty:
         st.info("Nenhum histórico registrado.")
         return
-
-    hist["Data"] = hist["data_contato"].apply(data_br)
-    hist["Retorno"] = hist["data_proxima_acao"].apply(data_br)
-    hist = hist[[
-        "Data","tipo_contato","resultado","status_novo",
-        "observacao","proxima_acao","Retorno"
-    ]]
-    hist.columns = [
-        "Data","Tipo","Resultado","Status",
-        "Observação","Próxima ação","Retorno"
-    ]
-    st.dataframe(hist, use_container_width=True, hide_index=True)
-
-
-def campos_contato(prefixo, empresa, tentativa_num):
-    st.markdown(f"**Tentativa {min(tentativa_num, 3)} de 3**")
-
-    c1, c2 = st.columns(2)
-    data_contato = c1.date_input(
-        "Data do contato *",
-        value=date.today(),
-        max_value=date.today(),
-        format="DD/MM/YYYY",
-        key=f"{prefixo}_data"
-    )
-    tipo = c2.selectbox(
-        "Tipo de contato *",
-        TIPOS_CONTATO,
-        key=f"{prefixo}_tipo"
-    )
-
-    resultado = st.selectbox(
-        "Resultado do contato *",
-        RESULTADOS,
-        key=f"{prefixo}_resultado"
-    )
-
-    obs = st.text_area(
-        "Observação do contato",
-        key=f"{prefixo}_obs"
-    )
-
-    proxima_acao = st.selectbox(
-        "Próxima ação",
-        ACOES_SUGERIDAS,
-        key=f"{prefixo}_acao"
-    )
-
-    outra_acao = ""
-    if proxima_acao == "OUTRO":
-        outra_acao = st.text_input(
-            "Descreva a próxima ação",
-            key=f"{prefixo}_outra_acao"
-        )
-
-    st.caption(
-        "Resultados de espera retornam automaticamente à fila após 20 novos contatos. "
-        "Na 3ª tentativa sem retorno, o cliente é encerrado como SEM INTERESSE."
-    )
-
-    acao_final = outra_acao.strip() if proxima_acao == "OUTRO" else proxima_acao
-    return data_contato, tipo, resultado, obs, acao_final
-
-def campo_agendamento(prefixo):
-    agendar = st.checkbox(
-        "Definir uma data específica para retorno",
-        key=f"{prefixo}_agendar"
-    )
-
-    data_agendamento = None
-    if agendar:
-        data_agendamento = st.date_input(
-            "Data específica do retorno",
-            value=date.today() + timedelta(days=1),
-            min_value=date.today(),
-            format="DD/MM/YYYY",
-            key=f"{prefixo}_data_agendamento"
-        )
-        st.caption(
-            "Esse cliente aparecerá como pendência a partir da data marcada "
-            "e permanecerá no topo até ser atualizado."
-        )
-
-    return data_agendamento
+    editor_contatos(hist, key_prefix=f"historico_{empresa_id}")
 
 # -----------------------------
 # EXPORTAÇÃO COMPLETA
@@ -1025,7 +1160,7 @@ menu = st.sidebar.radio(
         "📊 Dashboard",
         "📞 Fila de contatos",
         "➕ Adicionar contatos em lote",
-        "🏢 Empresas / Clientes",
+        "🏢 Consulta / Editar Clientes",
         "➕ Nova Empresa",
         "📈 Relatórios",
     ]
@@ -1242,7 +1377,7 @@ if menu == "📊 Dashboard":
 # ---------------- FILA ÚNICA DE CONTATOS ----------------
 elif menu == "📞 Fila de contatos":
     st.subheader("📞 Fila de contatos")
-    st.caption("Prioridades, retornos antigos e novos contatos em uma única tela de trabalho.")
+    st.caption("Aqui estão reunidos novos contatos, retornos antigos e pendências. O sistema organiza automaticamente quem deve ser atendido primeiro.")
 
     hoje = date.today()
     hoje_ts = pd.Timestamp(hoje)
@@ -1349,6 +1484,18 @@ elif menu == "📞 Fila de contatos":
         msg = st.session_state.pop("flash_contato", None)
         if msg:
             st.success(msg)
+
+        if st.session_state.get("mostrar_ultimo_contato"):
+            with st.container(border=True):
+                editar_ultimo_contato()
+                if st.button(
+                    "Fechar edição do contato anterior",
+                    use_container_width=True,
+                    key="fechar_edicao_anterior"
+                ):
+                    st.session_state["mostrar_ultimo_contato"] = False
+                    st.rerun()
+            st.divider()
 
         # Identificação clara do tipo de item da fila.
         if atual["_prioridade"] == 1:
@@ -1483,12 +1630,24 @@ elif menu == "📞 Fila de contatos":
                 "A partir dessa data, o cliente ficará no topo da fila até ser atualizado."
             )
 
-        salvar = st.button(
-            "Salvar e ir para o próximo",
-            type="primary",
-            use_container_width=True,
-            key=f"{prefixo}_salvar"
-        )
+        bvoltar, bsalvar = st.columns([1, 2])
+        with bvoltar:
+            voltar_anterior = st.button(
+                "⬅️ Voltar ao contato anterior",
+                use_container_width=True,
+                key=f"{prefixo}_voltar_anterior"
+            )
+        with bsalvar:
+            salvar = st.button(
+                "Salvar e ir para o próximo",
+                type="primary",
+                use_container_width=True,
+                key=f"{prefixo}_salvar"
+            )
+
+        if voltar_anterior:
+            st.session_state["mostrar_ultimo_contato"] = True
+            st.rerun()
 
         if salvar:
             status_novo, tentativa_atual, retorno_apos = registrar_contato(
@@ -1591,8 +1750,9 @@ elif menu == "➕ Adicionar contatos em lote":
                 st.rerun()
 
 # ---------------- EMPRESAS ----------------
-elif menu == "🏢 Empresas / Clientes":
-    st.subheader("🏢 Empresas / Clientes")
+elif menu == "🏢 Consulta / Editar Clientes":
+    st.subheader("🏢 Consulta / Editar Clientes")
+    st.caption("Esta tela é para consulta e edição direta da carteira. Para trabalhar a sequência diária, use a Fila de contatos.")
     busca = st.text_input(
         "Pesquisar por nome, CPF/CNPJ ou telefone",
         placeholder="Comece a digitar o nome da empresa..."
@@ -1650,34 +1810,8 @@ elif menu == "🏢 Empresas / Clientes":
     if status_filtro:
         view = view[view["status"].isin(status_filtro)]
 
-    mostrar = view[[
-        "documento","nome","telefone1","telefone2","telefone3","status",
-        "observacao_atual","data_primeiro_contato","proxima_acao","data_agendamento"
-    ]].copy()
-    mostrar["data_primeiro_contato"] = mostrar["data_primeiro_contato"].apply(data_br)
-    mostrar["data_agendamento"] = mostrar["data_agendamento"].apply(data_br)
-    mostrar.columns = [
-        "CPF/CNPJ","Empresa / Cliente","Telefone 1","Telefone 2","Telefone 3",
-        "Status","Última observação","1º contato","Próxima ação","Agendamento"
-    ]
-    st.caption(f"{len(mostrar)} registro(s)")
-    st.dataframe(mostrar, use_container_width=True, hide_index=True, height=600)
-
-    if not view.empty:
-        opcoes_edicao = {}
-        for _, r in view.head(200).iterrows():
-            rotulo = f"{r['nome']} — {r['documento'] or r['telefone1'] or ''}"
-            opcoes_edicao[rotulo] = int(r["id"])
-
-        st.markdown("### ✏️ Editar cliente")
-        escolhido = st.selectbox(
-            "Selecione um cliente da lista",
-            list(opcoes_edicao.keys()),
-            key="empresa_edicao_selecionada"
-        )
-        emp_id = opcoes_edicao[escolhido]
-        emp_row = empresas[empresas["id"] == emp_id].iloc[0]
-        painel_edicao_empresa(emp_row, prefixo="empresas_editar")
+    st.caption(f"{len(view)} registro(s)")
+    editor_empresas(view, key_prefix="consulta_clientes")
 
 # ---------------- NOVA EMPRESA ----------------
 elif menu == "➕ Nova Empresa":
@@ -1755,17 +1889,8 @@ elif menu == "📈 Relatórios":
         grafico_contatos_dia(rel)
 
         if not rel.empty:
-            exibir = rel[[
-                "data_contato","nome","documento","tipo_contato","resultado",
-                "status_novo","observacao","proxima_acao","data_proxima_acao"
-            ]].copy()
-            exibir["data_contato"] = exibir["data_contato"].apply(data_br)
-            exibir["data_proxima_acao"] = exibir["data_proxima_acao"].apply(data_br)
-            exibir.columns = [
-                "Data","Empresa / Cliente","CPF/CNPJ","Tipo","Resultado",
-                "Status","Observação","Próxima ação","Data retorno"
-            ]
-            st.dataframe(exibir, use_container_width=True, hide_index=True)
+            st.subheader("Detalhamento editável")
+            editor_contatos(rel, key_prefix="relatorio_contatos")
 
         st.divider()
         st.subheader("Exportação completa")
@@ -1797,5 +1922,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(str(e))
 
-st.sidebar.caption("Gestão Comercial • JSON V3.1")
+st.sidebar.caption("Gestão Comercial • JSON V4")
 
