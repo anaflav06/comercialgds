@@ -126,6 +126,22 @@ STATUS_ENCERRADOS = [
     "JÁ UTILIZA AZUL",
 ]
 
+STATUS_RETORNO_IMPORTADO = {
+    "AGUARDANDO CLIENTE",
+    "SEM RETORNO",
+    "SEM SUCESSO NO CONTATO",
+    "TENTATIVA DE CONTATO",
+    "1ª TENTATIVA SEM RETORNO",
+    "2ª TENTATIVA SEM RETORNO",
+    "EM ANDAMENTO",
+    "REUNIÃO AGENDADA",
+    "PROPOSTA SOLICITADA",
+    "PROPOSTA ENVIADA",
+    "EM NEGOCIAÇÃO",
+    "CONTATO INVÁLIDO",
+}
+
+
 RESULTADOS_AGUARDANDO = {
     "NÃO CONSEGUI CONTATO",
     "CLIENTE RESPONDEU",
@@ -1781,5 +1797,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(str(e))
 
-st.sidebar.caption("Gestão Comercial • JSON V3")
+st.sidebar.caption("Gestão Comercial • JSON V3.1")
 
