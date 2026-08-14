@@ -459,9 +459,9 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
         if status_novo not in STATUS_ENCERRADOS:
             status_novo = "RETORNO AGENDADO"
 
-    # Se não houver data específica, todo status ativo volta após 20 contatos.
+    # Se não houver data específica, todo status ativo volta após 200 contatos.
     elif status_novo not in STATUS_ENCERRADOS:
-        retorno_apos = seq + 20
+        retorno_apos = seq + 200
 
     dados["contatos"].append({
         "id": proximo_id(dados["contatos"]),
@@ -744,6 +744,46 @@ def editar_ultimo_contato():
     }])
 
     editor_contatos(tabela, key_prefix=f"ultimo_contato_{ult.get('id')}")
+
+
+
+def finalizar_sem_interesse(empresa_id):
+    dados = carregar_database()
+    agora = datetime.now().isoformat(timespec="seconds")
+
+    seqs = [
+        int(c.get("seq_global") or 0)
+        for c in dados["contatos"]
+        if c.get("seq_global") is not None
+    ]
+    seq = (max(seqs) if seqs else 0) + 1
+
+    dados["contatos"].append({
+        "id": proximo_id(dados["contatos"]),
+        "empresa_id": int(empresa_id),
+        "data_contato": date.today().isoformat(),
+        "tipo_contato": "FINALIZAÇÃO RÁPIDA",
+        "resultado": "SEM INTERESSE",
+        "status_novo": "SEM INTERESSE",
+        "observacao": "Finalizado manualmente na fila.",
+        "proxima_acao": "",
+        "data_proxima_acao": None,
+        "criado_em": agora,
+        "seq_global": seq,
+        "usuario": st.session_state.get("usuario_logado", "")
+    })
+
+    for emp in dados["empresas"]:
+        if int(emp.get("id", 0) or 0) == int(empresa_id):
+            emp["status"] = "SEM INTERESSE"
+            emp["observacao_atual"] = "Finalizado manualmente na fila."
+            emp["proxima_acao"] = ""
+            emp["retorno_apos_seq"] = None
+            emp["data_agendamento"] = None
+            emp["agendamento_pendente"] = 0
+            break
+
+    salvar_database(dados)
 
 
 # -----------------------------
@@ -1416,7 +1456,7 @@ elif menu == "📞 Fila de contatos":
         (~base["status"].isin(STATUS_ENCERRADOS))
     ].copy()
 
-    # 3) Retornos automáticos liberados após 20 contatos.
+    # 3) Retornos automáticos liberados após 200 contatos.
     automaticos = base[
         base["retorno_apos_seq"].notna() &
         (pd.to_numeric(base["retorno_apos_seq"], errors="coerce") <= seq_atual) &
@@ -1445,22 +1485,22 @@ elif menu == "📞 Fila de contatos":
     with c2:
         card("🟠 Para hoje", len(hoje_ag), "agendamentos do dia")
     with c3:
-        card("🔄 Retornos", len(automaticos), "liberados após 20 contatos")
+        card("🔄 Retornos", len(automaticos), "liberados após 200 contatos")
     with c4:
         card("📂 Retornos antigos", len(retornos_importados), "carteira importada pendente")
     with c5:
         card("🆕 Novos", len(novos), "ainda sem contato")
 
     # Ordem:
-    # atrasados > hoje > retorno automático > retorno antigo > novos
+    # atrasados > hoje > novos > retorno automático > retorno antigo
     atrasados["_prioridade"] = 1
     hoje_ag["_prioridade"] = 2
-    automaticos["_prioridade"] = 3
-    retornos_importados["_prioridade"] = 4
-    novos["_prioridade"] = 5
+    novos["_prioridade"] = 3
+    automaticos["_prioridade"] = 4
+    retornos_importados["_prioridade"] = 5
 
     fila_df = pd.concat(
-        [atrasados, hoje_ag, automaticos, retornos_importados, novos],
+        [atrasados, hoje_ag, novos, automaticos, retornos_importados],
         ignore_index=True
     ).drop_duplicates(subset=["id"], keep="first")
 
@@ -1506,13 +1546,13 @@ elif menu == "📞 Fila de contatos":
         elif atual["_prioridade"] == 2:
             st.warning("🟠 PRIORIDADE — retorno agendado para hoje")
         elif atual["_prioridade"] == 3:
-            st.info("🔄 RETORNO AUTOMÁTICO — cliente liberado após 20 novos contatos")
+            st.info("🆕 NOVO CONTATO — ainda sem contato anterior")
         elif atual["_prioridade"] == 4:
+            st.info("🔄 RETORNO AUTOMÁTICO — cliente liberado após 200 novos contatos")
+        else:
             st.info(
                 f"📂 RETORNO DA CARTEIRA ANTIGA — status atual: {atual['status']}"
             )
-        else:
-            st.info("🆕 NOVO CONTATO")
 
         c1,c2 = st.columns([4,1])
         with c1:
@@ -1607,7 +1647,7 @@ elif menu == "📞 Fila de contatos":
             acao = acao_escolhida
 
         st.caption(
-            "Resultados de espera retornam automaticamente à fila após 20 novos contatos. "
+            "Resultados de espera retornam automaticamente à fila após 200 novos contatos. "
             "Na 3ª tentativa sem contato, o cliente é encerrado automaticamente como SEM INTERESSE."
         )
 
@@ -1630,13 +1670,22 @@ elif menu == "📞 Fila de contatos":
                 "A partir dessa data, o cliente ficará no topo da fila até ser atualizado."
             )
 
-        bvoltar, bsalvar = st.columns([1, 2])
+        bvoltar, bfinalizar, bsalvar = st.columns([1, 1, 2])
+
         with bvoltar:
             voltar_anterior = st.button(
-                "⬅️ Voltar ao contato anterior",
+                "⬅️ Voltar ao anterior",
                 use_container_width=True,
                 key=f"{prefixo}_voltar_anterior"
             )
+
+        with bfinalizar:
+            finalizar = st.button(
+                "🚫 Finalizar / Sem interesse",
+                use_container_width=True,
+                key=f"{prefixo}_finalizar"
+            )
+
         with bsalvar:
             salvar = st.button(
                 "Salvar e ir para o próximo",
@@ -1647,6 +1696,16 @@ elif menu == "📞 Fila de contatos":
 
         if voltar_anterior:
             st.session_state["mostrar_ultimo_contato"] = True
+            st.rerun()
+
+        if finalizar:
+            finalizar_sem_interesse(empresa_id)
+            st.session_state["flash_contato"] = (
+                f"{atual['nome']}: finalizado como SEM INTERESSE e removido da fila."
+            )
+            for chave in list(st.session_state.keys()):
+                if chave.startswith(prefixo):
+                    del st.session_state[chave]
             st.rerun()
 
         if salvar:
@@ -1667,7 +1726,7 @@ elif menu == "📞 Fila de contatos":
             elif retorno_apos:
                 mensagem = (
                     f"{atual['nome']}: contato salvo. "
-                    "Voltará automaticamente após 20 novos contatos."
+                    "Voltará automaticamente após 200 novos contatos."
                 )
             else:
                 mensagem = f"{atual['nome']}: contato salvo com sucesso."
@@ -1922,5 +1981,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(str(e))
 
-st.sidebar.caption("Gestão Comercial • JSON V4")
+st.sidebar.caption("Gestão Comercial • JSON V4.1")
 
