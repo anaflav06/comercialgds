@@ -4,6 +4,8 @@ import pandas as pd
 import re
 import io
 import json
+import base64
+import requests
 import altair as alt
 from pathlib import Path
 from datetime import date, datetime, timedelta
@@ -11,44 +13,222 @@ from datetime import date, datetime, timedelta
 st.set_page_config(page_title="Gestão Comercial", page_icon="📈", layout="wide")
 
 
+
 DATABASE_PATH = Path("database.json")
 ARQUIVO_INICIAL = Path("celso comercial.xlsx")
 
-def carregar_database():
-    """Carrega a base JSON local. Se não existir, cria uma estrutura vazia."""
-    if not DATABASE_PATH.exists():
-        dados = {
-            "metadata": {
-                "app": "Gestão Comercial",
-                "database_version": 1,
-                "format": "json"
-            },
-            "empresas": [],
-            "contatos": []
-        }
-        salvar_database(dados)
-        return dados
-
+def github_config():
     try:
-        with open(DATABASE_PATH, "r", encoding="utf-8") as f:
-            dados = json.load(f)
-        dados.setdefault("metadata", {})
-        dados.setdefault("empresas", [])
-        dados.setdefault("contatos", [])
-        return dados
+        token = str(st.secrets.get("GITHUB_TOKEN", "")).strip()
+        repo = str(st.secrets.get("GITHUB_REPO", "")).strip()
+        branch = str(st.secrets.get("GITHUB_DATA_BRANCH", "database")).strip() or "database"
+        db_path = str(st.secrets.get("GITHUB_DB_PATH", "database.json")).strip() or "database.json"
     except Exception:
-        # Segurança: não sobrescreve silenciosamente um JSON corrompido.
-        raise RuntimeError(
-            "Não foi possível abrir database.json. "
-            "Confira se o arquivo existe e se o JSON está válido."
-        )
+        token = repo = ""
+        branch = "database"
+        db_path = "database.json"
+    return token, repo, branch, db_path
 
-def salvar_database(dados):
-    """Grava de forma atômica para reduzir risco de corrupção."""
+def github_ativo():
+    token, repo, _, _ = github_config()
+    return bool(token and repo)
+
+def github_headers():
+    token, _, _, _ = github_config()
+    return {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+def github_file_info(path_repo=None):
+    if not github_ativo():
+        return None
+    _, repo, branch, db_path = github_config()
+    path_repo = path_repo or db_path
+    r = requests.get(
+        f"https://api.github.com/repos/{repo}/contents/{path_repo}",
+        headers=github_headers(),
+        params={"ref": branch},
+        timeout=30,
+    )
+    if r.status_code == 404:
+        return None
+    if r.status_code != 200:
+        raise RuntimeError(f"GitHub respondeu {r.status_code} ao consultar a base.")
+    return r.json()
+
+def github_baixar_database():
+    info = github_file_info()
+    if not info:
+        return False
+
+    conteudo = info.get("content")
+    if not conteudo:
+        raise RuntimeError("GitHub não retornou o conteúdo do database.json.")
+
+    dados_bytes = base64.b64decode(conteudo)
+    try:
+        dados = json.loads(dados_bytes.decode("utf-8"))
+    except Exception as exc:
+        raise RuntimeError("O database.json salvo no GitHub está inválido.") from exc
+
+    dados.setdefault("metadata", {})
+    dados.setdefault("empresas", [])
+    dados.setdefault("contatos", [])
+
     tmp = DATABASE_PATH.with_suffix(".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=2)
     tmp.replace(DATABASE_PATH)
+    st.session_state["_database_remota_carregada"] = True
+    return True
+
+def github_criar_backup_do_atual():
+    """Cria um snapshot diário da base anterior antes da primeira alteração do dia."""
+    if not github_ativo():
+        return
+
+    _, repo, branch, db_path = github_config()
+    atual = github_file_info(db_path)
+    if not atual:
+        return
+
+    backup_path = f"backups/database_{date.today().isoformat()}.json"
+
+    # Se já existe backup de hoje, não recria.
+    r_check = requests.get(
+        f"https://api.github.com/repos/{repo}/contents/{backup_path}",
+        headers=github_headers(),
+        params={"ref": branch},
+        timeout=30,
+    )
+    if r_check.status_code == 200:
+        return
+
+    payload = {
+        "message": f"Backup database {date.today().strftime('%d/%m/%Y')}",
+        "content": atual.get("content", ""),
+        "branch": branch,
+    }
+    requests.put(
+        f"https://api.github.com/repos/{repo}/contents/{backup_path}",
+        headers=github_headers(),
+        json=payload,
+        timeout=45,
+    )
+
+def github_salvar_database(dados):
+    """Salva a base oficial no GitHub. Falha explícita se não conseguir."""
+    if not github_ativo():
+        raise RuntimeError(
+            "A base persistente do GitHub não está configurada. "
+            "Não é seguro salvar dados no Streamlit sem essa conexão."
+        )
+
+    _, repo, branch, db_path = github_config()
+
+    # Backup diário antes da primeira alteração do dia.
+    try:
+        github_criar_backup_do_atual()
+    except Exception:
+        # O backup extra não pode impedir o salvamento principal.
+        pass
+
+    info = github_file_info(db_path)
+    conteudo = json.dumps(dados, ensure_ascii=False, indent=2)
+    payload = {
+        "message": f"Atualiza database.json - {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}",
+        "content": base64.b64encode(conteudo.encode("utf-8")).decode("ascii"),
+        "branch": branch,
+    }
+
+    if info:
+        payload["sha"] = info["sha"]
+
+    r = requests.put(
+        f"https://api.github.com/repos/{repo}/contents/{db_path}",
+        headers=github_headers(),
+        json=payload,
+        timeout=60,
+    )
+
+    if r.status_code not in (200, 201):
+        detalhe = ""
+        try:
+            detalhe = r.json().get("message", "")
+        except Exception:
+            pass
+        raise RuntimeError(
+            f"Não foi possível salvar a base no GitHub ({r.status_code}). {detalhe}"
+        )
+
+def salvar_database(dados):
+    """
+    A base oficial é o database.json da branch 'database'.
+    Primeiro grava no GitHub; só depois atualiza a cópia local.
+    """
+    dados.setdefault("metadata", {})
+    dados.setdefault("empresas", [])
+    dados.setdefault("contatos", [])
+    dados["metadata"]["ultima_atualizacao"] = datetime.now().isoformat(timespec="seconds")
+    dados["metadata"]["ultimo_usuario"] = st.session_state.get("usuario_logado", "")
+
+    github_salvar_database(dados)
+
+    tmp = DATABASE_PATH.with_suffix(".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=2)
+    tmp.replace(DATABASE_PATH)
+    st.session_state["_database_remota_carregada"] = True
+
+def carregar_database(forcar_github=False):
+    """
+    Ao iniciar uma sessão, baixa a base oficial do GitHub.
+    Em leituras seguintes usa a cópia local da mesma sessão.
+    """
+    if github_ativo() and (
+        forcar_github or not st.session_state.get("_database_remota_carregada", False)
+    ):
+        existe_remota = github_baixar_database()
+        if not existe_remota:
+            # Primeira inicialização: publica a base local atual na branch database.
+            if not DATABASE_PATH.exists():
+                dados_seed = {
+                    "metadata": {
+                        "app": "Gestão Comercial",
+                        "database_version": 1,
+                        "format": "json",
+                    },
+                    "empresas": [],
+                    "contatos": [],
+                }
+                with open(DATABASE_PATH, "w", encoding="utf-8") as f:
+                    json.dump(dados_seed, f, ensure_ascii=False, indent=2)
+
+            with open(DATABASE_PATH, "r", encoding="utf-8") as f:
+                dados_seed = json.load(f)
+
+            github_salvar_database(dados_seed)
+            st.session_state["_database_remota_carregada"] = True
+
+    if not DATABASE_PATH.exists():
+        raise RuntimeError(
+            "database.json não encontrado. Não continue utilizando o app até restaurar a base."
+        )
+
+    try:
+        with open(DATABASE_PATH, "r", encoding="utf-8") as f:
+            dados = json.load(f)
+    except Exception as exc:
+        raise RuntimeError(
+            "Não foi possível abrir database.json. A base pode estar corrompida."
+        ) from exc
+
+    dados.setdefault("metadata", {})
+    dados.setdefault("empresas", [])
+    dados.setdefault("contatos", [])
+    return dados
 
 def proximo_id(lista):
     if not lista:
@@ -396,7 +576,7 @@ def tentativas_empresa(empresa_id):
     )
 
 def salvar_empresa(documento, nome, telefones, status="SEM CONTATO", obs="", origem="APP"):
-    dados = carregar_database()
+    dados = carregar_database(forcar_github=True)
     empresa_id = proximo_id(dados["empresas"])
     dados["empresas"].append({
         "id": empresa_id,
@@ -419,7 +599,7 @@ def salvar_empresa(documento, nome, telefones, status="SEM CONTATO", obs="", ori
 
 def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
                       proxima_acao="", data_agendamento=None):
-    dados = carregar_database()
+    dados = carregar_database(forcar_github=True)
     agora = datetime.now().isoformat(timespec="seconds")
 
     tentativas_anteriores = sum(
@@ -496,7 +676,7 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
 def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefone3,
                       status, observacao, proxima_acao, data_agendamento=None):
     """Salva qualquer edição do cadastro e sincroniza imediatamente no database.json."""
-    dados = carregar_database()
+    dados = carregar_database(forcar_github=True)
     encontrado = False
 
     for emp in dados["empresas"]:
@@ -530,7 +710,7 @@ def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefon
 
 
 def atualizar_empresas_em_lote(df_editado):
-    dados = carregar_database()
+    dados = carregar_database(forcar_github=True)
     mapa = {int(e.get("id", 0)): e for e in dados["empresas"]}
 
     for _, row in df_editado.iterrows():
@@ -562,7 +742,7 @@ def atualizar_empresas_em_lote(df_editado):
     salvar_database(dados)
 
 def atualizar_contatos_em_lote(df_editado):
-    dados = carregar_database()
+    dados = carregar_database(forcar_github=True)
     mapa = {int(c.get("id", 0)): c for c in dados["contatos"]}
 
     for _, row in df_editado.iterrows():
@@ -748,7 +928,7 @@ def editar_ultimo_contato():
 
 
 def finalizar_sem_interesse(empresa_id):
-    dados = carregar_database()
+    dados = carregar_database(forcar_github=True)
     agora = datetime.now().isoformat(timespec="seconds")
 
     seqs = [
@@ -1138,12 +1318,27 @@ def gerar_excel_completo(empresas, contatos):
 # -----------------------------
 # APP
 # -----------------------------
+# Sempre sincroniza a base oficial antes de abrir o sistema.
+if github_ativo():
+    carregar_database(forcar_github=True)
+
 criar_banco()
 importar_planilha_inicial()
 
 empresas = carregar_empresas()
 contatos = carregar_contatos()
 
+
+
+# -----------------------------
+# BASE PERSISTENTE OBRIGATÓRIA
+# -----------------------------
+if not github_ativo():
+    st.error(
+        "⚠️ A base persistente do GitHub não está conectada. "
+        "Para proteger os dados, o sistema está bloqueado para gravações. "
+        "Configure GITHUB_TOKEN, GITHUB_REPO, GITHUB_DATA_BRANCH e GITHUB_DB_PATH nos Secrets."
+    )
 
 # -----------------------------
 # LOGIN
@@ -1968,18 +2163,19 @@ elif menu == "📈 Relatórios":
 
 st.sidebar.divider()
 st.sidebar.markdown("**Base de dados**")
-if DATABASE_PATH.exists():
-    st.sidebar.success("✅ database.json carregado")
+
+if github_ativo():
+    st.sidebar.success("☁️ GitHub persistente conectado")
 else:
-    st.sidebar.error("⚠️ database.json não encontrado")
+    st.sidebar.error("❌ GitHub NÃO conectado")
 
 if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     try:
-        carregar_database()
-        st.sidebar.success("Base recarregada com sucesso.")
+        carregar_database(forcar_github=True)
+        st.sidebar.success("Base oficial recarregada do GitHub.")
         st.rerun()
     except Exception as e:
-        st.sidebar.error(str(e))
+        st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • JSON V4.1")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V5")
 
