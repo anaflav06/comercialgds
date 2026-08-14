@@ -58,20 +58,46 @@ def github_file_info(path_repo=None):
         raise RuntimeError(f"GitHub respondeu {r.status_code} ao consultar a base.")
     return r.json()
 
+def github_baixar_arquivo_raw(path_repo=None):
+    """Baixa bytes crus do GitHub; funciona também para arquivos JSON acima de 1 MB."""
+    if not github_ativo():
+        raise RuntimeError("GitHub não configurado.")
+
+    _, repo, branch, db_path = github_config()
+    path_repo = path_repo or db_path
+
+    headers = github_headers().copy()
+    headers["Accept"] = "application/vnd.github.raw+json"
+
+    r = requests.get(
+        f"https://api.github.com/repos/{repo}/contents/{path_repo}",
+        headers=headers,
+        params={"ref": branch},
+        timeout=60,
+    )
+
+    if r.status_code == 404:
+        return None
+
+    if r.status_code != 200:
+        raise RuntimeError(
+            f"Não foi possível baixar {path_repo} do GitHub ({r.status_code})."
+        )
+
+    return r.content
+
+
 def github_baixar_database():
-    info = github_file_info()
-    if not info:
+    dados_bytes = github_baixar_arquivo_raw()
+    if dados_bytes is None:
         return False
 
-    conteudo = info.get("content")
-    if not conteudo:
-        raise RuntimeError("GitHub não retornou o conteúdo do database.json.")
-
-    dados_bytes = base64.b64decode(conteudo)
     try:
         dados = json.loads(dados_bytes.decode("utf-8"))
     except Exception as exc:
-        raise RuntimeError("O database.json salvo no GitHub está inválido.") from exc
+        raise RuntimeError(
+            "O database.json salvo no GitHub está inválido ou não pôde ser lido."
+        ) from exc
 
     dados.setdefault("metadata", {})
     dados.setdefault("empresas", [])
@@ -81,11 +107,13 @@ def github_baixar_database():
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=2)
     tmp.replace(DATABASE_PATH)
+
     st.session_state["_database_remota_carregada"] = True
     return True
 
+
 def github_criar_backup_do_atual():
-    """Cria um snapshot diário da base anterior antes da primeira alteração do dia."""
+    """Cria um snapshot diário da base anterior, inclusive quando o JSON passa de 1 MB."""
     if not github_ativo():
         return
 
@@ -106,17 +134,27 @@ def github_criar_backup_do_atual():
     if r_check.status_code == 200:
         return
 
+    dados_bytes = github_baixar_arquivo_raw(db_path)
+    if dados_bytes is None:
+        return
+
     payload = {
         "message": f"Backup database {date.today().strftime('%d/%m/%Y')}",
-        "content": atual.get("content", ""),
+        "content": base64.b64encode(dados_bytes).decode("ascii"),
         "branch": branch,
     }
-    requests.put(
+
+    r = requests.put(
         f"https://api.github.com/repos/{repo}/contents/{backup_path}",
         headers=github_headers(),
         json=payload,
-        timeout=45,
+        timeout=60,
     )
+
+    if r.status_code not in (200, 201):
+        raise RuntimeError(
+            f"Não foi possível criar o backup diário ({r.status_code})."
+        )
 
 def github_salvar_database(dados):
     """Salva a base oficial no GitHub. Falha explícita se não conseguir."""
@@ -2177,5 +2215,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V5")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V5.1")
 
