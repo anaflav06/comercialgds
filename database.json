@@ -3,7 +3,9 @@
     "app": "Gestão Comercial",
     "database_version": 1,
     "format": "json",
-    "description": "Base persistente do app comercial"
+    "description": "Base persistente do app comercial",
+    "ultima_atualizacao": "2026-08-14T20:16:26",
+    "ultimo_usuario": "jessica"
   },
   "empresas": [
     {
@@ -35263,6 +35265,23 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": null
+    },
+    {
+      "id": 2075,
+      "documento": "",
+      "nome": "NOME DO CLIENTE TELEFONE",
+      "telefone1": "",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-08-14T20:16:26",
+      "origem": "IMPORTAÇÃO EM LOTE",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
