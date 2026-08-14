@@ -635,6 +635,90 @@ def salvar_empresa(documento, nome, telefones, status="SEM CONTATO", obs="", ori
     })
     salvar_database(dados)
 
+
+def salvar_empresas_em_lote(registros):
+    """
+    Inclui vários clientes com UMA única leitura e UMA única gravação no GitHub.
+    Evita timeout/rate limit ao importar centenas de contatos.
+    Retorna (incluidos, duplicados, invalidos).
+    """
+    dados = carregar_database(forcar_github=True)
+
+    # Índices de duplicidade da base oficial atual.
+    docs_existentes = {
+        somente_digitos(e.get("documento", ""))
+        for e in dados["empresas"]
+        if somente_digitos(e.get("documento", ""))
+    }
+    tels_existentes = set()
+    for e in dados["empresas"]:
+        for campo in ("telefone1", "telefone2", "telefone3"):
+            tel = somente_digitos(e.get(campo, ""))
+            if tel:
+                tels_existentes.add(tel)
+
+    proximo = proximo_id(dados["empresas"])
+    incluidos = 0
+    duplicados = 0
+    invalidos = 0
+    agora = datetime.now().isoformat(timespec="seconds")
+
+    for registro in registros:
+        nome = str(registro.get("nome") or "").strip()
+        doc = str(registro.get("documento") or "").strip()
+        telefones = list(registro.get("telefones") or ["", "", ""])
+        while len(telefones) < 3:
+            telefones.append("")
+
+        if not nome:
+            invalidos += 1
+            continue
+
+        doc_dig = somente_digitos(doc)
+        if doc and len(doc_dig) not in (11, 14):
+            invalidos += 1
+            continue
+
+        tels_dig = [somente_digitos(t) for t in telefones if somente_digitos(t)]
+
+        # Duplicidade por documento ou qualquer telefone.
+        if (doc_dig and doc_dig in docs_existentes) or any(t in tels_existentes for t in tels_dig):
+            duplicados += 1
+            continue
+
+        dados["empresas"].append({
+            "id": proximo,
+            "documento": formatar_documento(doc),
+            "nome": nome.upper(),
+            "telefone1": formatar_telefone(telefones[0]),
+            "telefone2": formatar_telefone(telefones[1]),
+            "telefone3": formatar_telefone(telefones[2]),
+            "status": "SEM CONTATO",
+            "observacao_atual": "",
+            "data_primeiro_contato": None,
+            "criado_em": agora,
+            "origem": "IMPORTAÇÃO EM LOTE",
+            "retorno_apos_seq": None,
+            "data_agendamento": None,
+            "agendamento_pendente": 0,
+            "proxima_acao": ""
+        })
+
+        if doc_dig:
+            docs_existentes.add(doc_dig)
+        for t in tels_dig:
+            tels_existentes.add(t)
+
+        proximo += 1
+        incluidos += 1
+
+    # Uma única gravação persistente para o lote inteiro.
+    if incluidos > 0:
+        salvar_database(dados)
+
+    return incluidos, duplicados, invalidos
+
+
 def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
                       proxima_acao="", data_agendamento=None):
     dados = carregar_database(forcar_github=True)
@@ -1975,9 +2059,17 @@ elif menu == "📞 Fila de contatos":
 # ---------------- IMPORTAÇÃO EM LOTE ----------------
 elif menu == "➕ Adicionar contatos em lote":
     st.subheader("➕ Adicionar contatos em lote")
+
+    flash_lote = st.session_state.pop("flash_importacao_lote", None)
+    if flash_lote:
+        st.success(flash_lote)
     st.caption(
         "Cole os contatos do jeito que você recebeu. O sistema tentará identificar "
         "nome, CPF/CNPJ e telefones e mostrará uma prévia antes de incluir."
+    )
+    st.info(
+        "💾 O lote inteiro será salvo de uma vez na base oficial do GitHub. "
+        "Só considere concluído quando aparecer a confirmação verde com o total da carteira."
     )
 
     bruto = st.text_area(
@@ -2007,39 +2099,49 @@ elif menu == "➕ Adicionar contatos em lote":
             st.markdown(f"### Prévia — {len(previa)} registro(s) identificado(s)")
             st.dataframe(previa, use_container_width=True, hide_index=True)
 
-            incluir = st.button("Adicionar novos contatos à carteira", type="primary")
+            incluir = st.button(
+                "Adicionar novos contatos à carteira",
+                type="primary",
+                use_container_width=True
+            )
+
             if incluir:
-                incluidos = 0
-                ignorados = 0
-                invalidos = 0
-
+                registros_lote = []
                 for _, r in previa.iterrows():
-                    nome = str(r["Nome"] or "").strip()
-                    doc = str(r["CPF/CNPJ"] or "").strip()
-                    tels = [r["Telefone 1"],r["Telefone 2"],r["Telefone 3"]]
+                    registros_lote.append({
+                        "nome": str(r["Nome"] or "").strip(),
+                        "documento": str(r["CPF/CNPJ"] or "").strip(),
+                        "telefones": [
+                            r["Telefone 1"],
+                            r["Telefone 2"],
+                            r["Telefone 3"]
+                        ]
+                    })
 
-                    if not nome:
-                        invalidos += 1
-                        continue
+                with st.spinner(
+                    f"Salvando {len(registros_lote)} registro(s) na base oficial do GitHub..."
+                ):
+                    try:
+                        incluidos, ignorados, invalidos = salvar_empresas_em_lote(registros_lote)
 
-                    if eh_duplicado(doc, tels, carregar_empresas()):
-                        ignorados += 1
-                        continue
+                        # Confirma diretamente relendo a base oficial.
+                        dados_confirmados = carregar_database(forcar_github=True)
+                        total_confirmado = len(dados_confirmados.get("empresas", []))
 
-                    # No lote, documento pode estar ausente. Se existir, precisa ter 11 ou 14 dígitos.
-                    if doc and len(somente_digitos(doc)) not in (11,14):
-                        invalidos += 1
-                        continue
+                        st.session_state["flash_importacao_lote"] = (
+                            f"✅ Importação concluída e confirmada no GitHub: "
+                            f"{incluidos} incluído(s), {ignorados} duplicado(s), "
+                            f"{invalidos} inválido(s). Total atual da carteira: "
+                            f"{total_confirmado} empresa(s)."
+                        )
+                        st.rerun()
 
-                    salvar_empresa(doc, nome, tels, "SEM CONTATO", "", "IMPORTAÇÃO EM LOTE")
-                    incluidos += 1
-
-                st.success(
-                    f"{incluidos} contato(s) incluído(s) na fila. "
-                    f"{ignorados} duplicado(s) ignorado(s). "
-                    f"{invalidos} registro(s) precisaram ser ignorados por falta de dados mínimos."
-                )
-                st.rerun()
+                    except Exception as e:
+                        st.error(
+                            "❌ A importação NÃO foi confirmada no GitHub. "
+                            "Não feche esta tela e não apague a lista original. "
+                            f"Erro: {e}"
+                        )
 
 # ---------------- EMPRESAS ----------------
 elif menu == "🏢 Consulta / Editar Clientes":
@@ -2215,5 +2317,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V5.1")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V5.2")
 
