@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-14T20:16:26",
+    "ultima_atualizacao": "2026-08-14T20:16:32",
     "ultimo_usuario": "jessica"
   },
   "empresas": [
@@ -35277,6 +35277,23 @@
       "observacao_atual": "",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-14T20:16:26",
+      "origem": "IMPORTAÇÃO EM LOTE",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
+    },
+    {
+      "id": 2076,
+      "documento": "199.831.531-30",
+      "nome": "ADAILTON",
+      "telefone1": "(19) 98315-3130",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-08-14T20:16:32",
       "origem": "IMPORTAÇÃO EM LOTE",
       "retorno_apos_seq": null,
       "data_agendamento": null,
