@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T14:10:34",
+    "ultima_atualizacao": "2026-08-17T14:10:54",
     "ultimo_usuario": "jessica"
   },
   "empresas": [
@@ -28184,15 +28184,15 @@
       "telefone1": "(16) 99739-2123",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "1ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-17",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 209,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "LIGAR NOVAMENTE"
     },
     {
       "id": 1659,
@@ -56898,6 +56898,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-17T14:10:34",
       "seq_global": 8,
+      "usuario": "jessica"
+    },
+    {
+      "id": 1429,
+      "empresa_id": 1658,
+      "data_contato": "2026-08-17",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "1ª TENTATIVA SEM RETORNO",
+      "observacao": "",
+      "proxima_acao": "LIGAR NOVAMENTE",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-17T14:10:54",
+      "seq_global": 9,
       "usuario": "jessica"
     }
   ]
