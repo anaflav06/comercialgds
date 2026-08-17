@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T17:58:27",
+    "ultima_atualizacao": "2026-08-17T17:59:57",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -27129,7 +27129,7 @@
       "nome": "ACZ PET ARTIGOS PARA ANIMAIS DE ESTIMACAO LT",
       "telefone1": "(11) 2958-5054",
       "telefone2": "(11) 3995-9005",
-      "telefone3": "(11) 2070-2233",
+      "telefone3": "",
       "status": "SEM CONTATO",
       "observacao_atual": "",
       "data_primeiro_contato": null,
@@ -27138,7 +27138,7 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan"
     },
     {
       "id": 1597,
