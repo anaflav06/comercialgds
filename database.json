@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T13:33:45",
+    "ultima_atualizacao": "2026-08-17T13:37:19",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -25413,15 +25413,15 @@
       "telefone1": "(19) 4141-8620",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "1ª TENTATIVA SEM RETORNO",
+      "observacao_atual": "Caixa Postal, deixei recado",
+      "data_primeiro_contato": "2026-08-17",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 204,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "LIGAR NOVAMENTE"
     },
     {
       "id": 1496,
@@ -56828,6 +56828,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-17T13:32:33",
       "seq_global": 3,
+      "usuario": "celso"
+    },
+    {
+      "id": 1424,
+      "empresa_id": 1495,
+      "data_contato": "2026-08-17",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "1ª TENTATIVA SEM RETORNO",
+      "observacao": "Caixa Postal, deixei recado",
+      "proxima_acao": "LIGAR NOVAMENTE",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-17T13:37:19",
+      "seq_global": 4,
       "usuario": "celso"
     }
   ]
