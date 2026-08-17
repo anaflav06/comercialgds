@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T14:10:54",
-    "ultimo_usuario": "jessica"
+    "ultima_atualizacao": "2026-08-17T14:12:16",
+    "ultimo_usuario": "celso"
   },
   "empresas": [
     {
@@ -28286,15 +28286,15 @@
       "telefone1": "(11) 98814-1591",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-17",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 210,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "AGUARDAR RETORNO DO CLIENTE"
     },
     {
       "id": 1665,
@@ -56913,6 +56913,20 @@
       "criado_em": "2026-08-17T14:10:54",
       "seq_global": 9,
       "usuario": "jessica"
+    },
+    {
+      "id": 1430,
+      "empresa_id": 1664,
+      "data_contato": "2026-08-17",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "AGUARDANDO CLIENTE",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDAR RETORNO DO CLIENTE",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-17T14:12:16",
+      "seq_global": 10,
+      "usuario": "celso"
     }
   ]
 }
