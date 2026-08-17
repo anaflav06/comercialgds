@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T14:33:00",
+    "ultima_atualizacao": "2026-08-17T14:33:56",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -30037,15 +30037,15 @@
       "telefone1": "(51) 99678-9131",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "EM ANDAMENTO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-17",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 215,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "ENVIAR WHATSAPP"
     },
     {
       "id": 1768,
@@ -56982,6 +56982,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-17T14:33:00",
       "seq_global": 14,
+      "usuario": "celso"
+    },
+    {
+      "id": 1435,
+      "empresa_id": 1767,
+      "data_contato": "2026-08-17",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "EM ANDAMENTO",
+      "observacao": "",
+      "proxima_acao": "ENVIAR WHATSAPP",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-17T14:33:56",
+      "seq_global": 15,
       "usuario": "celso"
     }
   ]
