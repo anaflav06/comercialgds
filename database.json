@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-14T20:21:10",
-    "ultimo_usuario": "jessica"
+    "ultima_atualizacao": "2026-08-17T13:27:43",
+    "ultimo_usuario": "celso"
   },
   "empresas": [
     {
@@ -29459,15 +29459,15 @@
       "telefone1": "(16) 99768-7506",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-17",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 202,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "ENVIAR WHATSAPP"
     },
     {
       "id": 1734,
@@ -56801,6 +56801,20 @@
       "criado_em": "2026-08-14T20:17:23",
       "seq_global": 1,
       "usuario": "jessica"
+    },
+    {
+      "id": 1422,
+      "empresa_id": 1733,
+      "data_contato": "2026-08-17",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "AGUARDANDO CLIENTE",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "ENVIAR WHATSAPP",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-17T13:27:43",
+      "seq_global": 2,
+      "usuario": "celso"
     }
   ]
 }
