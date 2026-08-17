@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T17:37:04",
+    "ultima_atualizacao": "2026-08-17T17:38:31",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34610,15 +34610,15 @@
       "telefone1": "(51) 98332-4545",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-17",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 239,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "ENVIAR WHATSAPP"
     },
     {
       "id": 2037,
@@ -57318,6 +57318,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-17T17:37:04",
       "seq_global": 38,
+      "usuario": "celso"
+    },
+    {
+      "id": 1459,
+      "empresa_id": 2036,
+      "data_contato": "2026-08-17",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "AGUARDANDO CLIENTE",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "ENVIAR WHATSAPP",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-17T17:38:31",
+      "seq_global": 39,
       "usuario": "celso"
     }
   ]
