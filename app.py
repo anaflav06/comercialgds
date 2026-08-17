@@ -6,6 +6,7 @@ import io
 import json
 import base64
 import requests
+import time
 import altair as alt
 from pathlib import Path
 from datetime import date, datetime, timedelta
@@ -59,35 +60,63 @@ def github_file_info(path_repo=None):
     return r.json()
 
 def github_baixar_arquivo_raw(path_repo=None):
-    """Baixa bytes crus do GitHub; funciona também para arquivos JSON acima de 1 MB."""
+    """Baixa bytes crus do GitHub com tentativas automáticas em falhas temporárias."""
     if not github_ativo():
         raise RuntimeError("GitHub não configurado.")
 
     _, repo, branch, db_path = github_config()
     path_repo = path_repo or db_path
-
     headers = github_headers().copy()
     headers["Accept"] = "application/vnd.github.raw+json"
 
-    r = requests.get(
-        f"https://api.github.com/repos/{repo}/contents/{path_repo}",
-        headers=headers,
-        params={"ref": branch},
-        timeout=60,
+    ultimo_status = None
+    for tentativa in range(4):
+        try:
+            r = requests.get(
+                f"https://api.github.com/repos/{repo}/contents/{path_repo}",
+                headers=headers,
+                params={"ref": branch},
+                timeout=60,
+            )
+            ultimo_status = r.status_code
+            if r.status_code == 404:
+                return None
+            if r.status_code == 200:
+                return r.content
+            if r.status_code in (403, 408, 409, 429, 500, 502, 503, 504):
+                time.sleep(1.5 * (tentativa + 1))
+                continue
+            raise RuntimeError(
+                f"Não foi possível baixar {path_repo} do GitHub ({r.status_code})."
+            )
+        except requests.RequestException:
+            if tentativa == 3:
+                raise RuntimeError("Falha temporária de comunicação com o GitHub.")
+            time.sleep(1.5 * (tentativa + 1))
+
+    raise RuntimeError(
+        f"Não foi possível baixar {path_repo} do GitHub após novas tentativas "
+        f"(status {ultimo_status})."
     )
 
-    if r.status_code == 404:
-        return None
 
-    if r.status_code != 200:
-        raise RuntimeError(
-            f"Não foi possível baixar {path_repo} do GitHub ({r.status_code})."
-        )
+def github_baixar_database(forcar=False):
+    info = github_file_info()
+    if not info:
+        return False
 
-    return r.content
+    sha_remoto = info.get("sha")
+    sha_local = st.session_state.get("_github_db_sha")
 
+    if (
+        not forcar
+        and DATABASE_PATH.exists()
+        and sha_remoto
+        and sha_local == sha_remoto
+    ):
+        st.session_state["_database_remota_carregada"] = True
+        return True
 
-def github_baixar_database():
     dados_bytes = github_baixar_arquivo_raw()
     if dados_bytes is None:
         return False
@@ -109,6 +138,7 @@ def github_baixar_database():
     tmp.replace(DATABASE_PATH)
 
     st.session_state["_database_remota_carregada"] = True
+    st.session_state["_github_db_sha"] = sha_remoto
     return True
 
 
@@ -201,6 +231,12 @@ def github_salvar_database(dados):
             f"Não foi possível salvar a base no GitHub ({r.status_code}). {detalhe}"
         )
 
+    try:
+        st.session_state["_github_db_sha"] = r.json()["content"]["sha"]
+    except Exception:
+        pass
+    st.session_state["_database_remota_carregada"] = True
+
 def salvar_database(dados):
     """
     A base oficial é o database.json da branch 'database'.
@@ -228,7 +264,7 @@ def carregar_database(forcar_github=False):
     if github_ativo() and (
         forcar_github or not st.session_state.get("_database_remota_carregada", False)
     ):
-        existe_remota = github_baixar_database()
+        existe_remota = github_baixar_database(forcar=forcar_github)
         if not existe_remota:
             # Primeira inicialização: publica a base local atual na branch database.
             if not DATABASE_PATH.exists():
@@ -614,7 +650,7 @@ def tentativas_empresa(empresa_id):
     )
 
 def salvar_empresa(documento, nome, telefones, status="SEM CONTATO", obs="", origem="APP"):
-    dados = carregar_database(forcar_github=True)
+    dados = carregar_database(forcar_github=False)
     empresa_id = proximo_id(dados["empresas"])
     dados["empresas"].append({
         "id": empresa_id,
@@ -721,7 +757,7 @@ def salvar_empresas_em_lote(registros):
 
 def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
                       proxima_acao="", data_agendamento=None):
-    dados = carregar_database(forcar_github=True)
+    dados = carregar_database(forcar_github=False)
     agora = datetime.now().isoformat(timespec="seconds")
 
     tentativas_anteriores = sum(
@@ -798,7 +834,7 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
 def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefone3,
                       status, observacao, proxima_acao, data_agendamento=None):
     """Salva qualquer edição do cadastro e sincroniza imediatamente no database.json."""
-    dados = carregar_database(forcar_github=True)
+    dados = carregar_database(forcar_github=False)
     encontrado = False
 
     for emp in dados["empresas"]:
@@ -832,7 +868,7 @@ def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefon
 
 
 def atualizar_empresas_em_lote(df_editado):
-    dados = carregar_database(forcar_github=True)
+    dados = carregar_database(forcar_github=False)
     mapa = {int(e.get("id", 0)): e for e in dados["empresas"]}
 
     for _, row in df_editado.iterrows():
@@ -864,7 +900,7 @@ def atualizar_empresas_em_lote(df_editado):
     salvar_database(dados)
 
 def atualizar_contatos_em_lote(df_editado):
-    dados = carregar_database(forcar_github=True)
+    dados = carregar_database(forcar_github=False)
     mapa = {int(c.get("id", 0)): c for c in dados["contatos"]}
 
     for _, row in df_editado.iterrows():
@@ -1050,7 +1086,7 @@ def editar_ultimo_contato():
 
 
 def finalizar_sem_interesse(empresa_id):
-    dados = carregar_database(forcar_github=True)
+    dados = carregar_database(forcar_github=False)
     agora = datetime.now().isoformat(timespec="seconds")
 
     seqs = [
@@ -1440,9 +1476,16 @@ def gerar_excel_completo(empresas, contatos):
 # -----------------------------
 # APP
 # -----------------------------
-# Sempre sincroniza a base oficial antes de abrir o sistema.
+# Sincroniza a base oficial apenas na abertura da sessão.
 if github_ativo():
-    carregar_database(forcar_github=True)
+    try:
+        carregar_database(forcar_github=False)
+        st.session_state["_github_online"] = True
+    except Exception as e:
+        st.session_state["_github_online"] = False
+        st.session_state["_github_erro"] = str(e)
+        if not DATABASE_PATH.exists():
+            raise
 
 criar_banco()
 importar_planilha_inicial()
@@ -2304,8 +2347,10 @@ elif menu == "📈 Relatórios":
 st.sidebar.divider()
 st.sidebar.markdown("**Base de dados**")
 
-if github_ativo():
+if github_ativo() and st.session_state.get("_github_online", True):
     st.sidebar.success("☁️ GitHub persistente conectado")
+elif github_ativo():
+    st.sidebar.warning("⚠️ GitHub temporariamente indisponível")
 else:
     st.sidebar.error("❌ GitHub NÃO conectado")
 
@@ -2317,5 +2362,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V5.2")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V5.3")
 
