@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T17:46:38",
+    "ultima_atualizacao": "2026-08-17T17:49:09",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -29303,7 +29303,7 @@
       "id": 1724,
       "documento": "49.554.642/0001-21",
       "nome": "A2 LASER LTDA  EPP",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(11) 99903-5658",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -29314,7 +29314,7 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan"
     },
     {
       "id": 1725,
