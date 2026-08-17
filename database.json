@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T17:59:57",
+    "ultima_atualizacao": "2026-08-17T18:01:01",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -27130,15 +27130,15 @@
       "telefone1": "(11) 2958-5054",
       "telefone2": "(11) 3995-9005",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "1ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-17",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 250,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "nan"
+      "proxima_acao": "LIGAR NOVAMENTE"
     },
     {
       "id": 1597,
@@ -57472,6 +57472,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-17T17:58:27",
       "seq_global": 49,
+      "usuario": "celso"
+    },
+    {
+      "id": 1470,
+      "empresa_id": 1596,
+      "data_contato": "2026-08-17",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "1ª TENTATIVA SEM RETORNO",
+      "observacao": "",
+      "proxima_acao": "LIGAR NOVAMENTE",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-17T18:01:01",
+      "seq_global": 50,
       "usuario": "celso"
     }
   ]
