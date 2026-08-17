@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-17T19:37:08",
+    "ultima_atualizacao": "2026-08-17T19:37:10",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -57526,7 +57526,7 @@
       "observacao": "",
       "proxima_acao": "ENVIAR WHATSAPP",
       "data_proxima_acao": null,
-      "criado_em": "2026-08-17T19:37:08",
+      "criado_em": "2026-08-17T19:37:10",
       "seq_global": 53,
       "usuario": "celso"
     }
