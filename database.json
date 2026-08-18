@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-18T12:42:56",
+    "ultima_atualizacao": "2026-08-18T12:47:27",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -32618,7 +32618,7 @@
       "id": 1919,
       "documento": "59.912.809/0001-32",
       "nome": "ALLTREND LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(11) 5397-3504",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -32629,7 +32629,7 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan"
     },
     {
       "id": 1920,
