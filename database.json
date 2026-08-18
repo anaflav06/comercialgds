@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-18T18:37:24",
+    "ultima_atualizacao": "2026-08-18T18:37:35",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -27572,15 +27572,15 @@
       "telefone1": "(14) 99823-2469",
       "telefone2": "(14) 3845-2269",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "SEM CONTATO LOCALIZADO",
+      "observacao_atual": "Contato não localizado após pesquisa externa.",
+      "data_primeiro_contato": "2026-08-18",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 1623,
@@ -58578,6 +58578,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-18T18:37:24",
       "seq_global": 128,
+      "usuario": "celso"
+    },
+    {
+      "id": 1549,
+      "empresa_id": 1622,
+      "data_contato": "2026-08-18",
+      "tipo_contato": "OUTRO",
+      "resultado": "SEM CONTATO LOCALIZADO",
+      "status_novo": "SEM CONTATO LOCALIZADO",
+      "observacao": "Contato não localizado após pesquisa externa.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-18T18:37:35",
+      "seq_global": 129,
       "usuario": "celso"
     }
   ],
