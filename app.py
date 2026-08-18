@@ -131,6 +131,7 @@ def github_baixar_database(forcar=False):
     dados.setdefault("metadata", {})
     dados.setdefault("empresas", [])
     dados.setdefault("contatos", [])
+    dados.setdefault("acoes_base", [])
 
     tmp = DATABASE_PATH.with_suffix(".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
@@ -245,6 +246,7 @@ def salvar_database(dados):
     dados.setdefault("metadata", {})
     dados.setdefault("empresas", [])
     dados.setdefault("contatos", [])
+    dados.setdefault("acoes_base", [])
     dados["metadata"]["ultima_atualizacao"] = datetime.now().isoformat(timespec="seconds")
     dados["metadata"]["ultimo_usuario"] = st.session_state.get("usuario_logado", "")
 
@@ -276,6 +278,7 @@ def carregar_database(forcar_github=False):
                     },
                     "empresas": [],
                     "contatos": [],
+                    "acoes_base": [],
                 }
                 with open(DATABASE_PATH, "w", encoding="utf-8") as f:
                     json.dump(dados_seed, f, ensure_ascii=False, indent=2)
@@ -302,6 +305,7 @@ def carregar_database(forcar_github=False):
     dados.setdefault("metadata", {})
     dados.setdefault("empresas", [])
     dados.setdefault("contatos", [])
+    dados.setdefault("acoes_base", [])
     return dados
 
 def proximo_id(lista):
@@ -336,7 +340,8 @@ RESULTADOS = [
     "AGUARDANDO CLIENTE",
     "RETORNAR EM OUTRA DATA",
     "REUNIÃO AGENDADA",
-    "SOLICITOU PROPOSTA",
+    "SOLICITOU COTAÇÃO",
+    "COTAÇÃO ENVIADA",
     "PROPOSTA ENVIADA",
     "EM NEGOCIAÇÃO",
     "FECHADO",
@@ -344,6 +349,12 @@ RESULTADOS = [
     "NÃO UTILIZA TRANSPORTE",
     "JÁ UTILIZA AZUL",
     "CONTATO INVÁLIDO",
+    "SEM TELEFONE NA BASE",
+    "AGUARDANDO CONTATO DO RESPONSÁVEL",
+    "SEM TELEFONE NA BASE",
+    "AGUARDANDO CONTATO DO RESPONSÁVEL",
+    "CONTATO PESSOA FÍSICA / INCORRETO",
+    "SEM CONTATO LOCALIZADO",
     "OUTRO",
 ]
 
@@ -366,11 +377,13 @@ STATUS_ATIVOS = [
     "AGUARDANDO CLIENTE",
     "RETORNO AGENDADO",
     "EM ANDAMENTO",
+    "AGUARDANDO CONTATO DO RESPONSÁVEL",
     "REUNIÃO AGENDADA",
+    "COTAÇÃO SOLICITADA",
+    "COTAÇÃO ENVIADA",
     "PROPOSTA SOLICITADA",
     "PROPOSTA ENVIADA",
     "EM NEGOCIAÇÃO",
-    "CONTATO INVÁLIDO",
 ]
 
 STATUS_ENCERRADOS = [
@@ -378,6 +391,11 @@ STATUS_ENCERRADOS = [
     "SEM INTERESSE",
     "NÃO UTILIZA TRANSPORTE",
     "JÁ UTILIZA AZUL",
+    "CONTATO INVÁLIDO",
+    "CONTATO PESSOA FÍSICA / INCORRETO",
+    "SEM CONTATO LOCALIZADO",
+    "SEM TELEFONE NA BASE",
+    "SEM RETORNO APÓS 3 TENTATIVAS",
 ]
 
 STATUS_RETORNO_IMPORTADO = {
@@ -388,11 +406,13 @@ STATUS_RETORNO_IMPORTADO = {
     "1ª TENTATIVA SEM RETORNO",
     "2ª TENTATIVA SEM RETORNO",
     "EM ANDAMENTO",
+    "AGUARDANDO CONTATO DO RESPONSÁVEL",
     "REUNIÃO AGENDADA",
+    "COTAÇÃO SOLICITADA",
+    "COTAÇÃO ENVIADA",
     "PROPOSTA SOLICITADA",
     "PROPOSTA ENVIADA",
     "EM NEGOCIAÇÃO",
-    "CONTATO INVÁLIDO",
 }
 
 
@@ -401,11 +421,12 @@ RESULTADOS_AGUARDANDO = {
     "CLIENTE RESPONDEU",
     "AGUARDANDO CLIENTE",
     "RETORNAR EM OUTRA DATA",
+    "AGUARDANDO CONTATO DO RESPONSÁVEL",
     "REUNIÃO AGENDADA",
-    "SOLICITOU PROPOSTA",
+    "SOLICITOU COTAÇÃO",
+    "COTAÇÃO ENVIADA",
     "PROPOSTA ENVIADA",
     "EM NEGOCIAÇÃO",
-    "CONTATO INVÁLIDO",
     "OUTRO",
 }
 
@@ -414,7 +435,8 @@ MAPA_STATUS = {
     "AGUARDANDO CLIENTE": "AGUARDANDO CLIENTE",
     "RETORNAR EM OUTRA DATA": "RETORNO AGENDADO",
     "REUNIÃO AGENDADA": "REUNIÃO AGENDADA",
-    "SOLICITOU PROPOSTA": "PROPOSTA SOLICITADA",
+    "SOLICITOU COTAÇÃO": "COTAÇÃO SOLICITADA",
+    "COTAÇÃO ENVIADA": "COTAÇÃO ENVIADA",
     "PROPOSTA ENVIADA": "PROPOSTA ENVIADA",
     "EM NEGOCIAÇÃO": "EM NEGOCIAÇÃO",
     "FECHADO": "FECHADO / GANHO",
@@ -422,6 +444,12 @@ MAPA_STATUS = {
     "NÃO UTILIZA TRANSPORTE": "NÃO UTILIZA TRANSPORTE",
     "JÁ UTILIZA AZUL": "JÁ UTILIZA AZUL",
     "CONTATO INVÁLIDO": "CONTATO INVÁLIDO",
+    "SEM TELEFONE NA BASE": "SEM TELEFONE NA BASE",
+    "AGUARDANDO CONTATO DO RESPONSÁVEL": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+                "CONTATO PESSOA FÍSICA / INCORRETO": "CONTATO PESSOA FÍSICA / INCORRETO",
+                "SEM CONTATO LOCALIZADO": "SEM CONTATO LOCALIZADO",
+    "CONTATO PESSOA FÍSICA / INCORRETO": "CONTATO PESSOA FÍSICA / INCORRETO",
+    "SEM CONTATO LOCALIZADO": "SEM CONTATO LOCALIZADO",
     "OUTRO": "EM ANDAMENTO",
 }
 
@@ -438,7 +466,8 @@ def criar_banco():
                 "format": "json"
             },
             "empresas": [],
-            "contatos": []
+            "contatos": [],
+            "acoes_base": []
         })
 
 # -----------------------------
@@ -755,6 +784,109 @@ def salvar_empresas_em_lote(registros):
     return incluidos, duplicados, invalidos
 
 
+
+def registrar_acao_base(empresa_id, acao, detalhes=""):
+    """Registra esforço de qualificação da carteira sem contar como contato comercial."""
+    dados = carregar_database(forcar_github=False)
+    dados.setdefault("acoes_base", [])
+
+    agora = datetime.now().isoformat(timespec="seconds")
+
+    # Evita clique duplicado da mesma ação para o mesmo cliente em poucos segundos.
+    for item in reversed(dados["acoes_base"][-20:]):
+        if (
+            int(item.get("empresa_id", 0) or 0) == int(empresa_id)
+            and item.get("acao") == acao
+            and item.get("usuario") == st.session_state.get("usuario_logado", "")
+        ):
+            try:
+                dt = datetime.fromisoformat(item.get("criado_em"))
+                if (datetime.now() - dt).total_seconds() < 15:
+                    return False
+            except Exception:
+                pass
+
+    dados["acoes_base"].append({
+        "id": proximo_id(dados["acoes_base"]),
+        "empresa_id": int(empresa_id),
+        "acao": acao,
+        "detalhes": str(detalhes or "").strip(),
+        "data": date.today().isoformat(),
+        "criado_em": agora,
+        "usuario": st.session_state.get("usuario_logado", ""),
+    })
+
+    salvar_database(dados)
+    return True
+
+
+def salvar_contato_externo_encontrado(empresa_id, telefone, fonte=""):
+    """Adiciona o novo telefone encontrado ao primeiro campo livre e registra recuperação da base."""
+    telefone_fmt = formatar_telefone(telefone)
+    dig = somente_digitos(telefone)
+
+    if len(dig) not in (10, 11):
+        raise ValueError("Informe um telefone válido com DDD.")
+
+    dados = carregar_database(forcar_github=False)
+    dados.setdefault("acoes_base", [])
+
+    empresa = next(
+        (e for e in dados["empresas"] if int(e.get("id", 0) or 0) == int(empresa_id)),
+        None
+    )
+    if not empresa:
+        raise ValueError("Cliente não encontrado.")
+
+    existentes = [
+        somente_digitos(empresa.get("telefone1", "")),
+        somente_digitos(empresa.get("telefone2", "")),
+        somente_digitos(empresa.get("telefone3", "")),
+    ]
+    if dig in existentes:
+        raise ValueError("Esse telefone já está cadastrado para este cliente.")
+
+    campo_salvo = None
+    for campo in ("telefone1", "telefone2", "telefone3"):
+        atual = str(empresa.get(campo, "") or "").strip()
+        if not atual or atual.upper() in ("NÃO TEM", "NAO TEM", "NAN", "NONE", "-"):
+            empresa[campo] = telefone_fmt
+            campo_salvo = campo
+            break
+
+    if not campo_salvo:
+        raise ValueError(
+            "Os três campos de telefone já estão preenchidos. "
+            "Use 'Editar dados deste cliente' para substituir algum telefone."
+        )
+
+    # Se estava marcado como problema de base, volta para acompanhamento.
+    if str(empresa.get("status", "")).upper() in {
+        "SEM TELEFONE NA BASE",
+        "CONTATO INVÁLIDO",
+        "CONTATO PESSOA FÍSICA / INCORRETO",
+        "SEM CONTATO LOCALIZADO",
+    }:
+        empresa["status"] = "SEM CONTATO"
+        empresa["retorno_apos_seq"] = None
+        empresa["agendamento_pendente"] = 0
+        empresa["data_agendamento"] = None
+
+    agora = datetime.now().isoformat(timespec="seconds")
+    dados["acoes_base"].append({
+        "id": proximo_id(dados["acoes_base"]),
+        "empresa_id": int(empresa_id),
+        "acao": "CONTATO EXTERNO ENCONTRADO",
+        "detalhes": f"{telefone_fmt}" + (f" | Fonte: {fonte.strip()}" if fonte.strip() else ""),
+        "data": date.today().isoformat(),
+        "criado_em": agora,
+        "usuario": st.session_state.get("usuario_logado", ""),
+    })
+
+    salvar_database(dados)
+    return telefone_fmt
+
+
 def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
                       proxima_acao="", data_agendamento=None):
     dados = carregar_database(forcar_github=False)
@@ -782,7 +914,7 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
         elif tentativa_sem_retorno == 2:
             status_novo = "2ª TENTATIVA SEM RETORNO"
         else:
-            status_novo = "SEM INTERESSE"
+            status_novo = "SEM RETORNO APÓS 3 TENTATIVAS"
     else:
         status_novo = MAPA_STATUS.get(resultado, "EM ANDAMENTO")
 
@@ -790,16 +922,25 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
     agendamento_pendente = 0
     data_agendamento_iso = None
 
-    # Data específica sempre tem prioridade.
-    if data_agendamento:
+    # Status finalizadores nunca retornam para a fila.
+    if status_novo in STATUS_ENCERRADOS:
+        data_agendamento = None
+
+    # Data específica só vale para status que continuam ativos.
+    if data_agendamento and status_novo not in STATUS_ENCERRADOS:
         data_agendamento_iso = data_agendamento.isoformat()
         agendamento_pendente = 1
-        if status_novo not in STATUS_ENCERRADOS:
-            status_novo = "RETORNO AGENDADO"
+        status_novo = "RETORNO AGENDADO"
 
-    # Se não houver data específica, todo status ativo volta após 200 contatos.
+    # Sem data específica, todo status ativo volta após 200 contatos.
     elif status_novo not in STATUS_ENCERRADOS:
         retorno_apos = seq + 200
+
+    # Finalizadores limpam qualquer pendência.
+    else:
+        retorno_apos = None
+        data_agendamento_iso = None
+        agendamento_pendente = 0
 
     dados["contatos"].append({
         "id": proximo_id(dados["contatos"]),
@@ -963,6 +1104,7 @@ def editor_empresas(df_base, key_prefix):
 
     status_opcoes = [
         "SEM CONTATO","1ª TENTATIVA SEM RETORNO","2ª TENTATIVA SEM RETORNO",
+        "SEM RETORNO APÓS 3 TENTATIVAS",
         "AGUARDANDO CLIENTE","RETORNO AGENDADO","EM ANDAMENTO",
         "REUNIÃO AGENDADA","PROPOSTA SOLICITADA","PROPOSTA ENVIADA",
         "EM NEGOCIAÇÃO","CONTATO INVÁLIDO","FECHADO / GANHO",
@@ -1650,6 +1792,14 @@ if menu == "📊 Dashboard":
     # -----------------------------
     analitico = contatos.copy()
 
+    dados_dash = carregar_database(forcar_github=False)
+    acoes_base = pd.DataFrame(dados_dash.get("acoes_base", []))
+    if not acoes_base.empty:
+        acoes_base["data_dt"] = pd.to_datetime(
+            acoes_base.get("data"), errors="coerce"
+        ).dt.date
+        acoes_base = acoes_base[acoes_base["data_dt"].notna()].copy()
+
     if not analitico.empty:
         analitico["data_dt"] = pd.to_datetime(
             analitico["data_contato"], errors="coerce"
@@ -1672,11 +1822,14 @@ if menu == "📊 Dashboard":
                 "TENTATIVA DE CONTATO": "SEM RETORNO",
                 "1ª TENTATIVA SEM RETORNO": "SEM RETORNO",
                 "2ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+                "SEM RETORNO APÓS 3 TENTATIVAS": "SEM RETORNO",
                 "NÃO CONSEGUI CONTATO": "SEM RETORNO",
                 "AGUARDANDO CLIENTE": "AGUARDANDO CLIENTE",
                 "RETORNO AGENDADO": "RETORNO AGENDADO",
                 "EM ANDAMENTO": "EM ANDAMENTO",
                 "REUNIÃO AGENDADA": "REUNIÃO AGENDADA",
+                "COTAÇÃO SOLICITADA": "COTAÇÃO SOLICITADA",
+                "COTAÇÃO ENVIADA": "COTAÇÃO ENVIADA",
                 "PROPOSTA SOLICITADA": "PROPOSTA SOLICITADA",
                 "PROPOSTA ENVIADA": "PROPOSTA ENVIADA",
                 "EM NEGOCIAÇÃO": "EM NEGOCIAÇÃO",
@@ -1686,6 +1839,8 @@ if menu == "📊 Dashboard":
                 "NÃO UTILIZA TRANSPORTE": "NÃO UTILIZA TRANSPORTE",
                 "JÁ UTILIZA AZUL": "JÁ UTILIZA AZUL",
                 "CONTATO INVÁLIDO": "CONTATO INVÁLIDO",
+                "CONTATO PESSOA FÍSICA / INCORRETO": "CONTATO PESSOA FÍSICA / INCORRETO",
+                "SEM CONTATO LOCALIZADO": "SEM CONTATO LOCALIZADO",
                 "CLIENTE RESPONDEU": "EM ANDAMENTO",
                 "SOLICITOU PROPOSTA": "PROPOSTA SOLICITADA",
             }
@@ -1717,6 +1872,12 @@ if menu == "📊 Dashboard":
         "NÃO UTILIZA TRANSPORTE": "#64748B",
         "JÁ UTILIZA AZUL": "#0EA5E9",
         "CONTATO INVÁLIDO": "#F97316",
+        "SEM TELEFONE NA BASE": "#D97706",
+        "AGUARDANDO CONTATO DO RESPONSÁVEL": "#7C3AED",
+        "CONTATO PESSOA FÍSICA / INCORRETO": "#FB7185",
+        "SEM CONTATO LOCALIZADO": "#A855F7",
+        "COTAÇÃO SOLICITADA": "#0D9488",
+        "COTAÇÃO ENVIADA": "#14B8A6",
         "SEM CONTATO": "#94A3B8",
         "SEM CLASSIFICAÇÃO": "#CBD5E1",
     }
@@ -1843,6 +2004,19 @@ if menu == "📊 Dashboard":
     fim_anterior = inicio - timedelta(days=1)
     inicio_anterior = fim_anterior - timedelta(days=dias_periodo - 1)
 
+    if acoes_base.empty:
+        acoes_periodo = pd.DataFrame()
+        acoes_anterior = pd.DataFrame()
+    else:
+        acoes_periodo = acoes_base[
+            (acoes_base["data_dt"] >= inicio) &
+            (acoes_base["data_dt"] <= fim)
+        ].copy()
+        acoes_anterior = acoes_base[
+            (acoes_base["data_dt"] >= inicio_anterior) &
+            (acoes_base["data_dt"] <= fim_anterior)
+        ].copy()
+
     if analitico.empty:
         selecionado = pd.DataFrame()
         anterior = pd.DataFrame()
@@ -1869,20 +2043,23 @@ if menu == "📊 Dashboard":
 
     if not selecionado.empty:
         status_sel = selecionado["status_gerencial"].fillna("")
+        cotacoes = int(status_sel.isin(["COTAÇÃO SOLICITADA", "COTAÇÃO ENVIADA"]).sum())
         propostas = int(status_sel.isin(["PROPOSTA SOLICITADA", "PROPOSTA ENVIADA"]).sum())
         reunioes = int((status_sel == "REUNIÃO AGENDADA").sum())
         negociacoes = int((status_sel == "EM NEGOCIAÇÃO").sum())
         fechamentos = int((status_sel == "FECHADO / GANHO").sum())
         sem_retorno = int((status_sel == "SEM RETORNO").sum())
+        problemas_base = int(status_sel.isin(["CONTATO INVÁLIDO", "CONTATO PESSOA FÍSICA / INCORRETO", "SEM CONTATO LOCALIZADO"]).sum())
     else:
-        propostas = reunioes = negociacoes = fechamentos = sem_retorno = 0
+        cotacoes = propostas = reunioes = negociacoes = fechamentos = sem_retorno = problemas_base = 0
 
     if not anterior.empty:
         status_ant = anterior["status_gerencial"].fillna("")
+        cotacoes_ant = int(status_ant.isin(["COTAÇÃO SOLICITADA", "COTAÇÃO ENVIADA"]).sum())
         propostas_ant = int(status_ant.isin(["PROPOSTA SOLICITADA", "PROPOSTA ENVIADA"]).sum())
         fech_ant = int((status_ant == "FECHADO / GANHO").sum())
     else:
-        propostas_ant = fech_ant = 0
+        cotacoes_ant = propostas_ant = fech_ant = 0
 
     st.markdown('<div class="section-head">Desempenho do período</div>', unsafe_allow_html=True)
     st.markdown(
@@ -1919,23 +2096,19 @@ if menu == "📊 Dashboard":
     st.write("")
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        html_kpi(
-            "Propostas", propostas,
-            "solicitadas ou enviadas",
-            pct_variacao(propostas, propostas_ant),
-            "📄"
-        )
+        html_kpi("Cotações", cotacoes, "solicitadas ou enviadas", pct_variacao(cotacoes, cotacoes_ant), "🧾")
     with c2:
         html_kpi("Reuniões", reunioes, "agendadas no período", None, "🤝")
     with c3:
         html_kpi("Negociações", negociacoes, "em negociação", None, "🔥")
     with c4:
-        html_kpi(
-            "Fechamentos", fechamentos,
-            "ganhos no período",
-            pct_variacao(fechamentos, fech_ant),
-            "🏆"
-        )
+        html_kpi("Fechamentos", fechamentos, "ganhos no período", pct_variacao(fechamentos, fech_ant), "🏆")
+
+    c5, c6 = st.columns(2)
+    with c5:
+        html_kpi("Problemas de qualidade da base", problemas_base, "não penalizam a performance comercial", None, "🧹")
+    with c6:
+        html_kpi("Propostas", propostas, "quando aplicável ao fluxo", pct_variacao(propostas, propostas_ant), "📄")
 
     # -----------------------------
     # Indicadores de qualidade
@@ -1947,32 +2120,56 @@ if menu == "📊 Dashboard":
     )
 
     if total_contatos:
-        respondidos = total_contatos - sem_retorno
-        avancos = int(
-            selecionado["status_gerencial"].isin([
-                "PROPOSTA SOLICITADA",
-                "PROPOSTA ENVIADA",
-                "REUNIÃO AGENDADA",
-                "EM NEGOCIAÇÃO",
-                "FECHADO / GANHO",
-            ]).sum()
-        )
-        taxa_contato = round((respondidos / total_contatos) * 100, 1)
-        taxa_avanco = round((avancos / total_contatos) * 100, 1)
-        taxa_sem_retorno = round((sem_retorno / total_contatos) * 100, 1)
-        taxa_fechamento = round((fechamentos / total_contatos) * 100, 1)
+        base_valida = max(total_contatos - problemas_base, 0)
+        contatos_efetivos = max(total_contatos - sem_retorno - problemas_base, 0)
+        avancos = int(selecionado["status_gerencial"].isin(["COTAÇÃO SOLICITADA", "COTAÇÃO ENVIADA", "PROPOSTA SOLICITADA", "PROPOSTA ENVIADA", "REUNIÃO AGENDADA", "EM NEGOCIAÇÃO", "FECHADO / GANHO"]).sum())
+        taxa_contato = round((contatos_efetivos / base_valida) * 100, 1) if base_valida else 0.0
+        taxa_avanco = round((avancos / contatos_efetivos) * 100, 1) if contatos_efetivos else 0.0
+        taxa_qualidade_base = round((problemas_base / total_contatos) * 100, 1)
+        taxa_fechamento = round((fechamentos / contatos_efetivos) * 100, 1) if contatos_efetivos else 0.0
     else:
-        taxa_contato = taxa_avanco = taxa_sem_retorno = taxa_fechamento = 0.0
+        base_valida = contatos_efetivos = 0
+        taxa_contato = taxa_avanco = taxa_qualidade_base = taxa_fechamento = 0.0
 
     q1, q2, q3, q4 = st.columns(4)
     with q1:
-        html_kpi("Contato efetivo", f"{taxa_contato:.1f}%", "responderam / avançaram", None, "💬")
+        html_kpi("Taxa de contato efetivo", f"{taxa_contato:.1f}%", "contatos efetivos ÷ base válida", None, "💬")
     with q2:
-        html_kpi("Taxa de avanço", f"{taxa_avanco:.1f}%", "proposta, reunião, negociação ou ganho", None, "🚀")
+        html_kpi("Taxa de avanço", f"{taxa_avanco:.1f}%", "avanços ÷ contatos efetivos", None, "🚀")
     with q3:
-        html_kpi("Sem retorno", f"{taxa_sem_retorno:.1f}%", "dos contatos realizados", None, "📵")
+        html_kpi("Qualidade da carteira", f"{taxa_qualidade_base:.1f}%", "problemas de base identificados", None, "🧹")
     with q4:
-        html_kpi("Conversão", f"{taxa_fechamento:.1f}%", "fechamentos ÷ contatos", None, "🎯")
+        html_kpi("Conversão", f"{taxa_fechamento:.1f}%", "fechamentos ÷ contatos efetivos", None, "🎯")
+
+    # Esforço de qualificação da base
+    pesquisas_externas = 0
+    contatos_recuperados = 0
+    if not acoes_periodo.empty:
+        pesquisas_externas = int(
+            (acoes_periodo["acao"].fillna("") == "PESQUISA EXTERNA").sum()
+        )
+        contatos_recuperados = int(
+            (acoes_periodo["acao"].fillna("") == "CONTATO EXTERNO ENCONTRADO").sum()
+        )
+
+    taxa_recuperacao = (
+        round((contatos_recuperados / pesquisas_externas) * 100, 1)
+        if pesquisas_externas else 0.0
+    )
+
+    st.markdown('<div class="section-head">🔎 Esforço de qualificação da base</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-note">Mostra o trabalho de pesquisa que não deve ser confundido com baixa produtividade comercial.</div>',
+        unsafe_allow_html=True
+    )
+
+    e1, e2, e3 = st.columns(3)
+    with e1:
+        html_kpi("Pesquisas externas", pesquisas_externas, "buscas fora da base", None, "🔎")
+    with e2:
+        html_kpi("Contatos recuperados", contatos_recuperados, "novos telefones encontrados", None, "✅")
+    with e3:
+        html_kpi("Taxa de recuperação", f"{taxa_recuperacao:.1f}%", "recuperados ÷ pesquisas", None, "🧩")
 
     # -----------------------------
     # Performance diária
@@ -2180,12 +2377,15 @@ if menu == "📊 Dashboard":
             unsafe_allow_html=True
         )
 
+        oportunidades = int(selecionado["status_gerencial"].isin(["EM ANDAMENTO", "AGUARDANDO CLIENTE", "REUNIÃO AGENDADA", "COTAÇÃO SOLICITADA", "COTAÇÃO ENVIADA", "PROPOSTA SOLICITADA", "PROPOSTA ENVIADA", "EM NEGOCIAÇÃO", "FECHADO / GANHO"]).sum()) if not selecionado.empty else 0
+
         funil = pd.DataFrame([
-            {"Etapa": "Contatos realizados", "Quantidade": total_contatos, "Ordem": 1},
-            {"Etapa": "Contato efetivo", "Quantidade": max(total_contatos - sem_retorno, 0), "Ordem": 2},
-            {"Etapa": "Propostas", "Quantidade": propostas, "Ordem": 3},
-            {"Etapa": "Negociações", "Quantidade": negociacoes, "Ordem": 4},
-            {"Etapa": "Fechados / ganhos", "Quantidade": fechamentos, "Ordem": 5},
+            {"Etapa": "Empresas trabalhadas", "Quantidade": empresas_periodo, "Ordem": 1},
+            {"Etapa": "Contatos efetivos", "Quantidade": contatos_efetivos, "Ordem": 2},
+            {"Etapa": "Interesse / oportunidade", "Quantidade": oportunidades, "Ordem": 3},
+            {"Etapa": "Cotação", "Quantidade": cotacoes, "Ordem": 4},
+            {"Etapa": "Negociação", "Quantidade": negociacoes, "Ordem": 5},
+            {"Etapa": "Fechado / ganho", "Quantidade": fechamentos, "Ordem": 6},
         ])
 
         graf_funil = alt.Chart(funil).mark_bar(
@@ -2196,7 +2396,7 @@ if menu == "📊 Dashboard":
             color=alt.Color(
                 "Etapa:N",
                 scale=alt.Scale(
-                    range=["#4F6EF7", "#06B6D4", "#14B8A6", "#22C55E", "#059669"]
+                    range=["#4F6EF7", "#06B6D4", "#14B8A6", "#10B981", "#22C55E", "#059669"]
                 ),
                 legend=None
             ),
@@ -2207,6 +2407,59 @@ if menu == "📊 Dashboard":
         ).properties(height=330)
 
         st.altair_chart(graf_funil, use_container_width=True)
+
+    # -----------------------------
+    # Qualidade da carteira e motivos de não avanço
+    # -----------------------------
+    st.divider()
+    st.markdown('<div class="section-head">🧹 Qualidade da carteira</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-note">Problemas de cadastro/base são analisados separadamente e não entram como perda comercial do vendedor.</div>', unsafe_allow_html=True)
+
+    if not selecionado.empty:
+        qualidade = pd.DataFrame([
+            {"Motivo": "Contato inválido", "Quantidade": int((selecionado["status_gerencial"] == "CONTATO INVÁLIDO").sum())},
+            {"Motivo": "Sem telefone na base", "Quantidade": int((selecionado["status_gerencial"] == "SEM TELEFONE NA BASE").sum())},
+            {"Motivo": "Pessoa física / contato incorreto", "Quantidade": int((selecionado["status_gerencial"] == "CONTATO PESSOA FÍSICA / INCORRETO").sum())},
+            {"Motivo": "Sem contato localizado", "Quantidade": int((selecionado["status_gerencial"] == "SEM CONTATO LOCALIZADO").sum())},
+            {"Motivo": "Aguardando responsável", "Quantidade": int((selecionado["status_gerencial"] == "AGUARDANDO CONTATO DO RESPONSÁVEL").sum())},
+        ])
+        qualidade = qualidade[qualidade["Quantidade"] > 0]
+        if qualidade.empty:
+            st.success("Nenhum problema de qualidade da base identificado no período.")
+        else:
+            graf_qualidade = alt.Chart(qualidade).mark_bar(cornerRadiusEnd=7).encode(
+                y=alt.Y("Motivo:N", sort="-x", title=None),
+                x=alt.X("Quantidade:Q", title="Quantidade"),
+                color=alt.Color("Motivo:N", scale=alt.Scale(range=["#F97316", "#FB7185", "#A855F7"]), legend=None),
+                tooltip=[alt.Tooltip("Motivo:N"), alt.Tooltip("Quantidade:Q")]
+            ).properties(height=260)
+            st.altair_chart(graf_qualidade, use_container_width=True)
+
+    st.markdown('<div class="section-head">📉 Motivos de não avanço</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-note">Mostra se o gargalo é falta de retorno, recusa real ou problema da própria carteira.</div>', unsafe_allow_html=True)
+    if not selecionado.empty:
+        motivos = pd.DataFrame([
+            {"Motivo": "Sem retorno", "Quantidade": int((selecionado["status_gerencial"] == "SEM RETORNO").sum())},
+            {"Motivo": "Sem interesse real", "Quantidade": int((selecionado["status_gerencial"] == "SEM INTERESSE").sum())},
+            {"Motivo": "Não utiliza transporte", "Quantidade": int((selecionado["status_gerencial"] == "NÃO UTILIZA TRANSPORTE").sum())},
+            {"Motivo": "Já utiliza Azul", "Quantidade": int((selecionado["status_gerencial"] == "JÁ UTILIZA AZUL").sum())},
+            {"Motivo": "Contato inválido", "Quantidade": int((selecionado["status_gerencial"] == "CONTATO INVÁLIDO").sum())},
+            {"Motivo": "Sem telefone na base", "Quantidade": int((selecionado["status_gerencial"] == "SEM TELEFONE NA BASE").sum())},
+            {"Motivo": "Pessoa física / incorreto", "Quantidade": int((selecionado["status_gerencial"] == "CONTATO PESSOA FÍSICA / INCORRETO").sum())},
+            {"Motivo": "Sem contato localizado", "Quantidade": int((selecionado["status_gerencial"] == "SEM CONTATO LOCALIZADO").sum())},
+            {"Motivo": "Aguardando responsável", "Quantidade": int((selecionado["status_gerencial"] == "AGUARDANDO CONTATO DO RESPONSÁVEL").sum())},
+        ])
+        motivos = motivos[motivos["Quantidade"] > 0]
+        if motivos.empty:
+            st.info("Ainda não há motivos de não avanço registrados no período.")
+        else:
+            graf_motivos = alt.Chart(motivos).mark_bar(cornerRadiusEnd=7).encode(
+                y=alt.Y("Motivo:N", sort="-x", title=None),
+                x=alt.X("Quantidade:Q", title="Quantidade"),
+                color=alt.Color("Motivo:N", scale=alt.Scale(range=["#F59E0B", "#EF4444", "#64748B", "#0EA5E9", "#F97316", "#FB7185", "#A855F7"]), legend=None),
+                tooltip=[alt.Tooltip("Motivo:N"), alt.Tooltip("Quantidade:Q")]
+            ).properties(height=max(260, len(motivos)*34))
+            st.altair_chart(graf_motivos, use_container_width=True)
 
     # -----------------------------
     # Histórico geral
@@ -2412,6 +2665,7 @@ if menu == "📊 Dashboard":
             "TENTATIVA DE CONTATO": "SEM RETORNO",
             "1ª TENTATIVA SEM RETORNO": "SEM RETORNO",
             "2ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+                "SEM RETORNO APÓS 3 TENTATIVAS": "SEM RETORNO",
         })
 
         dominio = list(status_tbl["Status"])
@@ -2422,6 +2676,7 @@ if menu == "📊 Dashboard":
                     "TENTATIVA DE CONTATO": "SEM RETORNO",
                     "1ª TENTATIVA SEM RETORNO": "SEM RETORNO",
                     "2ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+                "SEM RETORNO APÓS 3 TENTATIVAS": "SEM RETORNO",
                 }.get(s, s),
                 "#7C83FD"
             )
@@ -2664,6 +2919,107 @@ elif menu == "📞 Fila de contatos":
 
         painel_edicao_empresa(atual, prefixo="fila_editar")
 
+        # --------------------------------------------------------
+        # Qualificação da base / pesquisa externa
+        # --------------------------------------------------------
+        telefones_validos = []
+        for _tel in [atual.get("telefone1"), atual.get("telefone2"), atual.get("telefone3")]:
+            _txt = str(_tel or "").strip()
+            if _txt and _txt.upper() not in ("NÃO TEM", "NAO TEM", "NAN", "NONE", "-"):
+                if len(somente_digitos(_txt)) in (10, 11):
+                    telefones_validos.append(_txt)
+
+        if not telefones_validos:
+            st.warning(
+                "⚠️ Este cliente não possui telefone válido cadastrado. "
+                "Você pode pesquisar um contato fora da base, incluir o telefone encontrado "
+                "ou classificar corretamente o motivo."
+            )
+
+        st.markdown("#### 🔎 Qualificação do contato")
+        qa, qb = st.columns(2)
+
+        with qa:
+            marcou_pesquisa = st.button(
+                "🔎 Pesquisei contato fora da base",
+                use_container_width=True,
+                key=f"{prefixo}_pesquisa_externa"
+            )
+
+        with qb:
+            abrir_novo_contato = st.button(
+                "✅ Encontrei novo contato",
+                use_container_width=True,
+                key=f"{prefixo}_abrir_novo_contato"
+            )
+
+        if marcou_pesquisa:
+            try:
+                novo_registro = registrar_acao_base(
+                    empresa_id,
+                    "PESQUISA EXTERNA",
+                    "Busca de telefone/WhatsApp/site fora da base."
+                )
+                if novo_registro:
+                    st.success("🔎 Pesquisa externa registrada no histórico de qualificação.")
+                else:
+                    st.info("Essa pesquisa já havia sido registrada há poucos segundos.")
+            except Exception as e:
+                st.error(f"Não foi possível registrar a pesquisa externa: {e}")
+
+        if abrir_novo_contato:
+            st.session_state[f"{prefixo}_mostrar_novo_contato"] = True
+
+        if st.session_state.get(f"{prefixo}_mostrar_novo_contato", False):
+            with st.container(border=True):
+                st.markdown("**✅ Novo contato encontrado**")
+                nc1, nc2 = st.columns([1, 1])
+                novo_tel = nc1.text_input(
+                    "Telefone / WhatsApp encontrado",
+                    placeholder="(11) 99999-9999",
+                    key=f"{prefixo}_novo_tel"
+                )
+                fonte_contato = nc2.text_input(
+                    "Onde encontrou? (opcional)",
+                    placeholder="Google, site, Instagram, LinkedIn...",
+                    key=f"{prefixo}_fonte_contato"
+                )
+
+                sc1, sc2 = st.columns([2, 1])
+                with sc1:
+                    salvar_novo_tel = st.button(
+                        "💾 Salvar novo contato",
+                        type="primary",
+                        use_container_width=True,
+                        key=f"{prefixo}_salvar_novo_tel"
+                    )
+                with sc2:
+                    cancelar_novo_tel = st.button(
+                        "Cancelar",
+                        use_container_width=True,
+                        key=f"{prefixo}_cancelar_novo_tel"
+                    )
+
+                if cancelar_novo_tel:
+                    st.session_state[f"{prefixo}_mostrar_novo_contato"] = False
+                    st.rerun()
+
+                if salvar_novo_tel:
+                    try:
+                        tel_salvo = salvar_contato_externo_encontrado(
+                            empresa_id,
+                            novo_tel,
+                            fonte_contato
+                        )
+                        st.session_state["flash_contato"] = (
+                            f"✅ Novo contato {tel_salvo} salvo para {atual['nome']}. "
+                            "Cliente permanece disponível para prospecção."
+                        )
+                        st.session_state[f"{prefixo}_mostrar_novo_contato"] = False
+                        st.rerun()
+                    except Exception as e:
+                        st.error(str(e))
+
         hist_cliente = contatos[
             contatos["empresa_id"] == empresa_id
         ] if not contatos.empty else pd.DataFrame()
@@ -2720,7 +3076,7 @@ elif menu == "📞 Fila de contatos":
 
         st.caption(
             "Resultados de espera retornam automaticamente à fila após 200 novos contatos. "
-            "Na 3ª tentativa sem contato, o cliente é encerrado automaticamente como SEM INTERESSE."
+            "Na 3ª tentativa sem contato, o cliente é encerrado como SEM RETORNO APÓS 3 TENTATIVAS."
         )
 
         agendar = st.checkbox(
@@ -2785,10 +3141,10 @@ elif menu == "📞 Fila de contatos":
                 empresa_id, data_contato, tipo, resultado, obs, acao, data_ag
             )
 
-            if status_novo == "SEM INTERESSE" and resultado == "NÃO CONSEGUI CONTATO":
+            if status_novo == "SEM RETORNO APÓS 3 TENTATIVAS" and resultado == "NÃO CONSEGUI CONTATO":
                 mensagem = (
                     f"{atual['nome']}: 3ª tentativa sem retorno. "
-                    "Cliente encerrado automaticamente como SEM INTERESSE."
+                    "Cliente encerrado como SEM RETORNO APÓS 3 TENTATIVAS."
                 )
             elif data_ag:
                 mensagem = (
@@ -3074,5 +3430,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V6 • Dashboard BI")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V8.1 • Qualificação Comercial")
 
