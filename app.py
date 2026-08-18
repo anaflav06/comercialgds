@@ -2919,6 +2919,17 @@ elif menu == "📞 Fila de contatos":
 
         painel_edicao_empresa(atual, prefixo="fila_editar")
 
+        hist_cliente = contatos[
+            contatos["empresa_id"] == empresa_id
+        ] if not contatos.empty else pd.DataFrame()
+
+        if not hist_cliente.empty:
+            with st.expander("Ver histórico deste cliente"):
+                historico_cliente(contatos, empresa_id)
+
+        # Cada cliente usa chaves próprias; ao avançar, o próximo vem limpo.
+        prefixo = f"fila_{empresa_id}"
+
         # --------------------------------------------------------
         # Qualificação da base / pesquisa externa
         # --------------------------------------------------------
@@ -2941,7 +2952,7 @@ elif menu == "📞 Fila de contatos":
 
         with qa:
             marcou_pesquisa = st.button(
-                "🔎 Pesquisei contato fora da base",
+                "🔎 Registrei pesquisa fora da base",
                 use_container_width=True,
                 key=f"{prefixo}_pesquisa_externa"
             )
@@ -3020,18 +3031,117 @@ elif menu == "📞 Fila de contatos":
                     except Exception as e:
                         st.error(str(e))
 
-        hist_cliente = contatos[
-            contatos["empresa_id"] == empresa_id
-        ] if not contatos.empty else pd.DataFrame()
-
-        if not hist_cliente.empty:
-            with st.expander("Ver histórico deste cliente"):
-                historico_cliente(contatos, empresa_id)
-
-        # Cada cliente usa chaves próprias; ao avançar, o próximo vem limpo.
-        prefixo = f"fila_{empresa_id}"
 
         st.markdown(f"**Tentativa {min(tent, 3)} de 3**")
+
+        st.markdown("#### ⚡ Ações rápidas")
+        st.caption("Use quando a situação estiver clara. O app salva e segue automaticamente.")
+
+        qr1, qr2, qr3, qr4 = st.columns(4)
+
+        with qr1:
+            bt_invalido = st.button(
+                "📵 Contato inválido",
+                use_container_width=True,
+                key=f"{prefixo}_rapido_invalido"
+            )
+        with qr2:
+            bt_pessoa = st.button(
+                "👤 Pessoa física / incorreto",
+                use_container_width=True,
+                key=f"{prefixo}_rapido_pessoa"
+            )
+        with qr3:
+            bt_sem_localizar = st.button(
+                "🔍 Sem contato localizado",
+                use_container_width=True,
+                key=f"{prefixo}_rapido_sem_localizar"
+            )
+        with qr4:
+            bt_sem_interesse = st.button(
+                "🚫 Sem interesse",
+                use_container_width=True,
+                key=f"{prefixo}_rapido_sem_interesse"
+            )
+
+        qr5, qr6, qr7 = st.columns(3)
+        with qr5:
+            bt_sem_tel = st.button(
+                "☎️ Sem telefone na base",
+                use_container_width=True,
+                key=f"{prefixo}_rapido_sem_tel"
+            )
+        with qr6:
+            bt_responsavel = st.button(
+                "👔 Aguardando responsável",
+                use_container_width=True,
+                key=f"{prefixo}_rapido_responsavel"
+            )
+        with qr7:
+            bt_nao_transporte = st.button(
+                "📦 Não utiliza transporte",
+                use_container_width=True,
+                key=f"{prefixo}_rapido_nao_transporte"
+            )
+
+        def _acao_rapida(resultado_rapido, obs_rapida):
+            status_novo, tentativa_atual, retorno_apos = registrar_contato(
+                empresa_id,
+                hoje,
+                "OUTRO",
+                resultado_rapido,
+                obs_rapida,
+                "",
+                None
+            )
+            st.session_state["flash_contato"] = (
+                f"{atual['nome']}: atualizado para {status_novo}."
+            )
+            for chave in list(st.session_state.keys()):
+                if chave.startswith(prefixo):
+                    del st.session_state[chave]
+            st.rerun()
+
+        if bt_invalido:
+            _acao_rapida("CONTATO INVÁLIDO", "Telefone inválido / não completa.")
+
+        if bt_pessoa:
+            _acao_rapida(
+                "CONTATO PESSOA FÍSICA / INCORRETO",
+                "Telefone pertence a pessoa física ou contato sem relação com a empresa."
+            )
+
+        if bt_sem_localizar:
+            _acao_rapida(
+                "SEM CONTATO LOCALIZADO",
+                "Contato não localizado após pesquisa externa."
+            )
+
+        if bt_sem_interesse:
+            _acao_rapida(
+                "SEM INTERESSE",
+                "Cliente informou que não possui interesse."
+            )
+
+        if bt_sem_tel:
+            _acao_rapida(
+                "SEM TELEFONE NA BASE",
+                "Cadastro sem telefone válido."
+            )
+
+        if bt_responsavel:
+            _acao_rapida(
+                "AGUARDANDO CONTATO DO RESPONSÁVEL",
+                "Contato realizado; aguardando acesso ao responsável."
+            )
+
+        if bt_nao_transporte:
+            _acao_rapida(
+                "NÃO UTILIZA TRANSPORTE",
+                "Empresa informou que não utiliza transporte."
+            )
+
+        st.divider()
 
         c1,c2 = st.columns(2)
         data_contato = c1.date_input(
@@ -3430,5 +3540,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V8.1 • Qualificação Comercial")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V8.2 • Qualificação Comercial")
 
