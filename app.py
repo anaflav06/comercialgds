@@ -1570,186 +1570,895 @@ menu = st.sidebar.radio(
 if menu == "📊 Dashboard":
     hoje = date.today()
 
-    # Para análise gerencial, considera também o histórico válido importado da planilha.
+    # ============================================================
+    # DASHBOARD GERENCIAL
+    # ============================================================
+    st.markdown("""
+    <style>
+    .dash-title {
+        font-size: 2.05rem;
+        font-weight: 800;
+        margin-bottom: .15rem;
+        color: #20263a;
+    }
+    .dash-subtitle {
+        color: #6b7280;
+        font-size: .98rem;
+        margin-bottom: 1.2rem;
+    }
+    .kpi-card {
+        background: linear-gradient(145deg, #ffffff 0%, #fafbff 100%);
+        border: 1px solid #e6e8ef;
+        border-radius: 18px;
+        padding: 18px 18px 16px 18px;
+        box-shadow: 0 4px 16px rgba(28, 39, 60, .06);
+        min-height: 128px;
+    }
+    .kpi-title {
+        font-size: .83rem;
+        color: #697386;
+        font-weight: 650;
+        margin-bottom: 7px;
+    }
+    .kpi-value {
+        font-size: 2rem;
+        line-height: 1.05;
+        color: #20263a;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+    .kpi-foot {
+        color: #8a91a3;
+        font-size: .78rem;
+    }
+    .kpi-up { color:#14956f; font-weight:700; }
+    .kpi-down { color:#dc4c64; font-weight:700; }
+    .kpi-neutral { color:#7c8496; font-weight:700; }
+    .section-head {
+        font-size: 1.38rem;
+        font-weight: 780;
+        color: #20263a;
+        margin-top: .4rem;
+        margin-bottom: .15rem;
+    }
+    .section-note {
+        color: #7d8495;
+        font-size: .88rem;
+        margin-bottom: .7rem;
+    }
+    .mini-pill {
+        display:inline-block;
+        padding:5px 10px;
+        border-radius:999px;
+        background:#f2f4f8;
+        color:#626b7e;
+        font-size:.78rem;
+        font-weight:650;
+        margin-right:5px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="dash-title">📊 Dashboard Comercial</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="dash-subtitle">Visão gerencial da produtividade, qualidade dos contatos e evolução da carteira comercial.</div>',
+        unsafe_allow_html=True
+    )
+
+    # -----------------------------
+    # Preparação dos dados
+    # -----------------------------
     analitico = contatos.copy()
+
     if not analitico.empty:
         analitico["data_dt"] = pd.to_datetime(
             analitico["data_contato"], errors="coerce"
         ).dt.date
         analitico = analitico[analitico["data_dt"].notna()].copy()
 
-    st.subheader("Visão de desempenho")
+        for col in ["resultado", "status_novo", "tipo_contato", "usuario", "nome"]:
+            if col not in analitico.columns:
+                analitico[col] = ""
+            analitico[col] = analitico[col].fillna("").astype(str)
 
-    cperiodo, cdata = st.columns([1, 2])
-    periodo = cperiodo.selectbox(
-        "Período",
-        ["Dia", "Últimos 7 dias", "Últimos 15 dias", "Mês", "Período personalizado"]
+        # Status consolidado para análise, incluindo nomenclaturas antigas da base.
+        def status_gerencial(row):
+            status = str(row.get("status_novo", "") or "").strip().upper()
+            resultado = str(row.get("resultado", "") or "").strip().upper()
+
+            mapa_legado = {
+                "SEM RETORNO": "SEM RETORNO",
+                "SEM SUCESSO NO CONTATO": "SEM RETORNO",
+                "TENTATIVA DE CONTATO": "SEM RETORNO",
+                "1ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+                "2ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+                "NÃO CONSEGUI CONTATO": "SEM RETORNO",
+                "AGUARDANDO CLIENTE": "AGUARDANDO CLIENTE",
+                "RETORNO AGENDADO": "RETORNO AGENDADO",
+                "EM ANDAMENTO": "EM ANDAMENTO",
+                "REUNIÃO AGENDADA": "REUNIÃO AGENDADA",
+                "PROPOSTA SOLICITADA": "PROPOSTA SOLICITADA",
+                "PROPOSTA ENVIADA": "PROPOSTA ENVIADA",
+                "EM NEGOCIAÇÃO": "EM NEGOCIAÇÃO",
+                "FECHADO": "FECHADO / GANHO",
+                "FECHADO / GANHO": "FECHADO / GANHO",
+                "SEM INTERESSE": "SEM INTERESSE",
+                "NÃO UTILIZA TRANSPORTE": "NÃO UTILIZA TRANSPORTE",
+                "JÁ UTILIZA AZUL": "JÁ UTILIZA AZUL",
+                "CONTATO INVÁLIDO": "CONTATO INVÁLIDO",
+                "CLIENTE RESPONDEU": "EM ANDAMENTO",
+                "SOLICITOU PROPOSTA": "PROPOSTA SOLICITADA",
+            }
+
+            if status in mapa_legado:
+                return mapa_legado[status]
+            if resultado in mapa_legado:
+                return mapa_legado[resultado]
+            if status:
+                return status
+            if resultado:
+                return resultado
+            return "SEM CLASSIFICAÇÃO"
+
+        analitico["status_gerencial"] = analitico.apply(status_gerencial, axis=1)
+
+    # Paleta fixa: mesma cor para o mesmo status em todos os gráficos.
+    STATUS_CORES = {
+        "SEM RETORNO": "#F59E0B",
+        "AGUARDANDO CLIENTE": "#3B82F6",
+        "RETORNO AGENDADO": "#8B5CF6",
+        "EM ANDAMENTO": "#06B6D4",
+        "REUNIÃO AGENDADA": "#6366F1",
+        "PROPOSTA SOLICITADA": "#14B8A6",
+        "PROPOSTA ENVIADA": "#10B981",
+        "EM NEGOCIAÇÃO": "#22C55E",
+        "FECHADO / GANHO": "#059669",
+        "SEM INTERESSE": "#EF4444",
+        "NÃO UTILIZA TRANSPORTE": "#64748B",
+        "JÁ UTILIZA AZUL": "#0EA5E9",
+        "CONTATO INVÁLIDO": "#F97316",
+        "SEM CONTATO": "#94A3B8",
+        "SEM CLASSIFICAÇÃO": "#CBD5E1",
+    }
+
+    def escala_status(df_status):
+        dominios = [s for s in STATUS_CORES if s in set(df_status["Status"].astype(str))]
+        extras = [s for s in df_status["Status"].astype(str).unique() if s not in STATUS_CORES]
+        dominios += extras
+        cores = [STATUS_CORES.get(s, "#7C83FD") for s in dominios]
+        return alt.Scale(domain=dominios, range=cores)
+
+    def html_kpi(titulo, valor, rodape="", delta=None, icone=""):
+        delta_html = ""
+        if delta is not None:
+            if delta > 0:
+                delta_html = f'<span class="kpi-up">▲ {abs(delta):.0f}%</span>'
+            elif delta < 0:
+                delta_html = f'<span class="kpi-down">▼ {abs(delta):.0f}%</span>'
+            else:
+                delta_html = '<span class="kpi-neutral">• estável</span>'
+
+        st.markdown(
+            f"""
+            <div class="kpi-card">
+                <div class="kpi-title">{icone} {titulo}</div>
+                <div class="kpi-value">{valor}</div>
+                <div class="kpi-foot">{delta_html} {rodape}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    def pct_variacao(atual, anterior):
+        if anterior in (0, None):
+            return None if atual == 0 else 100
+        return ((atual - anterior) / anterior) * 100
+
+    # -----------------------------
+    # Filtros
+    # -----------------------------
+    st.markdown('<div class="section-head">Período de análise</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-note">Todos os indicadores desta primeira parte obedecem ao período escolhido.</div>',
+        unsafe_allow_html=True
     )
 
-    data_ref = hoje
-    inicio = hoje
-    fim = hoje
+    cperiodo, cdata = st.columns([1.05, 2.2])
+    periodo = cperiodo.selectbox(
+        "Período",
+        [
+            "Hoje",
+            "Ontem",
+            "Últimos 7 dias",
+            "Últimos 15 dias",
+            "Últimos 30 dias",
+            "Este mês",
+            "Mês anterior",
+            "Período personalizado",
+        ],
+        key="dash_periodo_gerencial"
+    )
 
-    if periodo == "Dia":
-        data_ref = cdata.date_input(
-            "Data da análise",
-            value=hoje,
-            max_value=hoje,
-            format="DD/MM/YYYY"
-        )
-        inicio = fim = data_ref
+    if periodo == "Hoje":
+        inicio = fim = hoje
+        cdata.info(f"📅 {hoje.strftime('%d/%m/%Y')}")
+
+    elif periodo == "Ontem":
+        inicio = fim = hoje - timedelta(days=1)
+        cdata.info(f"📅 {inicio.strftime('%d/%m/%Y')}")
 
     elif periodo == "Últimos 7 dias":
-        data_ref = cdata.date_input(
-            "Data final",
-            value=hoje,
-            max_value=hoje,
-            format="DD/MM/YYYY"
+        fim = cdata.date_input(
+            "Data final", value=hoje, max_value=hoje,
+            format="DD/MM/YYYY", key="dash_fim7"
         )
-        fim = data_ref
         inicio = fim - timedelta(days=6)
 
     elif periodo == "Últimos 15 dias":
-        data_ref = cdata.date_input(
-            "Data final",
-            value=hoje,
-            max_value=hoje,
-            format="DD/MM/YYYY"
+        fim = cdata.date_input(
+            "Data final", value=hoje, max_value=hoje,
+            format="DD/MM/YYYY", key="dash_fim15"
         )
-        fim = data_ref
         inicio = fim - timedelta(days=14)
 
-    elif periodo == "Mês":
-        data_ref = cdata.date_input(
-            "Escolha uma data do mês",
-            value=hoje,
-            max_value=hoje,
-            format="DD/MM/YYYY"
+    elif periodo == "Últimos 30 dias":
+        fim = cdata.date_input(
+            "Data final", value=hoje, max_value=hoje,
+            format="DD/MM/YYYY", key="dash_fim30"
         )
-        inicio = data_ref.replace(day=1)
-        if data_ref.month == 12:
-            prox = date(data_ref.year + 1, 1, 1)
-        else:
-            prox = date(data_ref.year, data_ref.month + 1, 1)
-        fim = min(prox - timedelta(days=1), hoje)
+        inicio = fim - timedelta(days=29)
+
+    elif periodo == "Este mês":
+        inicio = hoje.replace(day=1)
+        fim = hoje
+        cdata.info(f"📅 {inicio.strftime('%d/%m/%Y')} a {fim.strftime('%d/%m/%Y')}")
+
+    elif periodo == "Mês anterior":
+        primeiro_mes_atual = hoje.replace(day=1)
+        fim = primeiro_mes_atual - timedelta(days=1)
+        inicio = fim.replace(day=1)
+        cdata.info(f"📅 {inicio.strftime('%d/%m/%Y')} a {fim.strftime('%d/%m/%Y')}")
 
     else:
-        cini, cfim = st.columns(2)
-        inicio = cini.date_input(
+        ca, cb = cdata.columns(2)
+        inicio = ca.date_input(
             "De",
-            value=hoje - timedelta(days=30),
+            value=max(date(2026, 1, 1), hoje - timedelta(days=30)),
             max_value=hoje,
             format="DD/MM/YYYY",
-            key="dash_inicio"
+            key="dash_inicio_custom"
         )
-        fim = cfim.date_input(
+        fim = cb.date_input(
             "Até",
             value=hoje,
             max_value=hoje,
             format="DD/MM/YYYY",
-            key="dash_fim"
+            key="dash_fim_custom"
         )
         if inicio > fim:
             st.error("A data inicial não pode ser maior que a data final.")
             st.stop()
 
-    if not analitico.empty:
+    dias_periodo = max(1, (fim - inicio).days + 1)
+    fim_anterior = inicio - timedelta(days=1)
+    inicio_anterior = fim_anterior - timedelta(days=dias_periodo - 1)
+
+    if analitico.empty:
+        selecionado = pd.DataFrame()
+        anterior = pd.DataFrame()
+    else:
         selecionado = analitico[
             (analitico["data_dt"] >= inicio) &
             (analitico["data_dt"] <= fim)
         ].copy()
-    else:
-        selecionado = pd.DataFrame()
 
+        anterior = analitico[
+            (analitico["data_dt"] >= inicio_anterior) &
+            (analitico["data_dt"] <= fim_anterior)
+        ].copy()
+
+    # -----------------------------
+    # KPIs de produtividade
+    # -----------------------------
     total_contatos = len(selecionado)
+    total_contatos_ant = len(anterior)
     empresas_periodo = selecionado["empresa_id"].nunique() if not selecionado.empty else 0
-    dias_periodo = max(1, (fim - inicio).days + 1)
+    empresas_ant = anterior["empresa_id"].nunique() if not anterior.empty else 0
     media_dia = round(total_contatos / dias_periodo, 1)
-
-    reunioes = int((selecionado["resultado"] == "REUNIÃO AGENDADA").sum()) if not selecionado.empty else 0
-    propostas = int((selecionado["resultado"].isin(["PROPOSTA SOLICITADA","PROPOSTA ENVIADA"])).sum()) if not selecionado.empty else 0
-    fechados_periodo = int((selecionado["resultado"] == "FECHADO").sum()) if not selecionado.empty else 0
-    sem_retorno_periodo = int((selecionado["resultado"].isin(["SEM RETORNO","SEM SUCESSO NO CONTATO"])).sum()) if not selecionado.empty else 0
-
-    c1,c2,c3,c4 = st.columns(4)
-    with c1:
-        card("Contatos no período", total_contatos, f"{inicio.strftime('%d/%m/%Y')} a {fim.strftime('%d/%m/%Y')}")
-    with c2:
-        card("Empresas trabalhadas", empresas_periodo, "clientes diferentes")
-    with c3:
-        card("Média por dia", media_dia, "contatos/dia")
-    with c4:
-        card("Sem retorno", sem_retorno_periodo, "no período selecionado")
-
-    st.write("")
-    c1,c2,c3,c4 = st.columns(4)
-    with c1:
-        card("Reuniões", reunioes, "agendadas no período")
-    with c2:
-        card("Propostas", propostas, "solicitadas/enviadas")
-    with c3:
-        card("Fechamentos", fechados_periodo, "no período")
-    with c4:
-        card("Carteira total", len(empresas), "empresas/clientes")
-
-    st.divider()
-    st.subheader("Contatos realizados por dia")
-    grafico_contatos_dia(selecionado)
+    media_ant = round(total_contatos_ant / dias_periodo, 1)
 
     if not selecionado.empty:
-        resumo_diario = selecionado.groupby("data_dt").agg(
+        status_sel = selecionado["status_gerencial"].fillna("")
+        propostas = int(status_sel.isin(["PROPOSTA SOLICITADA", "PROPOSTA ENVIADA"]).sum())
+        reunioes = int((status_sel == "REUNIÃO AGENDADA").sum())
+        negociacoes = int((status_sel == "EM NEGOCIAÇÃO").sum())
+        fechamentos = int((status_sel == "FECHADO / GANHO").sum())
+        sem_retorno = int((status_sel == "SEM RETORNO").sum())
+    else:
+        propostas = reunioes = negociacoes = fechamentos = sem_retorno = 0
+
+    if not anterior.empty:
+        status_ant = anterior["status_gerencial"].fillna("")
+        propostas_ant = int(status_ant.isin(["PROPOSTA SOLICITADA", "PROPOSTA ENVIADA"]).sum())
+        fech_ant = int((status_ant == "FECHADO / GANHO").sum())
+    else:
+        propostas_ant = fech_ant = 0
+
+    st.markdown('<div class="section-head">Desempenho do período</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<span class="mini-pill">📅 {inicio.strftime("%d/%m/%Y")} a {fim.strftime("%d/%m/%Y")}</span>'
+        f'<span class="mini-pill">Comparação: {inicio_anterior.strftime("%d/%m/%Y")} a {fim_anterior.strftime("%d/%m/%Y")}</span>',
+        unsafe_allow_html=True
+    )
+
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        html_kpi(
+            "Contatos realizados", total_contatos,
+            "vs. período anterior",
+            pct_variacao(total_contatos, total_contatos_ant),
+            "📞"
+        )
+    with c2:
+        html_kpi(
+            "Empresas trabalhadas", empresas_periodo,
+            "clientes diferentes",
+            pct_variacao(empresas_periodo, empresas_ant),
+            "🏢"
+        )
+    with c3:
+        html_kpi(
+            "Média por dia", f"{media_dia:.1f}",
+            "contatos/dia",
+            pct_variacao(media_dia, media_ant),
+            "📈"
+        )
+    with c4:
+        html_kpi("Sem retorno", sem_retorno, "contatos do período", None, "🔄")
+
+    st.write("")
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        html_kpi(
+            "Propostas", propostas,
+            "solicitadas ou enviadas",
+            pct_variacao(propostas, propostas_ant),
+            "📄"
+        )
+    with c2:
+        html_kpi("Reuniões", reunioes, "agendadas no período", None, "🤝")
+    with c3:
+        html_kpi("Negociações", negociacoes, "em negociação", None, "🔥")
+    with c4:
+        html_kpi(
+            "Fechamentos", fechamentos,
+            "ganhos no período",
+            pct_variacao(fechamentos, fech_ant),
+            "🏆"
+        )
+
+    # -----------------------------
+    # Indicadores de qualidade
+    # -----------------------------
+    st.markdown('<div class="section-head">Indicadores comerciais</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-note">Não mede só quantidade: mostra quanto dos contatos está evoluindo comercialmente.</div>',
+        unsafe_allow_html=True
+    )
+
+    if total_contatos:
+        respondidos = total_contatos - sem_retorno
+        avancos = int(
+            selecionado["status_gerencial"].isin([
+                "PROPOSTA SOLICITADA",
+                "PROPOSTA ENVIADA",
+                "REUNIÃO AGENDADA",
+                "EM NEGOCIAÇÃO",
+                "FECHADO / GANHO",
+            ]).sum()
+        )
+        taxa_contato = round((respondidos / total_contatos) * 100, 1)
+        taxa_avanco = round((avancos / total_contatos) * 100, 1)
+        taxa_sem_retorno = round((sem_retorno / total_contatos) * 100, 1)
+        taxa_fechamento = round((fechamentos / total_contatos) * 100, 1)
+    else:
+        taxa_contato = taxa_avanco = taxa_sem_retorno = taxa_fechamento = 0.0
+
+    q1, q2, q3, q4 = st.columns(4)
+    with q1:
+        html_kpi("Contato efetivo", f"{taxa_contato:.1f}%", "responderam / avançaram", None, "💬")
+    with q2:
+        html_kpi("Taxa de avanço", f"{taxa_avanco:.1f}%", "proposta, reunião, negociação ou ganho", None, "🚀")
+    with q3:
+        html_kpi("Sem retorno", f"{taxa_sem_retorno:.1f}%", "dos contatos realizados", None, "📵")
+    with q4:
+        html_kpi("Conversão", f"{taxa_fechamento:.1f}%", "fechamentos ÷ contatos", None, "🎯")
+
+    # -----------------------------
+    # Performance diária
+    # -----------------------------
+    st.divider()
+    st.markdown('<div class="section-head">📈 Performance diária</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-note">Quantidade de contatos e empresas trabalhadas em cada dia do período.</div>',
+        unsafe_allow_html=True
+    )
+
+    if selecionado.empty:
+        st.info("Nenhum contato encontrado no período selecionado.")
+    else:
+        diario = selecionado.groupby("data_dt").agg(
             Contatos=("id", "count"),
             Empresas=("empresa_id", "nunique")
         ).reset_index()
-        resumo_diario["Data"] = resumo_diario["data_dt"].apply(
-            lambda d: d.strftime("%d/%m/%Y")
-        )
-        resumo_diario = resumo_diario[["Data","Contatos","Empresas"]].iloc[::-1]
-        st.dataframe(resumo_diario, use_container_width=True, hide_index=True)
-    else:
-        st.info("Nenhum contato encontrado nesse período.")
+        diario["Data"] = pd.to_datetime(diario["data_dt"])
 
+        base_dia = alt.Chart(diario).encode(
+            x=alt.X("Data:T", title=None, axis=alt.Axis(format="%d/%m", labelAngle=0)),
+            tooltip=[
+                alt.Tooltip("Data:T", title="Data", format="%d/%m/%Y"),
+                alt.Tooltip("Contatos:Q", title="Contatos"),
+                alt.Tooltip("Empresas:Q", title="Empresas"),
+            ],
+        )
+
+        barras = base_dia.mark_bar(
+            color="#4F6EF7",
+            cornerRadiusTopLeft=5,
+            cornerRadiusTopRight=5,
+            opacity=.86
+        ).encode(
+            y=alt.Y("Contatos:Q", title="Contatos")
+        )
+
+        linha = base_dia.mark_line(
+            color="#172554",
+            point=alt.OverlayMarkDef(color="#172554", size=65),
+            strokeWidth=2.6
+        ).encode(
+            y=alt.Y("Empresas:Q", title="Empresas")
+        )
+
+        st.altair_chart(
+            alt.layer(barras, linha).resolve_scale(y="independent").properties(height=330),
+            use_container_width=True
+        )
+
+    # -----------------------------
+    # Status no período
+    # -----------------------------
     st.divider()
-    st.subheader("Visão geral do histórico")
+    st.markdown('<div class="section-head">🎯 Resultado dos contatos no período</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-note">Mostra para onde os contatos feitos no período estão caminhando.</div>',
+        unsafe_allow_html=True
+    )
+
+    if not selecionado.empty:
+        status_periodo = (
+            selecionado["status_gerencial"]
+            .value_counts()
+            .rename_axis("Status")
+            .reset_index(name="Quantidade")
+        )
+        status_periodo["Percentual"] = (
+            status_periodo["Quantidade"] / status_periodo["Quantidade"].sum() * 100
+        ).round(1)
+
+        graf_status = alt.Chart(status_periodo).mark_bar(
+            cornerRadiusEnd=6
+        ).encode(
+            y=alt.Y(
+                "Status:N",
+                sort="-x",
+                title=None,
+                axis=alt.Axis(labelLimit=230)
+            ),
+            x=alt.X("Quantidade:Q", title="Quantidade"),
+            color=alt.Color(
+                "Status:N",
+                scale=escala_status(status_periodo),
+                legend=None
+            ),
+            tooltip=[
+                alt.Tooltip("Status:N", title="Status"),
+                alt.Tooltip("Quantidade:Q", title="Quantidade"),
+                alt.Tooltip("Percentual:Q", title="% do período", format=".1f"),
+            ]
+        ).properties(height=max(260, len(status_periodo) * 32))
+
+        st.altair_chart(graf_status, use_container_width=True)
+
+        with st.expander("🔎 Ver números detalhados dos status"):
+            detal_status = status_periodo.copy()
+            detal_status["%"] = detal_status["Percentual"].map(lambda x: f"{x:.1f}%")
+            st.dataframe(
+                detal_status[["Status", "Quantidade", "%"]],
+                use_container_width=True,
+                hide_index=True
+            )
+
+    # -----------------------------
+    # Status por dia
+    # -----------------------------
+    st.markdown('<div class="section-head">🗓️ Status dos contatos por dia</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-note">Permite enxergar não apenas quantos contatos foram feitos, mas o resultado de cada dia.</div>',
+        unsafe_allow_html=True
+    )
+
+    if not selecionado.empty:
+        status_dia = (
+            selecionado.groupby(["data_dt", "status_gerencial"])
+            .size()
+            .reset_index(name="Quantidade")
+            .rename(columns={"status_gerencial": "Status"})
+        )
+        status_dia["Data"] = pd.to_datetime(status_dia["data_dt"])
+
+        graf_status_dia = alt.Chart(status_dia).mark_bar(
+            cornerRadiusTopLeft=2,
+            cornerRadiusTopRight=2
+        ).encode(
+            x=alt.X("Data:T", title=None, axis=alt.Axis(format="%d/%m", labelAngle=0)),
+            y=alt.Y("Quantidade:Q", stack="zero", title="Contatos"),
+            color=alt.Color(
+                "Status:N",
+                scale=escala_status(status_dia),
+                legend=alt.Legend(
+                    title=None,
+                    orient="bottom",
+                    columns=3,
+                    labelLimit=180
+                )
+            ),
+            tooltip=[
+                alt.Tooltip("Data:T", title="Data", format="%d/%m/%Y"),
+                alt.Tooltip("Status:N", title="Status"),
+                alt.Tooltip("Quantidade:Q", title="Contatos"),
+            ]
+        ).properties(height=380)
+
+        st.altair_chart(graf_status_dia, use_container_width=True)
+
+        # Matriz simples e fácil de ler
+        with st.expander("📋 Abrir resumo diário por status"):
+            matriz = status_dia.pivot_table(
+                index="data_dt",
+                columns="Status",
+                values="Quantidade",
+                aggfunc="sum",
+                fill_value=0
+            ).reset_index()
+            matriz["data_dt"] = matriz["data_dt"].apply(lambda x: x.strftime("%d/%m/%Y"))
+            matriz = matriz.rename(columns={"data_dt": "Data"})
+            st.dataframe(matriz.iloc[::-1], use_container_width=True, hide_index=True)
+
+    # -----------------------------
+    # Tipo de contato + funil
+    # -----------------------------
+    st.divider()
+    col_tipo, col_funil = st.columns([1, 1.2])
+
+    with col_tipo:
+        st.markdown('<div class="section-head">📲 Canais utilizados</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="section-note">Como o vendedor está abordando os clientes.</div>',
+            unsafe_allow_html=True
+        )
+        if not selecionado.empty:
+            canais = (
+                selecionado["tipo_contato"]
+                .replace("", "NÃO INFORMADO")
+                .value_counts()
+                .rename_axis("Canal")
+                .reset_index(name="Quantidade")
+            )
+            donut = alt.Chart(canais).mark_arc(
+                innerRadius=58,
+                outerRadius=105
+            ).encode(
+                theta=alt.Theta("Quantidade:Q"),
+                color=alt.Color(
+                    "Canal:N",
+                    scale=alt.Scale(
+                        range=["#4F6EF7", "#06B6D4", "#10B981", "#F59E0B", "#8B5CF6", "#94A3B8"]
+                    ),
+                    legend=alt.Legend(title=None, orient="bottom")
+                ),
+                tooltip=[
+                    alt.Tooltip("Canal:N", title="Canal"),
+                    alt.Tooltip("Quantidade:Q", title="Quantidade")
+                ]
+            ).properties(height=330)
+            st.altair_chart(donut, use_container_width=True)
+
+    with col_funil:
+        st.markdown('<div class="section-head">🔻 Funil comercial do período</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="section-note">Visão rápida de quantos contatos estão avançando para etapas comerciais.</div>',
+            unsafe_allow_html=True
+        )
+
+        funil = pd.DataFrame([
+            {"Etapa": "Contatos realizados", "Quantidade": total_contatos, "Ordem": 1},
+            {"Etapa": "Contato efetivo", "Quantidade": max(total_contatos - sem_retorno, 0), "Ordem": 2},
+            {"Etapa": "Propostas", "Quantidade": propostas, "Ordem": 3},
+            {"Etapa": "Negociações", "Quantidade": negociacoes, "Ordem": 4},
+            {"Etapa": "Fechados / ganhos", "Quantidade": fechamentos, "Ordem": 5},
+        ])
+
+        graf_funil = alt.Chart(funil).mark_bar(
+            cornerRadiusEnd=7
+        ).encode(
+            y=alt.Y("Etapa:N", sort=alt.EncodingSortField(field="Ordem"), title=None),
+            x=alt.X("Quantidade:Q", title="Quantidade"),
+            color=alt.Color(
+                "Etapa:N",
+                scale=alt.Scale(
+                    range=["#4F6EF7", "#06B6D4", "#14B8A6", "#22C55E", "#059669"]
+                ),
+                legend=None
+            ),
+            tooltip=[
+                alt.Tooltip("Etapa:N", title="Etapa"),
+                alt.Tooltip("Quantidade:Q", title="Quantidade")
+            ]
+        ).properties(height=330)
+
+        st.altair_chart(graf_funil, use_container_width=True)
+
+    # -----------------------------
+    # Histórico geral
+    # -----------------------------
+    st.divider()
+    st.markdown('<div class="section-head">🗂️ Visão geral do histórico</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-note">Abra um mês para visualizar os dias, os status e como os contatos daquele período se distribuíram.</div>',
+        unsafe_allow_html=True
+    )
+
     if analitico.empty:
         st.info("Ainda não há histórico de contatos.")
     else:
         hist = analitico.copy()
         hist["Ano"] = hist["data_dt"].apply(lambda d: d.year)
         hist["Mes"] = hist["data_dt"].apply(lambda d: d.month)
+
         nomes_meses = {
-            1:"Janeiro",2:"Fevereiro",3:"Março",4:"Abril",5:"Maio",6:"Junho",
-            7:"Julho",8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"
+            1:"Janeiro", 2:"Fevereiro", 3:"Março", 4:"Abril",
+            5:"Maio", 6:"Junho", 7:"Julho", 8:"Agosto",
+            9:"Setembro", 10:"Outubro", 11:"Novembro", 12:"Dezembro"
         }
 
         total_geral = len(hist)
-        st.metric("Total geral de contatos", total_geral)
+        total_empresas_hist = hist["empresa_id"].nunique()
+        h1, h2 = st.columns(2)
+        with h1:
+            html_kpi("Total histórico de contatos", total_geral, "registros com data válida", None, "📚")
+        with h2:
+            html_kpi("Empresas já trabalhadas", total_empresas_hist, "ao longo de todo o histórico", None, "🏢")
 
-        meses = hist.groupby(["Ano","Mes"]).size().reset_index(name="Contatos")
-        meses = meses.sort_values(["Ano","Mes"], ascending=[False,False])
+        meses = (
+            hist.groupby(["Ano", "Mes"])
+            .agg(
+                Contatos=("id", "count"),
+                Empresas=("empresa_id", "nunique")
+            )
+            .reset_index()
+            .sort_values(["Ano", "Mes"], ascending=[False, False])
+        )
 
         for _, m in meses.iterrows():
             ano = int(m["Ano"])
             mes = int(m["Mes"])
             qtd = int(m["Contatos"])
-            with st.expander(f"{nomes_meses[mes]}/{ano} — {qtd} contato(s)"):
-                mensal = hist[(hist["Ano"]==ano) & (hist["Mes"]==mes)].copy()
-                diario = mensal.groupby("data_dt").agg(
-                    Contatos=("id","count"),
-                    Empresas=("empresa_id","nunique")
-                ).reset_index()
-                diario["Data"] = diario["data_dt"].apply(lambda d: d.strftime("%d/%m/%Y"))
-                diario = diario[["Data","Contatos","Empresas"]]
-                st.dataframe(diario, use_container_width=True, hide_index=True)
+            emp_qtd = int(m["Empresas"])
 
-    st.subheader("Situação atual da carteira")
+            mensal = hist[(hist["Ano"] == ano) & (hist["Mes"] == mes)].copy()
+            mensal_status = (
+                mensal["status_gerencial"]
+                .value_counts()
+                .rename_axis("Status")
+                .reset_index(name="Quantidade")
+            )
+
+            with st.expander(
+                f"📅 {nomes_meses[mes]}/{ano} — {qtd} contatos • {emp_qtd} empresas"
+            ):
+                mh1, mh2, mh3, mh4 = st.columns(4)
+
+                propostas_mes = int(
+                    mensal["status_gerencial"].isin(
+                        ["PROPOSTA SOLICITADA", "PROPOSTA ENVIADA"]
+                    ).sum()
+                )
+                negoc_mes = int((mensal["status_gerencial"] == "EM NEGOCIAÇÃO").sum())
+                ganhos_mes = int((mensal["status_gerencial"] == "FECHADO / GANHO").sum())
+
+                mh1.metric("Contatos", qtd)
+                mh2.metric("Empresas", emp_qtd)
+                mh3.metric("Propostas", propostas_mes)
+                mh4.metric("Fechamentos", ganhos_mes)
+
+                mensal_status["Percentual"] = (
+                    mensal_status["Quantidade"] / mensal_status["Quantidade"].sum() * 100
+                ).round(1)
+
+                st.markdown("**Status do mês**")
+                graf_mes_status = alt.Chart(mensal_status).mark_bar(
+                    cornerRadiusEnd=5
+                ).encode(
+                    y=alt.Y("Status:N", sort="-x", title=None),
+                    x=alt.X("Quantidade:Q", title="Quantidade"),
+                    color=alt.Color(
+                        "Status:N",
+                        scale=escala_status(mensal_status),
+                        legend=None
+                    ),
+                    tooltip=[
+                        alt.Tooltip("Status:N"),
+                        alt.Tooltip("Quantidade:Q"),
+                        alt.Tooltip("Percentual:Q", format=".1f", title="%")
+                    ]
+                ).properties(height=max(230, len(mensal_status) * 29))
+                st.altair_chart(graf_mes_status, use_container_width=True)
+
+                st.markdown("**Dia a dia do mês**")
+                diario_mes = (
+                    mensal.groupby(["data_dt", "status_gerencial"])
+                    .size()
+                    .reset_index(name="Quantidade")
+                    .rename(columns={"status_gerencial": "Status"})
+                )
+                diario_mes["Data"] = pd.to_datetime(diario_mes["data_dt"])
+
+                graf_mes_dia = alt.Chart(diario_mes).mark_bar().encode(
+                    x=alt.X("Data:T", axis=alt.Axis(format="%d/%m"), title=None),
+                    y=alt.Y("Quantidade:Q", stack="zero", title="Contatos"),
+                    color=alt.Color(
+                        "Status:N",
+                        scale=escala_status(diario_mes),
+                        legend=alt.Legend(title=None, orient="bottom", columns=3)
+                    ),
+                    tooltip=[
+                        alt.Tooltip("Data:T", format="%d/%m/%Y"),
+                        alt.Tooltip("Status:N"),
+                        alt.Tooltip("Quantidade:Q")
+                    ]
+                ).properties(height=300)
+                st.altair_chart(graf_mes_dia, use_container_width=True)
+
+                with st.expander("Ver tabela diária deste mês"):
+                    tabela_mes = (
+                        mensal.groupby("data_dt")
+                        .agg(
+                            Contatos=("id", "count"),
+                            Empresas=("empresa_id", "nunique")
+                        )
+                        .reset_index()
+                    )
+                    tabela_mes["Data"] = tabela_mes["data_dt"].apply(
+                        lambda d: d.strftime("%d/%m/%Y")
+                    )
+                    tabela_mes = tabela_mes[["Data", "Contatos", "Empresas"]].iloc[::-1]
+                    st.dataframe(tabela_mes, use_container_width=True, hide_index=True)
+
+    # -----------------------------
+    # Situação da carteira - separada do período
+    # -----------------------------
+    st.divider()
+    st.markdown('<div class="section-head">🏢 Situação atual da carteira</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-note">Esta seção NÃO depende do filtro de datas. É uma fotografia da carteira inteira neste momento.</div>',
+        unsafe_allow_html=True
+    )
+
     if not empresas.empty:
-        status_tbl = empresas["status"].value_counts().rename_axis("Status").reset_index(name="Quantidade")
-        st.dataframe(status_tbl, use_container_width=True, hide_index=True)
+        carteira = empresas.copy()
+        carteira["status"] = carteira["status"].fillna("SEM CLASSIFICAÇÃO").astype(str).str.upper()
+
+        total_carteira = len(carteira)
+        sem_contato_atual = int((carteira["status"] == "SEM CONTATO").sum())
+        ativos_atual = int(
+            carteira["status"].isin([
+                "1ª TENTATIVA SEM RETORNO",
+                "2ª TENTATIVA SEM RETORNO",
+                "AGUARDANDO CLIENTE",
+                "RETORNO AGENDADO",
+                "EM ANDAMENTO",
+                "REUNIÃO AGENDADA",
+                "PROPOSTA SOLICITADA",
+                "PROPOSTA ENVIADA",
+                "EM NEGOCIAÇÃO",
+                "CONTATO INVÁLIDO",
+                "SEM RETORNO",
+                "SEM SUCESSO NO CONTATO",
+                "TENTATIVA DE CONTATO",
+            ]).sum()
+        )
+        ganhos_atual = int((carteira["status"] == "FECHADO / GANHO").sum())
+        encerrados_atual = int(
+            carteira["status"].isin([
+                "SEM INTERESSE",
+                "NÃO UTILIZA TRANSPORTE",
+                "JÁ UTILIZA AZUL"
+            ]).sum()
+        )
+
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            html_kpi("Carteira total", total_carteira, "empresas/clientes", None, "🗃️")
+        with c2:
+            html_kpi("Sem contato", sem_contato_atual, "ainda não trabalhados", None, "🆕")
+        with c3:
+            html_kpi("Em acompanhamento", ativos_atual, "carteira ativa", None, "🔄")
+        with c4:
+            html_kpi("Encerrados", encerrados_atual + ganhos_atual, "ganhos ou finalizados", None, "✅")
+
+        status_tbl = (
+            carteira["status"]
+            .value_counts()
+            .rename_axis("Status")
+            .reset_index(name="Quantidade")
+        )
+        status_tbl["Percentual"] = (
+            status_tbl["Quantidade"] / status_tbl["Quantidade"].sum() * 100
+        ).round(1)
+
+        # Normaliza apenas para manter cores conhecidas quando possível.
+        status_tbl["CorStatus"] = status_tbl["Status"].replace({
+            "SEM SUCESSO NO CONTATO": "SEM RETORNO",
+            "TENTATIVA DE CONTATO": "SEM RETORNO",
+            "1ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+            "2ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+        })
+
+        dominio = list(status_tbl["Status"])
+        cores = [
+            STATUS_CORES.get(
+                {
+                    "SEM SUCESSO NO CONTATO": "SEM RETORNO",
+                    "TENTATIVA DE CONTATO": "SEM RETORNO",
+                    "1ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+                    "2ª TENTATIVA SEM RETORNO": "SEM RETORNO",
+                }.get(s, s),
+                "#7C83FD"
+            )
+            for s in dominio
+        ]
+
+        graf_carteira = alt.Chart(status_tbl).mark_bar(
+            cornerRadiusEnd=6
+        ).encode(
+            y=alt.Y("Status:N", sort="-x", title=None, axis=alt.Axis(labelLimit=240)),
+            x=alt.X("Quantidade:Q", title="Quantidade"),
+            color=alt.Color(
+                "Status:N",
+                scale=alt.Scale(domain=dominio, range=cores),
+                legend=None
+            ),
+            tooltip=[
+                alt.Tooltip("Status:N"),
+                alt.Tooltip("Quantidade:Q"),
+                alt.Tooltip("Percentual:Q", title="% da carteira", format=".1f")
+            ]
+        ).properties(height=max(320, len(status_tbl) * 30))
+
+        st.altair_chart(graf_carteira, use_container_width=True)
+
+        with st.expander("📋 Ver situação completa da carteira"):
+            carteira_tbl = status_tbl.copy()
+            carteira_tbl["%"] = carteira_tbl["Percentual"].map(lambda x: f"{x:.1f}%")
+            st.dataframe(
+                carteira_tbl[["Status", "Quantidade", "%"]],
+                use_container_width=True,
+                hide_index=True
+            )
 
         with st.expander("✏️ Edição rápida de cliente"):
             busca_dash = st.text_input(
-                "Buscar cliente para editar",
+                "Buscar por empresa, CPF/CNPJ ou telefone",
                 key="dash_busca_edicao"
             )
             if busca_dash.strip():
@@ -1758,7 +2467,10 @@ if menu == "📊 Dashboard":
                     empresas["nome"].fillna("").str.lower().str.contains(termo, regex=False)
                     | empresas["documento"].fillna("").str.lower().str.contains(termo, regex=False)
                     | empresas["telefone1"].fillna("").str.lower().str.contains(termo, regex=False)
-                ].head(20)
+                    | empresas["telefone2"].fillna("").str.lower().str.contains(termo, regex=False)
+                    | empresas["telefone3"].fillna("").str.lower().str.contains(termo, regex=False)
+                ].head(30)
+
                 if candidatos.empty:
                     st.info("Nenhum cliente encontrado.")
                 else:
@@ -2362,5 +3074,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V5.3")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V6 • Dashboard BI")
 
