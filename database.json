@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-18T14:14:40",
+    "ultima_atualizacao": "2026-08-18T14:16:33",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -32213,15 +32213,15 @@
       "telefone1": "(11) 5183-6293",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "1ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-18",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 294,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "ENVIAR WHATSAPP"
     },
     {
       "id": 1896,
@@ -58088,6 +58088,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-18T14:14:40",
       "seq_global": 93,
+      "usuario": "celso"
+    },
+    {
+      "id": 1514,
+      "empresa_id": 1895,
+      "data_contato": "2026-08-18",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "1ª TENTATIVA SEM RETORNO",
+      "observacao": "",
+      "proxima_acao": "ENVIAR WHATSAPP",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-18T14:16:33",
+      "seq_global": 94,
       "usuario": "celso"
     }
   ]
