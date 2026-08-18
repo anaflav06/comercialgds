@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-18T14:33:41",
-    "ultimo_usuario": "jessica"
+    "ultima_atualizacao": "2026-08-18T17:14:25",
+    "ultimo_usuario": "celso"
   },
   "empresas": [
     {
@@ -24920,15 +24920,15 @@
       "telefone1": "(11) 4747-3375",
       "telefone2": "(11) 2323-6871",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "CONTATO INVÁLIDO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-18",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 299,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "LIGAR NOVAMENTE"
     },
     {
       "id": 1467,
@@ -58159,6 +58159,20 @@
       "criado_em": "2026-08-18T14:33:41",
       "seq_global": 98,
       "usuario": "jessica"
+    },
+    {
+      "id": 1519,
+      "empresa_id": 1466,
+      "data_contato": "2026-08-18",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "CONTATO INVÁLIDO",
+      "status_novo": "CONTATO INVÁLIDO",
+      "observacao": "",
+      "proxima_acao": "LIGAR NOVAMENTE",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-18T17:14:25",
+      "seq_global": 99,
+      "usuario": "celso"
     }
   ]
 }
