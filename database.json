@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T13:31:57",
+    "ultima_atualizacao": "2026-08-19T13:34:04",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -29221,15 +29221,15 @@
       "telefone1": "NÃO TEM",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "JÁ UTILIZA AZUL",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "LIGAR NOVAMENTE"
     },
     {
       "id": 1720,
@@ -58788,6 +58788,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-19T13:31:57",
       "seq_global": 143,
+      "usuario": "celso"
+    },
+    {
+      "id": 1564,
+      "empresa_id": 1719,
+      "data_contato": "2026-08-19",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "JÁ UTILIZA AZUL",
+      "status_novo": "JÁ UTILIZA AZUL",
+      "observacao": "",
+      "proxima_acao": "LIGAR NOVAMENTE",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-19T13:34:04",
+      "seq_global": 144,
       "usuario": "celso"
     }
   ],
