@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T12:26:55",
+    "ultima_atualizacao": "2026-08-19T13:25:16",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -31737,15 +31737,15 @@
       "telefone1": "(19) 99825-7484",
       "telefone2": "(19) 99825-8174",
       "telefone3": "(19) 98128-7723",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "CONTATO PESSOA FÍSICA / INCORRETO",
+      "observacao_atual": "Telefone pertence a pessoa física ou contato sem relação com a empresa.",
+      "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 1868,
@@ -58746,6 +58746,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-19T12:26:55",
       "seq_global": 140,
+      "usuario": "celso"
+    },
+    {
+      "id": 1561,
+      "empresa_id": 1867,
+      "data_contato": "2026-08-19",
+      "tipo_contato": "OUTRO",
+      "resultado": "CONTATO PESSOA FÍSICA / INCORRETO",
+      "status_novo": "CONTATO PESSOA FÍSICA / INCORRETO",
+      "observacao": "Telefone pertence a pessoa física ou contato sem relação com a empresa.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-19T13:25:16",
+      "seq_global": 141,
       "usuario": "celso"
     }
   ],
