@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T13:59:01",
+    "ultima_atualizacao": "2026-08-19T13:59:09",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34015,15 +34015,15 @@
       "telefone1": "(43) 98812-3276",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "SEM INTERESSE",
+      "observacao_atual": "Cliente informou que não possui interesse.",
+      "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 2002,
@@ -58816,6 +58816,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-19T13:48:07",
       "seq_global": 145,
+      "usuario": "celso"
+    },
+    {
+      "id": 1566,
+      "empresa_id": 2001,
+      "data_contato": "2026-08-19",
+      "tipo_contato": "OUTRO",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Cliente informou que não possui interesse.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-19T13:59:09",
+      "seq_global": 146,
       "usuario": "celso"
     }
   ],
