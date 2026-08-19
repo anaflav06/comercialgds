@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T17:44:16",
+    "ultima_atualizacao": "2026-08-19T17:45:25",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -59158,6 +59158,15 @@
       "detalhes": "(19) 99912-0488",
       "data": "2026-08-19",
       "criado_em": "2026-08-19T17:43:43",
+      "usuario": "celso"
+    },
+    {
+      "id": 17,
+      "empresa_id": 1942,
+      "acao": "PESQUISA EXTERNA",
+      "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
+      "data": "2026-08-19",
+      "criado_em": "2026-08-19T17:45:25",
       "usuario": "celso"
     }
   ]
