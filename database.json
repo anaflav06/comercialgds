@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T17:45:25",
+    "ultima_atualizacao": "2026-08-19T17:45:40",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -33009,7 +33009,7 @@
       "id": 1942,
       "documento": "60.901.438/0001-72",
       "nome": "BTS UTILIDADES GERAIS LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(11) 99686-1449",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -59167,6 +59167,15 @@
       "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
       "data": "2026-08-19",
       "criado_em": "2026-08-19T17:45:25",
+      "usuario": "celso"
+    },
+    {
+      "id": 18,
+      "empresa_id": 1942,
+      "acao": "CONTATO EXTERNO ENCONTRADO",
+      "detalhes": "(11) 99686-1449",
+      "data": "2026-08-19",
+      "criado_em": "2026-08-19T17:45:40",
       "usuario": "celso"
     }
   ]
