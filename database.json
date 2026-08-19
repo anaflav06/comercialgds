@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T13:48:07",
+    "ultima_atualizacao": "2026-08-19T13:49:49",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -16709,15 +16709,15 @@
       "telefone1": "(71) 9953-5842",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "",
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "cliente efetuou cotação",
       "data_primeiro_contato": "2026-07-10",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan"
     },
     {
       "id": 984,
