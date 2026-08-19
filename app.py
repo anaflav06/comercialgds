@@ -400,7 +400,6 @@ STATUS_ENCERRADOS = [
 
 
 STATUS_EM_ANDAMENTO = {
-    "AGUARDANDO CLIENTE",
     "AGUARDANDO CONTATO DO RESPONSÁVEL",
     "RETORNO AGENDADO",
     "EM ANDAMENTO",
@@ -414,6 +413,7 @@ STATUS_EM_ANDAMENTO = {
 
 STATUS_FILA_INICIAL = {
     "SEM CONTATO",
+    "AGUARDANDO CLIENTE",
     "1ª TENTATIVA SEM RETORNO",
     "2ª TENTATIVA SEM RETORNO",
     "SEM RETORNO",
@@ -992,13 +992,21 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
     dados = carregar_database(forcar_github=True)
     agora = datetime.now().isoformat(timespec="seconds")
 
+    resultados_sem_resposta = {
+        "NÃO CONSEGUI CONTATO",
+        "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+    }
     tentativas_anteriores = sum(
         1 for c in dados["contatos"]
         if int(c.get("empresa_id", 0) or 0) == int(empresa_id)
         and c.get("tipo_contato") != "HISTÓRICO IMPORTADO"
-        and c.get("resultado") == "NÃO CONSEGUI CONTATO"
+        and str(c.get("resultado") or "").upper() in resultados_sem_resposta
     )
-    tentativa_sem_retorno = tentativas_anteriores + 1 if resultado == "NÃO CONSEGUI CONTATO" else tentativas_anteriores
+    tentativa_sem_retorno = (
+        tentativas_anteriores + 1
+        if resultado in resultados_sem_resposta
+        else tentativas_anteriores
+    )
 
     seqs = [
         int(c.get("seq_global") or 0)
@@ -1008,7 +1016,14 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
     seq = (max(seqs) if seqs else 0) + 1
 
     # Status automático conforme o resultado.
-    if resultado == "NÃO CONSEGUI CONTATO":
+    if resultado == "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA":
+        if tentativa_sem_retorno >= 3:
+            status_novo = "SEM RETORNO APÓS 3 TENTATIVAS"
+        else:
+            # Continua na fila; ainda não houve avanço comercial.
+            status_novo = "AGUARDANDO CLIENTE"
+
+    elif resultado == "NÃO CONSEGUI CONTATO":
         if tentativa_sem_retorno == 1:
             status_novo = "1ª TENTATIVA SEM RETORNO"
         elif tentativa_sem_retorno == 2:
@@ -1968,7 +1983,7 @@ if menu == "📊 Dashboard":
                                          "SEM CONTATO LOCALIZADO","SEM TELEFONE NA BASE"]).sum()) if total else 0
     sem_retorno = int((status_s=="SEM RETORNO").sum()) if total else 0
     contatos_efetivos = max(total - sem_retorno - problemas_base, 0)
-    avanços = int(status_s.isin(["AGUARDANDO CLIENTE","AGUARDANDO CONTATO DO RESPONSÁVEL","RETORNO AGENDADO",
+    avanços = int(status_s.isin(["AGUARDANDO CONTATO DO RESPONSÁVEL","RETORNO AGENDADO",
                                  "EM ANDAMENTO","REUNIÃO AGENDADA","COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA",
                                  "PROPOSTA SOLICITADA","PROPOSTA ENVIADA","EM NEGOCIAÇÃO","FECHADO / GANHO"]).sum()) if total else 0
     fechados = int((status_s=="FECHADO / GANHO").sum()) if total else 0
@@ -2062,7 +2077,7 @@ if menu == "📊 Dashboard":
 
     with cc2:
         st.markdown('<div class="sec">🔻 Funil comercial do período</div>', unsafe_allow_html=True)
-        oportunidades=int(status_s.isin(["AGUARDANDO CLIENTE","AGUARDANDO CONTATO DO RESPONSÁVEL","RETORNO AGENDADO",
+        oportunidades=int(status_s.isin(["AGUARDANDO CONTATO DO RESPONSÁVEL","RETORNO AGENDADO",
                                           "EM ANDAMENTO","REUNIÃO AGENDADA","COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA",
                                           "PROPOSTA SOLICITADA","PROPOSTA ENVIADA","EM NEGOCIAÇÃO","FECHADO / GANHO"]).sum()) if total else 0
         cotacoes=int(status_s.isin(["COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA","PROPOSTA SOLICITADA","PROPOSTA ENVIADA"]).sum()) if total else 0
@@ -2265,6 +2280,7 @@ elif menu == "📞 Fila de contatos":
                 "🎯 Resultado",
                 [
                     "✅ Falou com cliente",
+                    "💬 Mensagem enviada / aguardando resposta",
                     "📵 Não conseguiu contato",
                     "🔥 Cliente interessado",
                     "📄 Cotação / proposta",
@@ -2371,7 +2387,9 @@ elif menu == "📞 Fila de contatos":
                     try:
                         tipo_map={"📞 Ligação":"LIGAÇÃO","💬 WhatsApp":"WHATSAPP","✉️ E-mail":"E-MAIL","🔹 Outro":"OUTRO"}
 
-                        if resultado_ui=="📵 Não conseguiu contato":
+                        if resultado_ui=="💬 Mensagem enviada / aguardando resposta":
+                            resultado="MENSAGEM ENVIADA / AGUARDANDO RESPOSTA"; acao="AGUARDANDO RESPOSTA"; agenda=None
+                        elif resultado_ui=="📵 Não conseguiu contato":
                             resultado="NÃO CONSEGUI CONTATO"; acao="RETORNAR APÓS 200 CONTATOS"; agenda=None
                         elif resultado_ui=="🔥 Cliente interessado":
                             resultado="CLIENTE RESPONDEU"; acao="CLIENTE EM ANDAMENTO"; agenda=None
@@ -2451,7 +2469,7 @@ elif menu == "🔥 Clientes em andamento":
 
         etapa=st.pills(
             "Nova etapa",
-            ["⏳ Aguardando cliente","👔 Aguardando responsável","📅 Retorno agendado",
+            ["👔 Aguardando responsável","📅 Retorno agendado",
              "🔥 Em andamento","🤝 Reunião agendada","🧾 Cotação solicitada","📤 Cotação enviada",
              "📄 Proposta enviada","💚 Em negociação","🏆 Fechado / ganho","🚫 Sem interesse"],
             selection_mode="single",
@@ -2459,7 +2477,7 @@ elif menu == "🔥 Clientes em andamento":
         )
         obs_a=st.text_area("Observação",value="",key=f"and_obs_{eid}",height=80)
         data_a=None
-        if etapa in {"📅 Retorno agendado","🤝 Reunião agendada","⏳ Aguardando cliente","👔 Aguardando responsável"}:
+        if etapa in {"📅 Retorno agendado","🤝 Reunião agendada","👔 Aguardando responsável"}:
             usar_data=st.checkbox("Definir data de retorno",value=etapa in {"📅 Retorno agendado","🤝 Reunião agendada"},key=f"and_usar_data_{eid}")
             if usar_data:
                 data_a=st.date_input("Data",value=hoje+timedelta(days=1),min_value=hoje,format="DD/MM/YYYY",key=f"and_data_{eid}")
@@ -2469,7 +2487,6 @@ elif menu == "🔥 Clientes em andamento":
                 st.warning("Selecione a etapa.")
             else:
                 mapa_result={
-                    "⏳ Aguardando cliente":"AGUARDANDO CLIENTE",
                     "👔 Aguardando responsável":"AGUARDANDO CONTATO DO RESPONSÁVEL",
                     "📅 Retorno agendado":"RETORNAR EM OUTRA DATA",
                     "🔥 Em andamento":"CLIENTE RESPONDEU",
@@ -2765,5 +2782,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.3 • Fila Compacta")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.4 • Fluxo Ajustado")
 
