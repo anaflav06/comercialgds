@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T14:14:32",
+    "ultima_atualizacao": "2026-08-19T14:16:43",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -31482,15 +31482,15 @@
       "telefone1": "NÃO TEM",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "CONTATO INVÁLIDO",
+      "observacao_atual": "Telefone inválido / não completa.",
+      "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 1853,
@@ -58914,6 +58914,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-19T14:14:32",
       "seq_global": 152,
+      "usuario": "celso"
+    },
+    {
+      "id": 1573,
+      "empresa_id": 1852,
+      "data_contato": "2026-08-19",
+      "tipo_contato": "OUTRO",
+      "resultado": "CONTATO INVÁLIDO",
+      "status_novo": "CONTATO INVÁLIDO",
+      "observacao": "Telefone inválido / não completa.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-19T14:16:43",
+      "seq_global": 153,
       "usuario": "celso"
     }
   ],
