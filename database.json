@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T13:43:21",
+    "ultima_atualizacao": "2026-08-19T13:43:27",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -58876,6 +58876,15 @@
       "detalhes": "(54) 99194-2173",
       "data": "2026-08-19",
       "criado_em": "2026-08-19T13:43:21",
+      "usuario": "celso"
+    },
+    {
+      "id": 9,
+      "empresa_id": 1487,
+      "acao": "PESQUISA EXTERNA",
+      "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
+      "data": "2026-08-19",
+      "criado_em": "2026-08-19T13:43:27",
       "usuario": "celso"
     }
   ]
