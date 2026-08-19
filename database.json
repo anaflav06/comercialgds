@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T13:49:49",
+    "ultima_atualizacao": "2026-08-19T13:58:19",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -58899,6 +58899,15 @@
       "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
       "data": "2026-08-19",
       "criado_em": "2026-08-19T13:43:27",
+      "usuario": "celso"
+    },
+    {
+      "id": 10,
+      "empresa_id": 2001,
+      "acao": "PESQUISA EXTERNA",
+      "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
+      "data": "2026-08-19",
+      "criado_em": "2026-08-19T13:58:19",
       "usuario": "celso"
     }
   ]
