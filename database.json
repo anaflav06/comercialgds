@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T17:48:47",
+    "ultima_atualizacao": "2026-08-19T17:48:55",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34437,7 +34437,7 @@
       "id": 2026,
       "documento": "65.421.310/0001-25",
       "nome": "BV ECOMMERCE LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(84) 3234-7518",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -59209,10 +59209,10 @@
     {
       "id": 19,
       "empresa_id": 2026,
-      "acao": "PESQUISA EXTERNA",
-      "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
+      "acao": "CONTATO EXTERNO ENCONTRADO",
+      "detalhes": "(84) 3234-7518",
       "data": "2026-08-19",
-      "criado_em": "2026-08-19T17:48:47",
+      "criado_em": "2026-08-19T17:48:55",
       "usuario": "celso"
     }
   ]
