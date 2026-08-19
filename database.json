@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T20:26:16",
-    "ultimo_usuario": "celso"
+    "ultima_atualizacao": "2026-08-19T20:38:17",
+    "ultimo_usuario": "jessica"
   },
   "empresas": [
     {
@@ -16709,15 +16709,15 @@
       "telefone1": "(71) 9953-5842",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
-      "observacao_atual": "cliente efetuou cotação",
+      "status": "COTAÇÃO ENVIADA",
+      "observacao_atual": "",
       "data_primeiro_contato": "2026-07-10",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 377,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "nan",
+      "proxima_acao": "📤 Cotação enviada",
       "email": ""
     },
     {
@@ -59253,6 +59253,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-19T20:25:18",
       "seq_global": 176,
+      "usuario": "jessica"
+    },
+    {
+      "id": 1597,
+      "empresa_id": 983,
+      "data_contato": "2026-08-19",
+      "tipo_contato": "OUTRO",
+      "resultado": "COTAÇÃO ENVIADA",
+      "status_novo": "COTAÇÃO ENVIADA",
+      "observacao": "",
+      "proxima_acao": "📤 Cotação enviada",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-19T20:38:17",
+      "seq_global": 177,
       "usuario": "jessica"
     }
   ],
