@@ -588,6 +588,7 @@ def importar_planilha_inicial():
     Esta função apenas mantém compatibilidade e evita reimportação duplicada.
     """
     dados = carregar_database()
+    # Nunca reimporta/reescreve uma base que já possui clientes.
     if dados["empresas"]:
         return
     if not ARQUIVO_INICIAL.exists():
@@ -762,7 +763,7 @@ def tentativas_empresa(empresa_id):
     )
 
 def salvar_empresa(documento, nome, telefones, status="SEM CONTATO", obs="", origem="APP", email=""):
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     empresa_id = proximo_id(dados["empresas"])
     dados["empresas"].append({
         "id": empresa_id,
@@ -886,7 +887,7 @@ def salvar_empresas_em_lote(registros):
 
 def registrar_acao_base(empresa_id, acao, detalhes=""):
     """Registra esforço de qualificação da carteira sem contar como contato comercial."""
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     dados.setdefault("acoes_base", [])
 
     agora = datetime.now().isoformat(timespec="seconds")
@@ -927,7 +928,7 @@ def salvar_contato_externo_encontrado(empresa_id, telefone, fonte=""):
     if len(dig) not in (10, 11):
         raise ValueError("Informe um telefone válido com DDD.")
 
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     dados.setdefault("acoes_base", [])
 
     empresa = next(
@@ -988,7 +989,7 @@ def salvar_contato_externo_encontrado(empresa_id, telefone, fonte=""):
 
 def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
                       proxima_acao="", data_agendamento=None):
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     agora = datetime.now().isoformat(timespec="seconds")
 
     tentativas_anteriores = sum(
@@ -1074,7 +1075,7 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
 def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefone3,
                       status, observacao, proxima_acao, data_agendamento=None, email=""):
     """Salva qualquer edição do cadastro e sincroniza imediatamente no database.json."""
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     encontrado = False
 
     for emp in dados["empresas"]:
@@ -1109,7 +1110,7 @@ def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefon
 
 
 def atualizar_empresas_em_lote(df_editado):
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     mapa = {int(e.get("id", 0)): e for e in dados["empresas"]}
 
     for _, row in df_editado.iterrows():
@@ -1142,7 +1143,7 @@ def atualizar_empresas_em_lote(df_editado):
     salvar_database(dados)
 
 def atualizar_contatos_em_lote(df_editado):
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     mapa = {int(c.get("id", 0)): c for c in dados["contatos"]}
 
     for _, row in df_editado.iterrows():
@@ -1330,7 +1331,7 @@ def editar_ultimo_contato():
 
 def pular_cliente_por_enquanto(empresa_id):
     """Pula sem contar tentativa nem contato. Retorna após 200 contatos reais."""
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     seq_atual = max(
         [int(c.get("seq_global") or 0) for c in dados.get("contatos", []) if c.get("seq_global") is not None]
         or [0]
@@ -1345,7 +1346,7 @@ def pular_cliente_por_enquanto(empresa_id):
     salvar_database(dados)
 
 def finalizar_sem_interesse(empresa_id):
-    dados = carregar_database(forcar_github=False)
+    dados = carregar_database(forcar_github=True)
     agora = datetime.now().isoformat(timespec="seconds")
 
     seqs = [
@@ -1749,6 +1750,11 @@ def gerar_excel_completo(empresas, contatos):
 # -----------------------------
 # APP
 # -----------------------------
+# REGRA DE OURO DA PERSISTÊNCIA:
+# - abrir/reiniciar/deployar o app NÃO pode alterar database.json;
+# - cada gravação baixa a versão mais recente do GitHub antes de modificar;
+# - somente uma ação explícita do usuário pode gerar mudança na base.
+
 # Sincroniza a base oficial apenas na abertura da sessão.
 if github_ativo():
     try:
@@ -1763,9 +1769,8 @@ if github_ativo():
 criar_banco()
 importar_planilha_inicial()
 
-# Limpeza única da carteira: exclui registros somente com nome.
-limpar_cadastros_sem_identificador()
-
+# IMPORTANTE: nenhuma limpeza automática é executada na abertura.
+# A base persistente nunca deve ser alterada apenas por abrir/reiniciar/deployar o app.
 empresas = carregar_empresas()
 contatos = carregar_contatos()
 
@@ -2732,5 +2737,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.1 • Histórico Corrigido")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.2 • Base Protegida")
 
