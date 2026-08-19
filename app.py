@@ -2119,7 +2119,7 @@ if menu == "📊 Dashboard":
             st.altair_chart((sb+sl).properties(height=max(300,len(sit)*29)),use_container_width=True)
 
 elif menu == "📞 Fila de contatos":
-    st.subheader("📞 Fila de contatos")
+    st.markdown("## 📞 Fila de contatos")
     st.caption("Prospecção inicial: cliente, contato, resultado e próximo.")
 
     hoje = date.today()
@@ -2191,26 +2191,46 @@ elif menu == "📞 Fila de contatos":
             elif atual["status"]=="SEM CONTATO": tag="🆕 NOVO"
             else: tag="🔄 RETORNO"
 
-            st.markdown(f"### {atual['nome']} &nbsp; `{tag}`")
-            st.caption(f"Cliente 1 de {len(fila_df)} na fila atual")
-
-            c1,c2=st.columns([1.3,1])
-            with c1:
-                st.write(f"**CPF/CNPJ:** {atual.get('documento') or '-'}")
-                if str(atual.get("email") or "").strip():
-                    st.write(f"**E-mail:** {atual.get('email')}")
-            with c2:
-                st.write(f"**Status:** {atual.get('status') or 'SEM CONTATO'}")
-
             tels=[
                 str(t).strip() for t in [atual.get("telefone1"),atual.get("telefone2"),atual.get("telefone3")]
                 if str(t or "").strip() and str(t or "").strip().upper() not in {"NAN","NONE","NÃO TEM","NAO TEM","-"}
             ]
-            st.markdown("#### ☎️ Contato")
-            if tels:
-                st.info("  •  ".join(tels))
-            else:
-                st.warning("Sem telefone válido cadastrado.")
+
+            # Cabeçalho compacto: tudo essencial em poucas linhas
+            st.markdown(
+                f"""
+                <div style="padding:.2rem 0 .35rem 0;">
+                    <div style="display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;">
+                        <span style="font-size:1.5rem;font-weight:800;color:#20263a;">{atual['nome']}</span>
+                        <span style="font-size:.82rem;padding:.18rem .5rem;border-radius:.6rem;background:#eef3ff;">{tag}</span>
+                    </div>
+                    <div style="margin-top:.35rem;color:#586174;font-size:.9rem;">
+                        <b>CPF/CNPJ:</b> {atual.get('documento') or '-'}
+                        &nbsp;&nbsp;•&nbsp;&nbsp;
+                        <b>Status:</b> {atual.get('status') or 'SEM CONTATO'}
+                        &nbsp;&nbsp;•&nbsp;&nbsp;
+                        <b>Fila:</b> 1 de {len(fila_df)}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            contato_txt = " • ".join(tels) if tels else "Sem telefone válido cadastrado"
+            email_txt = str(atual.get("email") or "").strip()
+            linha_contato = f"📞 {contato_txt}"
+            if email_txt:
+                linha_contato += f" &nbsp;&nbsp;|&nbsp;&nbsp; ✉️ {email_txt}"
+
+            st.markdown(
+                f"""
+                <div style="background:#f6f8fb;border:1px solid #e6e9ef;border-radius:10px;
+                            padding:.65rem .8rem;margin:.25rem 0 .4rem 0;font-size:.95rem;">
+                    {linha_contato}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
             # Histórico compacto
             hist_emp = contatos[
@@ -2222,11 +2242,15 @@ elif menu == "📞 Fila de contatos":
                     f"Último contato: {data_br(ult.get('data_contato'))} • "
                     f"{ult.get('tipo_contato') or '-'} • {ult.get('resultado') or '-'}"
                 )
-                with st.expander("Ver histórico"):
-                    historico_cliente(contatos,empresa_id)
 
-            with st.expander("✏️ Editar cadastro",expanded=False):
-                painel_edicao_empresa(atual,prefixo="fila_cadastro")
+            c_hist, c_edit = st.columns([1,1])
+            with c_hist:
+                if not hist_emp.empty:
+                    with st.expander("🕘 Histórico", expanded=False):
+                        historico_cliente(contatos,empresa_id)
+            with c_edit:
+                with st.expander("✏️ Editar cadastro",expanded=False):
+                    painel_edicao_empresa(atual,prefixo="fila_cadastro")
 
             st.divider()
 
@@ -2390,10 +2414,14 @@ elif menu == "🔥 Clientes em andamento":
     if andamento.empty:
         st.info("Nenhum cliente em andamento no momento.")
     else:
-        andamento["ag_dt"]=pd.to_datetime(andamento["data_agendamento"],errors="coerce").dt.date
+        andamento["ag_dt"]=pd.to_datetime(
+            andamento["data_agendamento"],
+            errors="coerce"
+        ).dt.normalize()
         hoje=date.today()
-        atrasados=int(((andamento["ag_dt"].notna())&(andamento["ag_dt"]<hoje)).sum())
-        hoje_qtd=int(((andamento["ag_dt"].notna())&(andamento["ag_dt"]==hoje)).sum())
+        hoje_ts=pd.Timestamp(hoje).normalize()
+        atrasados=int(((andamento["ag_dt"].notna())&(andamento["ag_dt"]<hoje_ts)).sum())
+        hoje_qtd=int(((andamento["ag_dt"].notna())&(andamento["ag_dt"]==hoje_ts)).sum())
 
         a,b,c,d=st.columns(4)
         a.metric("Em andamento",len(andamento))
@@ -2409,7 +2437,7 @@ elif menu == "🔥 Clientes em andamento":
         view=andamento[andamento["status"].isin(filtro)].copy() if filtro else andamento.copy()
 
         # Ordena pendências primeiro
-        view["_ord"]=view["ag_dt"].apply(lambda d:0 if pd.notna(d) and d<=hoje else 1)
+        view["_ord"]=view["ag_dt"].apply(lambda d:0 if pd.notna(d) and d<=hoje_ts else 1)
         view=view.sort_values(["_ord","ag_dt","nome"],na_position="last").drop(columns="_ord")
 
         st.markdown("### Carteira em andamento")
@@ -2737,5 +2765,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.2 • Base Protegida")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.3 • Fila Compacta")
 
