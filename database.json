@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T20:09:46",
+    "ultima_atualizacao": "2026-08-19T20:12:39",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -29371,7 +29371,7 @@
       "id": 1728,
       "documento": "49.748.554/0001-60",
       "nome": "CALIGADAN ECOMMERCE LTDA",
-      "telefone1": "(27) 99615-1068",
+      "telefone1": "(11) 98815-0774",
       "telefone2": "(11) 3989-2222",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -29382,7 +29382,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1729,
