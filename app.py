@@ -1844,6 +1844,26 @@ menu = st.sidebar.radio(
 )
 
 # ---------------- DASHBOARD ----------------
+
+def normalizar_data_historico(valor):
+    """Aceita ISO, dd/mm/aaaa, timestamps e datas antigas sem perder registros válidos."""
+    if valor is None:
+        return pd.NaT
+
+    texto = str(valor).strip()
+    if not texto or texto.lower() in {"nan", "none", "nat"}:
+        return pd.NaT
+
+    # ISO / timestamp
+    dt = pd.to_datetime(texto, errors="coerce")
+    if pd.notna(dt):
+        return dt
+
+    # Formato brasileiro explícito
+    dt = pd.to_datetime(texto, errors="coerce", dayfirst=True)
+    return dt
+
+
 if menu == "📊 Dashboard":
     hoje = date.today()
     st.markdown("""
@@ -1865,8 +1885,13 @@ if menu == "📊 Dashboard":
 
     analitico = contatos.copy()
     if not analitico.empty:
-        analitico = analitico[analitico["tipo_contato"] != "HISTÓRICO IMPORTADO"].copy()
-        analitico["data_dt"] = pd.to_datetime(analitico["data_contato"], errors="coerce").dt.date
+        # Toda métrica é reconstruída a partir do histórico persistente.
+        # Não excluímos registros antigos/importados apenas pelo tipo, pois versões
+        # anteriores do app podem ter gravado contatos reais nessa classificação.
+        analitico["_data_parse"] = analitico["data_contato"].apply(normalizar_data_historico)
+        analitico["data_dt"] = analitico["_data_parse"].apply(
+            lambda x: x.date() if pd.notna(x) else None
+        )
         analitico = analitico[analitico["data_dt"].notna()].copy()
 
         def status_g(row):
@@ -1878,6 +1903,13 @@ if menu == "📊 Dashboard":
             return s or r or "SEM CLASSIFICAÇÃO"
 
         analitico["status_gerencial"] = analitico.apply(status_g, axis=1)
+
+        # Mantém contatos históricos reais, inclusive os originados de versões antigas.
+        # Só descarta linhas completamente vazias, sem data/empresa/resultado/status.
+        analitico = analitico[
+            analitico["data_dt"].notna()
+            & analitico["empresa_id"].notna()
+        ].copy()
 
     periodo = st.selectbox(
         "Período",
@@ -1980,7 +2012,15 @@ if menu == "📊 Dashboard":
     st.divider()
     st.markdown('<div class="sec">🎯 Resultado dos contatos no período</div>', unsafe_allow_html=True)
     if selecionado.empty:
-        st.info("Nenhum contato no período.")
+        st.info("Nenhum contato encontrado no período selecionado.")
+        if not analitico.empty:
+            datas_disponiveis = sorted(
+                {d for d in analitico["data_dt"].dropna().tolist()},
+                reverse=True
+            )
+            if datas_disponiveis:
+                ultimas = ", ".join(d.strftime("%d/%m/%Y") for d in datas_disponiveis[:5])
+                st.caption(f"Últimas datas encontradas no histórico: {ultimas}")
     else:
         res = status_s.value_counts().rename_axis("Status").reset_index(name="Quantidade")
         bars = alt.Chart(res).mark_bar(cornerRadiusEnd=6).encode(
@@ -2169,9 +2209,8 @@ elif menu == "📞 Fila de contatos":
 
             # Histórico compacto
             hist_emp = contatos[
-                (contatos["empresa_id"]==empresa_id)&
-                (contatos["tipo_contato"]!="HISTÓRICO IMPORTADO")
-            ] if not contatos.empty else pd.DataFrame()
+                (contatos["empresa_id"]==empresa_id)
+            ].copy() if not contatos.empty else pd.DataFrame()
             if not hist_emp.empty:
                 ult=hist_emp.iloc[0]
                 st.caption(
@@ -2693,5 +2732,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V9 • Fluxo Comercial")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.1 • Histórico Corrigido")
 
