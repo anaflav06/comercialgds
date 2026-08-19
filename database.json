@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T17:48:55",
+    "ultima_atualizacao": "2026-08-19T17:49:49",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34440,15 +34440,15 @@
       "telefone1": "(84) 3234-7518",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "CONTATO INVÁLIDO",
+      "observacao_atual": "Telefone inválido / não completa.",
+      "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 2027,
@@ -59040,6 +59040,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-19T17:46:53",
       "seq_global": 161,
+      "usuario": "celso"
+    },
+    {
+      "id": 1582,
+      "empresa_id": 2026,
+      "data_contato": "2026-08-19",
+      "tipo_contato": "OUTRO",
+      "resultado": "CONTATO INVÁLIDO",
+      "status_novo": "CONTATO INVÁLIDO",
+      "observacao": "Telefone inválido / não completa.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-19T17:49:49",
+      "seq_global": 162,
       "usuario": "celso"
     }
   ],
