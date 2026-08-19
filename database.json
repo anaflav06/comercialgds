@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T17:42:48",
+    "ultima_atualizacao": "2026-08-19T17:43:43",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -26754,7 +26754,7 @@
       "documento": "35.195.780/0001-57",
       "nome": "BRUNO RIBEIRO ALVES DE LIMA 36273802823",
       "telefone1": "(19) 3803-5125",
-      "telefone2": "",
+      "telefone2": "(19) 99912-0488",
       "telefone3": "",
       "status": "SEM CONTATO",
       "observacao_atual": "",
@@ -59135,6 +59135,15 @@
       "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
       "data": "2026-08-19",
       "criado_em": "2026-08-19T17:42:48",
+      "usuario": "celso"
+    },
+    {
+      "id": 16,
+      "empresa_id": 1574,
+      "acao": "CONTATO EXTERNO ENCONTRADO",
+      "detalhes": "(19) 99912-0488",
+      "data": "2026-08-19",
+      "criado_em": "2026-08-19T17:43:43",
       "usuario": "celso"
     }
   ]
