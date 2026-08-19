@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T20:25:18",
-    "ultimo_usuario": "jessica"
+    "ultima_atualizacao": "2026-08-19T20:26:16",
+    "ultimo_usuario": "celso"
   },
   "empresas": [
     {
@@ -16717,7 +16717,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "nan"
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 984,
@@ -30038,7 +30039,7 @@
       "telefone1": "(51) 99678-9131",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-17",
       "criado_em": "2026-08-13T18:21:57",
@@ -30046,7 +30047,8 @@
       "retorno_apos_seq": 376,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "👔 Aguardando responsável"
+      "proxima_acao": "👔 Aguardando responsável",
+      "email": ""
     },
     {
       "id": 1768,
