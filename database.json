@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T13:41:08",
+    "ultima_atualizacao": "2026-08-19T13:41:28",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -25274,7 +25274,7 @@
       "id": 1487,
       "documento": "17.828.384/0003-08",
       "nome": "BRASTEMA TECNOLOGIA TEXTIL LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(19) 3924-5126",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -58858,6 +58858,15 @@
       "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
       "data": "2026-08-19",
       "criado_em": "2026-08-19T13:41:08",
+      "usuario": "celso"
+    },
+    {
+      "id": 7,
+      "empresa_id": 1487,
+      "acao": "CONTATO EXTERNO ENCONTRADO",
+      "detalhes": "(19) 3924-5126",
+      "data": "2026-08-19",
+      "criado_em": "2026-08-19T13:41:28",
       "usuario": "celso"
     }
   ]
