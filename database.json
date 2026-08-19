@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T13:26:50",
+    "ultima_atualizacao": "2026-08-19T13:31:57",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -35647,15 +35647,15 @@
       "telefone1": "(11) 95433-1010",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "AGUARDANDO CLIENTE",
+      "observacao_atual": "Foi feita uma tentativa de contato sem retorno em 19/03/26, depois em 29/05 e  esta é a terceira tentativa",
+      "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 343,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "ENVIAR WHATSAPP"
     },
     {
       "id": 2098,
@@ -58774,6 +58774,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-19T13:26:50",
       "seq_global": 142,
+      "usuario": "celso"
+    },
+    {
+      "id": 1563,
+      "empresa_id": 2097,
+      "data_contato": "2026-08-19",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "AGUARDANDO CLIENTE",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "Foi feita uma tentativa de contato sem retorno em 19/03/26, depois em 29/05 e  esta é a terceira tentativa",
+      "proxima_acao": "ENVIAR WHATSAPP",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-19T13:31:57",
+      "seq_global": 143,
       "usuario": "celso"
     }
   ],
