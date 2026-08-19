@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T17:24:43",
+    "ultima_atualizacao": "2026-08-19T17:24:48",
     "ultimo_usuario": "jessica"
   },
   "empresas": [
@@ -35698,9 +35698,9 @@
       "telefone1": "",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "SEM CONTATO LOCALIZADO",
+      "observacao_atual": "Contato não localizado após pesquisa externa.",
+      "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
       "retorno_apos_seq": null,
@@ -58956,6 +58956,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-19T17:24:43",
       "seq_global": 155,
+      "usuario": "jessica"
+    },
+    {
+      "id": 1576,
+      "empresa_id": 2100,
+      "data_contato": "2026-08-19",
+      "tipo_contato": "OUTRO",
+      "resultado": "SEM CONTATO LOCALIZADO",
+      "status_novo": "SEM CONTATO LOCALIZADO",
+      "observacao": "Contato não localizado após pesquisa externa.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-19T17:24:48",
+      "seq_global": 156,
       "usuario": "jessica"
     }
   ],
