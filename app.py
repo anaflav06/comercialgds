@@ -2424,83 +2424,379 @@ elif menu == "📞 Fila de contatos":
 
 # ---------------- CLIENTES EM ANDAMENTO ----------------
 elif menu == "🔥 Clientes em andamento":
-    st.subheader("🔥 Clientes em andamento")
-    st.caption("Oportunidades que já avançaram além da prospecção inicial.")
+    st.markdown("## 🔥 Clientes em andamento")
+    st.caption("Oportunidades que já avançaram. Atualize um cliente por vez, como na fila de contatos.")
 
-    andamento=empresas[empresas["status"].isin(STATUS_EM_ANDAMENTO)].copy()
+    flash_and = st.session_state.pop("flash_andamento", None)
+    if flash_and:
+        st.success(flash_and)
+
+    andamento = empresas[empresas["status"].isin(STATUS_EM_ANDAMENTO)].copy()
 
     if andamento.empty:
         st.info("Nenhum cliente em andamento no momento.")
     else:
-        andamento["ag_dt"]=pd.to_datetime(
+        hoje = date.today()
+        hoje_ts = pd.Timestamp(hoje).normalize()
+
+        andamento["ag_dt"] = pd.to_datetime(
             andamento["data_agendamento"],
             errors="coerce"
         ).dt.normalize()
-        hoje=date.today()
-        hoje_ts=pd.Timestamp(hoje).normalize()
-        atrasados=int(((andamento["ag_dt"].notna())&(andamento["ag_dt"]<hoje_ts)).sum())
-        hoje_qtd=int(((andamento["ag_dt"].notna())&(andamento["ag_dt"]==hoje_ts)).sum())
 
-        a,b,c,d=st.columns(4)
-        a.metric("Em andamento",len(andamento))
-        b.metric("Retornos atrasados",atrasados)
-        c.metric("Retornos hoje",hoje_qtd)
-        d.metric("Negociações",int((andamento["status"]=="EM NEGOCIAÇÃO").sum()))
+        # Prioridade: retorno atrasado -> retorno hoje -> demais oportunidades.
+        def prioridade_andamento(row):
+            ag = row.get("ag_dt")
+            if pd.notna(ag) and ag < hoje_ts:
+                return 1
+            if pd.notna(ag) and ag == hoje_ts:
+                return 2
+            return 3
 
-        filtro=st.multiselect(
-            "Filtrar status",
-            sorted(andamento["status"].dropna().unique().tolist()),
-            placeholder="Todos os status"
+        andamento["_p"] = andamento.apply(prioridade_andamento, axis=1)
+        andamento = andamento.sort_values(
+            ["_p", "ag_dt", "nome"],
+            na_position="last"
+        ).reset_index(drop=True)
+
+        total_and = len(andamento)
+
+        # Navegação local, sem alterar banco ao apenas avançar/voltar.
+        if "andamento_pos" not in st.session_state:
+            st.session_state["andamento_pos"] = 0
+
+        pos = int(st.session_state.get("andamento_pos", 0) or 0)
+        pos = max(0, min(pos, total_and - 1))
+        st.session_state["andamento_pos"] = pos
+
+        # Procurar outro cliente, sem tabela grande.
+        with st.expander("🔎 Procurar outro cliente em andamento", expanded=False):
+            opcoes = {
+                f"{r['nome']} — {r.get('status','')}": idx
+                for idx, r in andamento.iterrows()
+            }
+            busca = st.selectbox(
+                "Cliente",
+                list(opcoes.keys()),
+                index=pos if pos < len(opcoes) else 0,
+                key="andamento_busca_cliente"
+            )
+            if st.button("Abrir cliente", use_container_width=True, key="andamento_abrir_cliente"):
+                st.session_state["andamento_pos"] = int(opcoes[busca])
+                st.rerun()
+
+        atual_and = andamento.iloc[pos]
+        eid = int(atual_and["id"])
+        prefixo = f"andamento_simple_{eid}"
+
+        # Cabeçalho compacto
+        st.markdown(
+            f"""
+            <div style="padding:.2rem 0 .35rem 0;">
+                <div style="display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;">
+                    <span style="font-size:1.5rem;font-weight:800;color:#20263a;">
+                        {atual_and['nome']}
+                    </span>
+                    <span style="font-size:.82rem;padding:.18rem .5rem;border-radius:.6rem;
+                                 background:#fff0e8;color:#9a3e00;">
+                        🔥 EM ANDAMENTO
+                    </span>
+                </div>
+                <div style="margin-top:.35rem;color:#586174;font-size:.9rem;">
+                    <b>CPF/CNPJ:</b> {atual_and.get('documento') or '-'}
+                    &nbsp;&nbsp;•&nbsp;&nbsp;
+                    <b>Status:</b> {atual_and.get('status') or '-'}
+                    &nbsp;&nbsp;•&nbsp;&nbsp;
+                    <b>Cliente:</b> {pos + 1} de {total_and}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-        view=andamento[andamento["status"].isin(filtro)].copy() if filtro else andamento.copy()
 
-        # Ordena pendências primeiro
-        view["_ord"]=view["ag_dt"].apply(lambda d:0 if pd.notna(d) and d<=hoje_ts else 1)
-        view=view.sort_values(["_ord","ag_dt","nome"],na_position="last").drop(columns="_ord")
+        tels = [
+            str(t).strip()
+            for t in [
+                atual_and.get("telefone1"),
+                atual_and.get("telefone2"),
+                atual_and.get("telefone3")
+            ]
+            if str(t or "").strip()
+            and str(t or "").strip().upper() not in {"NAN","NONE","NÃO TEM","NAO TEM","-"}
+        ]
+        contato_txt = " • ".join(tels) if tels else "Sem telefone válido cadastrado"
+        email_txt = str(atual_and.get("email") or "").strip()
 
-        st.markdown("### Carteira em andamento")
-        editor_empresas(view,key_prefix="clientes_andamento")
+        linha_contato = f"📞 {contato_txt}"
+        if email_txt:
+            linha_contato += f" &nbsp;&nbsp;|&nbsp;&nbsp; ✉️ {email_txt}"
 
-        st.markdown("### Atualizar andamento")
-        mapa={f"{r['nome']} — {r.get('status','')}":int(r["id"]) for _,r in view.head(200).iterrows()}
-        escolha=st.selectbox("Cliente",list(mapa.keys()),key="andamento_cliente")
-        eid=mapa[escolha]
-        emp=view[view["id"]==eid].iloc[0]
+        st.markdown(
+            f"""
+            <div style="background:#f6f8fb;border:1px solid #e6e9ef;border-radius:10px;
+                        padding:.65rem .8rem;margin:.25rem 0 .35rem 0;font-size:.95rem;">
+                {linha_contato}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-        etapa=st.pills(
+        ultima_obs = str(atual_and.get("observacao_atual") or "").strip()
+        prox_acao = str(atual_and.get("proxima_acao") or "").strip()
+        data_ag = atual_and.get("data_agendamento")
+
+        if ultima_obs:
+            st.caption(f"📝 Última observação: {ultima_obs}")
+        if prox_acao:
+            texto_prox = f"➡️ Próxima ação: {prox_acao}"
+            if pd.notna(data_ag) and str(data_ag).strip() not in {"", "None", "nan"}:
+                texto_prox += f" • {data_br(data_ag)}"
+            st.caption(texto_prox)
+
+        # Histórico e edição, sem ocupar a tela principal.
+        hist_and = contatos[
+            contatos["empresa_id"] == eid
+        ].copy() if not contatos.empty else pd.DataFrame()
+
+        c_hist, c_edit = st.columns(2)
+        with c_hist:
+            if not hist_and.empty:
+                with st.expander("🕘 Histórico", expanded=False):
+                    historico_cliente(contatos, eid)
+        with c_edit:
+            with st.expander("✏️ Editar cadastro", expanded=False):
+                painel_edicao_empresa(atual_and, prefixo="andamento_cadastro")
+
+        st.divider()
+
+        st.markdown("### O que aconteceu agora?")
+
+        etapa = st.pills(
             "Nova etapa",
-            ["👔 Aguardando responsável","📅 Retorno agendado",
-             "🔥 Em andamento","🤝 Reunião agendada","🧾 Cotação solicitada","📤 Cotação enviada",
-             "📄 Proposta enviada","💚 Em negociação","🏆 Fechado / ganho","🚫 Sem interesse"],
+            [
+                "👔 Aguardando responsável",
+                "📅 Retorno agendado",
+                "🔥 Em andamento",
+                "🤝 Reunião agendada",
+                "🧾 Cotação solicitada",
+                "📤 Cotação enviada",
+                "📄 Proposta enviada",
+                "💚 Em negociação",
+                "🏆 Fechado / ganho",
+                "🚫 Sem interesse",
+            ],
             selection_mode="single",
-            key=f"and_etapa_{eid}"
+            key=f"{prefixo}_etapa"
         )
-        obs_a=st.text_area("Observação",value="",key=f"and_obs_{eid}",height=80)
-        data_a=None
-        if etapa in {"📅 Retorno agendado","🤝 Reunião agendada","👔 Aguardando responsável"}:
-            usar_data=st.checkbox("Definir data de retorno",value=etapa in {"📅 Retorno agendado","🤝 Reunião agendada"},key=f"and_usar_data_{eid}")
-            if usar_data:
-                data_a=st.date_input("Data",value=hoje+timedelta(days=1),min_value=hoje,format="DD/MM/YYYY",key=f"and_data_{eid}")
 
-        if st.button("💾 Salvar andamento",type="primary",use_container_width=True,key=f"and_salvar_{eid}"):
+        data_nova = None
+        if etapa in {
+            "📅 Retorno agendado",
+            "🤝 Reunião agendada",
+            "👔 Aguardando responsável"
+        }:
+            usar_data = st.checkbox(
+                "📅 Definir data de retorno",
+                value=etapa in {"📅 Retorno agendado", "🤝 Reunião agendada"},
+                key=f"{prefixo}_usar_data"
+            )
+            if usar_data:
+                data_nova = st.date_input(
+                    "Data do retorno",
+                    value=hoje + timedelta(days=1),
+                    min_value=hoje,
+                    format="DD/MM/YYYY",
+                    key=f"{prefixo}_data"
+                )
+
+        obs_a = st.text_area(
+            "📝 Observação (opcional)",
+            placeholder="Ex.: cliente pediu proposta revisada; retornar amanhã.",
+            key=f"{prefixo}_obs",
+            height=85
+        )
+
+        st.divider()
+
+        b1, b2, b3 = st.columns([1, 1, 1.8])
+
+        with b1:
+            anterior_bt = st.button(
+                "⬅️ Anterior",
+                use_container_width=True,
+                key=f"{prefixo}_anterior"
+            )
+        with b2:
+            pular_bt = st.button(
+                "⏭️ Pular",
+                use_container_width=True,
+                key=f"{prefixo}_pular"
+            )
+        with b3:
+            salvar_bt = st.button(
+                "💾 Salvar e próximo",
+                type="primary",
+                use_container_width=True,
+                key=f"{prefixo}_salvar"
+            )
+
+        if anterior_bt:
+            st.session_state["andamento_pos"] = (pos - 1) % total_and
+            st.rerun()
+
+        if pular_bt:
+            # Navega sem registrar contato, sem alterar status e sem gravar no banco.
+            st.session_state["andamento_pos"] = (pos + 1) % total_and
+            st.rerun()
+
+        if salvar_bt:
             if not etapa:
-                st.warning("Selecione a etapa.")
+                st.warning("Selecione a nova etapa.")
             else:
-                mapa_result={
-                    "👔 Aguardando responsável":"AGUARDANDO CONTATO DO RESPONSÁVEL",
-                    "📅 Retorno agendado":"RETORNAR EM OUTRA DATA",
-                    "🔥 Em andamento":"CLIENTE RESPONDEU",
-                    "🤝 Reunião agendada":"REUNIÃO AGENDADA",
-                    "🧾 Cotação solicitada":"SOLICITOU COTAÇÃO",
-                    "📤 Cotação enviada":"COTAÇÃO ENVIADA",
-                    "📄 Proposta enviada":"PROPOSTA ENVIADA",
-                    "💚 Em negociação":"EM NEGOCIAÇÃO",
-                    "🏆 Fechado / ganho":"FECHADO",
-                    "🚫 Sem interesse":"SEM INTERESSE",
+                mapa_result = {
+                    "👔 Aguardando responsável": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+                    "📅 Retorno agendado": "RETORNAR EM OUTRA DATA",
+                    "🔥 Em andamento": "CLIENTE RESPONDEU",
+                    "🤝 Reunião agendada": "REUNIÃO AGENDADA",
+                    "🧾 Cotação solicitada": "SOLICITOU COTAÇÃO",
+                    "📤 Cotação enviada": "COTAÇÃO ENVIADA",
+                    "📄 Proposta enviada": "PROPOSTA ENVIADA",
+                    "💚 Em negociação": "EM NEGOCIAÇÃO",
+                    "🏆 Fechado / ganho": "FECHADO",
+                    "🚫 Sem interesse": "SEM INTERESSE",
                 }
-                with st.spinner("Salvando..."):
-                    registrar_contato(eid,hoje,"OUTRO",mapa_result[etapa],obs_a,etapa,data_a)
-                st.success("Andamento salvo.")
+
+                finaliza = etapa in {"🏆 Fechado / ganho", "🚫 Sem interesse"}
+
+                with st.spinner("Salvando andamento..."):
+                    registrar_contato(
+                        eid,
+                        hoje,
+                        "OUTRO",
+                        mapa_result[etapa],
+                        obs_a,
+                        etapa,
+                        data_nova
+                    )
+
+                # Se saiu do menu, o próximo ocupou a mesma posição.
+                # Se permaneceu, avança uma posição.
+                if finaliza:
+                    st.session_state["andamento_pos"] = min(pos, max(total_and - 2, 0))
+                else:
+                    st.session_state["andamento_pos"] = (pos + 1) % total_and
+
+                st.session_state["flash_andamento"] = f"✅ {atual_and['nome']}: andamento salvo."
+                st.rerun()
+
+
+    # Inclusão direta de oportunidade que não veio da fila de prospecção.
+    st.divider()
+    with st.expander("➕ Incluir cliente direto em andamento", expanded=False):
+        st.caption(
+            "Use para clientes que já estão em negociação/acompanhamento e não precisam passar pela Fila de contatos."
+        )
+
+        with st.form("form_cliente_direto_andamento", clear_on_submit=True):
+            nome_direto = st.text_input(
+                "Nome / Empresa *",
+                placeholder="Nome da empresa ou cliente"
+            )
+
+            c1, c2 = st.columns(2)
+            documento_direto = c1.text_input(
+                "CPF/CNPJ",
+                placeholder="Opcional"
+            )
+            telefone_direto = c2.text_input(
+                "Telefone",
+                placeholder="(00) 00000-0000"
+            )
+
+            c3, c4 = st.columns([1.2, 1])
+            email_direto = c3.text_input(
+                "E-mail",
+                placeholder="Opcional"
+            )
+            status_direto_ui = c4.selectbox(
+                "Status inicial *",
+                [
+                    "👔 Aguardando responsável",
+                    "📅 Retorno agendado",
+                    "🔥 Em andamento",
+                    "🤝 Reunião agendada",
+                    "🧾 Cotação solicitada",
+                    "📤 Cotação enviada",
+                    "📄 Proposta enviada",
+                    "💚 Em negociação",
+                ]
+            )
+
+            salvar_direto = st.form_submit_button(
+                "➕ Incluir em Clientes em andamento",
+                type="primary",
+                use_container_width=True
+            )
+
+        if salvar_direto:
+            erros = []
+
+            if not str(nome_direto or "").strip():
+                erros.append("Informe o nome da empresa/cliente.")
+
+            if not tem_identificador_util(
+                documento_direto,
+                [telefone_direto],
+                email_direto
+            ):
+                erros.append("Informe pelo menos CPF/CNPJ, telefone ou e-mail.")
+
+            if documento_direto and not documento_valido(documento_direto):
+                erros.append("O CPF/CNPJ informado é inválido.")
+
+            if telefone_direto and len(somente_digitos(telefone_direto)) not in (10, 11):
+                erros.append("O telefone deve ter DDD e 10 ou 11 dígitos.")
+
+            if email_direto and not email_valido(email_direto):
+                erros.append("O e-mail informado é inválido.")
+
+            if eh_duplicado(
+                documento_direto,
+                [telefone_direto],
+                empresas,
+                email_direto
+            ):
+                erros.append("Já existe cliente com este CPF/CNPJ, telefone ou e-mail.")
+
+            mapa_status_direto = {
+                "👔 Aguardando responsável": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+                "📅 Retorno agendado": "RETORNO AGENDADO",
+                "🔥 Em andamento": "EM ANDAMENTO",
+                "🤝 Reunião agendada": "REUNIÃO AGENDADA",
+                "🧾 Cotação solicitada": "COTAÇÃO SOLICITADA",
+                "📤 Cotação enviada": "COTAÇÃO ENVIADA",
+                "📄 Proposta enviada": "PROPOSTA ENVIADA",
+                "💚 Em negociação": "EM NEGOCIAÇÃO",
+            }
+
+            if erros:
+                for erro in erros:
+                    st.error(erro)
+            else:
+                with st.spinner("Incluindo cliente em andamento..."):
+                    salvar_empresa(
+                        documento_direto,
+                        nome_direto,
+                        [telefone_direto, "", ""],
+                        mapa_status_direto[status_direto_ui],
+                        "",
+                        "INCLUSÃO DIRETA EM ANDAMENTO",
+                        email_direto
+                    )
+
+                st.session_state["flash_andamento"] = (
+                    f"✅ {str(nome_direto).strip().upper()} incluído diretamente em Clientes em andamento."
+                )
                 st.rerun()
 
 # ---------------- IMPORTAÇÃO EM LOTE ----------------
@@ -2782,5 +3078,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.4 • Fluxo Ajustado")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V9.6 • Inclusão Direta")
 
