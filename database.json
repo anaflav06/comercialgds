@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T17:39:47",
+    "ultima_atualizacao": "2026-08-19T17:40:30",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -33689,7 +33689,7 @@
       "id": 1982,
       "documento": "62.609.193/0001-30",
       "nome": "BRUNO GARISTO JUNIOR",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(17) 3212-7126",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -59103,6 +59103,15 @@
       "detalhes": "Busca de telefone/WhatsApp/site fora da base.",
       "data": "2026-08-19",
       "criado_em": "2026-08-19T17:39:47",
+      "usuario": "celso"
+    },
+    {
+      "id": 14,
+      "empresa_id": 1982,
+      "acao": "CONTATO EXTERNO ENCONTRADO",
+      "detalhes": "(17) 3212-7126",
+      "data": "2026-08-19",
+      "criado_em": "2026-08-19T17:40:30",
       "usuario": "celso"
     }
   ]
