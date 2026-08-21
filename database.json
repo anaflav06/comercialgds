@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T12:30:10",
+    "ultima_atualizacao": "2026-08-21T12:30:23",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -33612,15 +33612,15 @@
       "telefone1": "NÃO TEM",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-21",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 386,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "nan",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
       "email": "contabilchn@gmail.com"
     },
     {
@@ -59401,6 +59401,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-21T12:27:43",
       "seq_global": 185,
+      "usuario": "celso"
+    },
+    {
+      "id": 1606,
+      "empresa_id": 1977,
+      "data_contato": "2026-08-21",
+      "tipo_contato": "E-MAIL",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-21T12:30:23",
+      "seq_global": 186,
       "usuario": "celso"
     }
   ],
