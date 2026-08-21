@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T19:09:28",
+    "ultima_atualizacao": "2026-08-21T19:10:12",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -33191,7 +33191,7 @@
       "telefone1": "(11) 95716-3643",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-13T18:21:57",
@@ -33199,7 +33199,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1953,
