@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-19T20:38:17",
-    "ultimo_usuario": "jessica"
+    "ultima_atualizacao": "2026-08-21T12:01:43",
+    "ultimo_usuario": "celso"
   },
   "empresas": [
     {
@@ -38324,6 +38324,24 @@
       "data_primeiro_contato": null,
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
+    },
+    {
+      "id": 2255,
+      "documento": "06.089.349/0001-28",
+      "nome": "ALGOMED PRODUTOS MEDICOS  LTDA",
+      "email": "algomed.to@gmail.com",
+      "telefone1": "(63) 9982-9728",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "Contato efetuado  em 19/03/2026, e cotação efetuada somente 20/08/2026 e fechado Cotação/awb 92052962",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-08-21T12:01:43",
+      "origem": "APP",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
