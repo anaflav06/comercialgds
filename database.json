@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T12:15:20",
+    "ultima_atualizacao": "2026-08-21T12:15:37",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -32896,15 +32896,15 @@
       "telefone1": "(11) 3145-3335",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-21",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 379,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "nan",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
       "email": "marcelo.polato@pensecontabil.com"
     },
     {
@@ -59300,6 +59300,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-21T12:07:08",
       "seq_global": 178,
+      "usuario": "celso"
+    },
+    {
+      "id": 1599,
+      "empresa_id": 1935,
+      "data_contato": "2026-08-21",
+      "tipo_contato": "E-MAIL",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-21T12:15:37",
+      "seq_global": 179,
       "usuario": "celso"
     }
   ],
