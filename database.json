@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T12:23:27",
+    "ultima_atualizacao": "2026-08-21T12:26:28",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -29611,7 +29611,7 @@
       "id": 1742,
       "documento": "50.374.091/0001-01",
       "nome": "CEIMIC FOOD DO BRASIL LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(19) 3864-9568",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -29622,7 +29622,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "contabil@contvieira.com.br"
     },
     {
       "id": 1743,
