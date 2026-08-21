@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T17:51:48",
+    "ultima_atualizacao": "2026-08-21T17:52:49",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -35233,7 +35233,7 @@
       "telefone1": "(11) 98832-1711",
       "telefone2": "(11) 94546-3883",
       "telefone3": "(11) 97692-0923",
-      "status": "SEM CONTATO",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-13T18:21:57",
@@ -35241,7 +35241,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 2073,
