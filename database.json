@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T13:47:06",
+    "ultima_atualizacao": "2026-08-21T13:52:26",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -33576,7 +33576,7 @@
       "id": 1975,
       "documento": "62.250.445/0001-87",
       "nome": "CLICKZA LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(11) 2598-8224",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -33587,7 +33587,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "contato@baraticontabilidade.com.br"
     },
     {
       "id": 1976,
