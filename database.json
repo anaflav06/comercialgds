@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T19:00:30",
+    "ultima_atualizacao": "2026-08-21T19:01:57",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -36019,9 +36019,9 @@
       "telefone1": "(54) 9913-8870",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "SEM INTERESSE",
+      "observacao_atual": "Trata-se de Base AZUL MARAÚ RS",
+      "data_primeiro_contato": "2026-08-21",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
       "retorno_apos_seq": null,
@@ -60039,6 +60039,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-21T19:00:30",
       "seq_global": 230,
+      "usuario": "celso"
+    },
+    {
+      "id": 1651,
+      "empresa_id": 2118,
+      "data_contato": "2026-08-21",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Trata-se de Base AZUL MARAÚ RS",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-21T19:01:57",
+      "seq_global": 231,
       "usuario": "celso"
     }
   ],
