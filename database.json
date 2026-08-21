@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T19:01:57",
+    "ultima_atualizacao": "2026-08-21T19:03:59",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34748,7 +34748,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "darkhorizonimports@gmail.com"
     },
     {
       "id": 2044,
