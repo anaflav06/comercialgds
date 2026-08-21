@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T14:54:45",
+    "ultima_atualizacao": "2026-08-21T15:02:17",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -24884,7 +24884,7 @@
       "id": 1464,
       "documento": "12.487.579/0001-48",
       "nome": "CONCEITO MAQUINAS E FERRAMENTAS DIAMANTADAS",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(19) 3281-3135",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -24895,7 +24895,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1465,
