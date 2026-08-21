@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T13:44:35",
+    "ultima_atualizacao": "2026-08-21T13:45:10",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -35963,15 +35963,15 @@
       "telefone1": "(11) 99205-9004",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-21",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 406,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2116,
@@ -59684,6 +59684,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-21T13:44:34",
       "seq_global": 205,
+      "usuario": "celso"
+    },
+    {
+      "id": 1626,
+      "empresa_id": 2115,
+      "data_contato": "2026-08-21",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-21T13:45:10",
+      "seq_global": 206,
       "usuario": "celso"
     }
   ],
