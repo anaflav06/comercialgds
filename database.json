@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T12:57:10",
+    "ultima_atualizacao": "2026-08-21T13:32:16",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34597,7 +34597,7 @@
       "id": 2035,
       "documento": "65.725.957/0001-40",
       "nome": "CHEFINHO GROUP ECOMMERCE LTDA",
-      "telefone1": "(11) 4023-4819",
+      "telefone1": "",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -34608,7 +34608,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "chefinhogroup@gmail.com"
     },
     {
       "id": 2036,
