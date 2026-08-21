@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T12:07:08",
+    "ultima_atualizacao": "2026-08-21T12:09:05",
     "ultimo_usuario": "celso"
   },
   "empresas": [
