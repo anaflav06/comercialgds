@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T12:05:03",
+    "ultima_atualizacao": "2026-08-21T12:07:08",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -38337,15 +38337,15 @@
       "telefone1": "(63) 9982-9728",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
-      "observacao_atual": "Cotação e fechamento 20/08/2026 cotação: 92052962",
-      "data_primeiro_contato": null,
+      "status": "FECHADO / GANHO",
+      "observacao_atual": "",
+      "data_primeiro_contato": "2026-08-21",
       "criado_em": "2026-08-21T12:01:43",
       "origem": "APP",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "🏆 Fechado / ganho"
     }
   ],
   "contatos": [
@@ -59286,6 +59286,20 @@
       "criado_em": "2026-08-19T20:38:17",
       "seq_global": 177,
       "usuario": "jessica"
+    },
+    {
+      "id": 1598,
+      "empresa_id": 2255,
+      "data_contato": "2026-08-21",
+      "tipo_contato": "OUTRO",
+      "resultado": "FECHADO",
+      "status_novo": "FECHADO / GANHO",
+      "observacao": "",
+      "proxima_acao": "🏆 Fechado / ganho",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-21T12:07:08",
+      "seq_global": 178,
+      "usuario": "celso"
     }
   ],
   "acoes_base": [
