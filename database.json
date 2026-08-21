@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T12:39:22",
+    "ultima_atualizacao": "2026-08-21T12:44:53",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -30380,7 +30380,7 @@
       "nome": "CERELAB LABORATORIOS QUIMICOS LTDA",
       "telefone1": "(11) 94229-7562",
       "telefone2": "(11) 95305-1004",
-      "telefone3": "(11) 94125-9747",
+      "telefone3": "(11) 3146-8777",
       "status": "SEM CONTATO",
       "observacao_atual": "",
       "data_primeiro_contato": null,
@@ -30389,7 +30389,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "administrativo@cerelab.com.br"
     },
     {
       "id": 1788,
