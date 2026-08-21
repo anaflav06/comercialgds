@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T14:03:24",
+    "ultima_atualizacao": "2026-08-21T14:04:27",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -25754,15 +25754,15 @@
       "telefone1": "(15) 98831-0312",
       "telefone2": "(15) 99662-2277",
       "telefone3": "(15) 99802-0603",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-21",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 413,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 1516,
@@ -59784,6 +59784,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-21T14:03:24",
       "seq_global": 212,
+      "usuario": "celso"
+    },
+    {
+      "id": 1633,
+      "empresa_id": 1515,
+      "data_contato": "2026-08-21",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-21T14:04:27",
+      "seq_global": 213,
       "usuario": "celso"
     }
   ],
