@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T13:47:47",
+    "ultima_atualizacao": "2026-08-24T13:49:48",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -25856,7 +25856,7 @@
       "id": 1521,
       "documento": "28.384.991/0004-15",
       "nome": "E ROMANOVSKI COMERCIAL LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(11) 99141-8773",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -25867,7 +25867,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1522,
