@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T13:44:25",
+    "ultima_atualizacao": "2026-08-24T13:47:36",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -32442,7 +32442,7 @@
       "id": 1908,
       "documento": "59.434.502/0001-73",
       "nome": "DUTRA ECOMMERCE COMERCIO DE PRODUTOS LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(11) 91202-2957",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -32453,7 +32453,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1909,
