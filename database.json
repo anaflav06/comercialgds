@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T20:29:50",
+    "ultima_atualizacao": "2026-08-24T20:30:07",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -30511,15 +30511,15 @@
       "telefone1": "(15) 99720-7534",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "1ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-24",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 506,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS"
     },
     {
       "id": 1795,
@@ -61128,6 +61128,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-24T20:29:50",
       "seq_global": 305,
+      "usuario": "celso"
+    },
+    {
+      "id": 1726,
+      "empresa_id": 1794,
+      "data_contato": "2026-08-24",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "1ª TENTATIVA SEM RETORNO",
+      "observacao": "",
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-24T20:30:07",
+      "seq_global": 306,
       "usuario": "celso"
     }
   ],
