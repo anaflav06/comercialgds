@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T13:47:36",
+    "ultima_atualizacao": "2026-08-24T13:47:47",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -32445,7 +32445,7 @@
       "telefone1": "(11) 91202-2957",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-13T18:21:57",
