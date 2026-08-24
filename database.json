@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T18:37:16",
+    "ultima_atualizacao": "2026-08-24T18:38:34",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -25742,15 +25742,15 @@
       "telefone1": "(11) 99349-3206",
       "telefone2": "(11) 93220-4568",
       "telefone3": "(11) 99494-4717",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-24",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 485,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 1515,
@@ -60833,6 +60833,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-24T18:37:16",
       "seq_global": 284,
+      "usuario": "celso"
+    },
+    {
+      "id": 1705,
+      "empresa_id": 1514,
+      "data_contato": "2026-08-24",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-24T18:38:34",
+      "seq_global": 285,
       "usuario": "celso"
     }
   ],
