@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T18:42:38",
+    "ultima_atualizacao": "2026-08-24T18:43:15",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -36294,15 +36294,15 @@
       "telefone1": "(11) 4972-8677",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-24",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 491,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2134,
@@ -60917,6 +60917,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-24T18:42:38",
       "seq_global": 290,
+      "usuario": "celso"
+    },
+    {
+      "id": 1711,
+      "empresa_id": 2133,
+      "data_contato": "2026-08-24",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-24T18:43:15",
+      "seq_global": 291,
       "usuario": "celso"
     }
   ],
