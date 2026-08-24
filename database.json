@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-21T19:15:41",
+    "ultima_atualizacao": "2026-08-24T13:32:48",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -38363,6 +38363,24 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "🏆 Fechado / ganho"
+    },
+    {
+      "id": 2256,
+      "documento": "",
+      "nome": "LR AUTP PARTS",
+      "email": "",
+      "telefone1": "(11) 96335-2456",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "Cliente tem efetuado cotações",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-08-24T13:32:48",
+      "origem": "APP",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
