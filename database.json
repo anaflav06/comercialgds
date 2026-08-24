@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T14:00:32",
+    "ultima_atualizacao": "2026-08-24T14:02:55",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -28342,7 +28342,7 @@
       "id": 1667,
       "documento": "45.913.123/0001-51",
       "nome": "EDSEL JORGE JUNIOR",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(19) 3231-8688",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -28353,7 +28353,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1668,
