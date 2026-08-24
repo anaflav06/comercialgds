@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T14:10:43",
+    "ultima_atualizacao": "2026-08-24T14:13:25",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -31720,7 +31720,7 @@
       "telefone1": "(19) 99636-3918",
       "telefone2": "(19) 99635-7984",
       "telefone3": "(19) 99726-6867",
-      "status": "SEM CONTATO",
+      "status": "JÁ UTILIZA AZUL",
       "observacao_atual": "",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-13T18:21:57",
@@ -31728,7 +31728,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1866,
