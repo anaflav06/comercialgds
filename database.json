@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-25T14:06:27",
+    "ultima_atualizacao": "2026-08-25T14:06:30",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -36467,15 +36467,15 @@
       "telefone1": "(11) 97146-0663",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "",
-      "data_primeiro_contato": "2026-08-25",
+      "status": "SEM INTERESSE",
+      "observacao_atual": "Finalizado manualmente na fila.",
+      "data_primeiro_contato": null,
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 535,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": ""
     },
     {
       "id": 2144,
@@ -61542,13 +61542,13 @@
       "id": 1755,
       "empresa_id": 2143,
       "data_contato": "2026-08-25",
-      "tipo_contato": "WHATSAPP",
-      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
-      "status_novo": "AGUARDANDO CLIENTE",
-      "observacao": "",
-      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "tipo_contato": "FINALIZAÇÃO RÁPIDA",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Finalizado manualmente na fila.",
+      "proxima_acao": "",
       "data_proxima_acao": null,
-      "criado_em": "2026-08-25T14:06:27",
+      "criado_em": "2026-08-25T14:06:30",
       "seq_global": 335,
       "usuario": "celso"
     }
