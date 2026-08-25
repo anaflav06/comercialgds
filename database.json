@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-25T17:43:58",
+    "ultima_atualizacao": "2026-08-25T17:44:27",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -36553,15 +36553,15 @@
       "telefone1": "(94) 8400-0382",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-25",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 549,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2149,
@@ -61733,6 +61733,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-25T17:43:58",
       "seq_global": 348,
+      "usuario": "celso"
+    },
+    {
+      "id": 1769,
+      "empresa_id": 2148,
+      "data_contato": "2026-08-25",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-25T17:44:27",
+      "seq_global": 349,
       "usuario": "celso"
     }
   ],
