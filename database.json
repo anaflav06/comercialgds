@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-25T12:58:41",
+    "ultima_atualizacao": "2026-08-25T12:59:17",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -28755,15 +28755,15 @@
       "telefone1": "(11) 98871-8977",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-25",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 517,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 1692,
@@ -61283,6 +61283,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-25T12:58:41",
       "seq_global": 316,
+      "usuario": "celso"
+    },
+    {
+      "id": 1737,
+      "empresa_id": 1691,
+      "data_contato": "2026-08-25",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-25T12:59:17",
+      "seq_global": 317,
       "usuario": "celso"
     }
   ],
