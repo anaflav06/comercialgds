@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-25T17:36:45",
+    "ultima_atualizacao": "2026-08-25T17:38:00",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -28600,7 +28600,7 @@
       "id": 1682,
       "documento": "46.702.136/0002-25",
       "nome": "HCD PET COMERCIO ATACADISTA LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(11) 3541-2918",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -28611,7 +28611,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1683,
