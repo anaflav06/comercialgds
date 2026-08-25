@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-25T14:01:34",
+    "ultima_atualizacao": "2026-08-25T14:02:03",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -32760,15 +32760,15 @@
       "telefone1": "(19) 3283-9020",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "1ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-25",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 527,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS"
     },
     {
       "id": 1927,
@@ -61423,6 +61423,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-25T14:01:02",
       "seq_global": 326,
+      "usuario": "celso"
+    },
+    {
+      "id": 1747,
+      "empresa_id": 1926,
+      "data_contato": "2026-08-25",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "1ª TENTATIVA SEM RETORNO",
+      "observacao": "",
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-25T14:02:03",
+      "seq_global": 327,
       "usuario": "celso"
     }
   ],
