@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-25T14:04:38",
+    "ultima_atualizacao": "2026-08-25T14:05:03",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -32523,15 +32523,15 @@
       "telefone1": "(35) 99811-7790",
       "telefone2": "(35) 99833-4444",
       "telefone3": "(21) 96578-0192",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-25",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 533,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 1913,
@@ -61508,6 +61508,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-25T14:04:38",
       "seq_global": 332,
+      "usuario": "celso"
+    },
+    {
+      "id": 1753,
+      "empresa_id": 1912,
+      "data_contato": "2026-08-25",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-25T14:05:03",
+      "seq_global": 333,
       "usuario": "celso"
     }
   ],
