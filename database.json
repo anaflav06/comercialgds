@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-25T19:12:13",
+    "ultima_atualizacao": "2026-08-25T19:13:40",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -33409,7 +33409,7 @@
       "id": 1964,
       "documento": "61.844.233/0001-65",
       "nome": "IMPORTADORA HIDRAULICA E AUTOMACAO LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(19) 3803-9124",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -33420,7 +33420,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1965,
