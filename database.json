@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-24T20:30:07",
+    "ultima_atualizacao": "2026-08-25T12:22:17",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34073,7 +34073,7 @@
       "id": 2003,
       "documento": "63.867.321/0001-08",
       "nome": "FSC COMERCIO LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(11) 98013-8434",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -34084,7 +34084,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 2004,
