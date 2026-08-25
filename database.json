@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-25T12:52:07",
+    "ultima_atualizacao": "2026-08-25T12:53:03",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -28925,15 +28925,15 @@
       "telefone1": "(15) 99114-5090",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-25",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 510,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 1702,
@@ -61185,6 +61185,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-25T12:52:07",
       "seq_global": 309,
+      "usuario": "celso"
+    },
+    {
+      "id": 1730,
+      "empresa_id": 1701,
+      "data_contato": "2026-08-25",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-25T12:53:03",
+      "seq_global": 310,
       "usuario": "celso"
     }
   ],
