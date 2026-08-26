@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T13:49:18",
+    "ultima_atualizacao": "2026-08-26T13:50:26",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -36827,8 +36827,8 @@
       "telefone1": "",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
+      "status": "SEM INTERESSE",
+      "observacao_atual": "Finalizado manualmente na fila.",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
@@ -62351,6 +62351,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-26T13:49:18",
       "seq_global": 392,
+      "usuario": "celso"
+    },
+    {
+      "id": 1813,
+      "empresa_id": 2164,
+      "data_contato": "2026-08-26",
+      "tipo_contato": "FINALIZAÇÃO RÁPIDA",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Finalizado manualmente na fila.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-26T13:50:26",
+      "seq_global": 393,
       "usuario": "celso"
     }
   ],
