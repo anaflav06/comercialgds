@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T17:58:38",
+    "ultima_atualizacao": "2026-08-26T17:58:56",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34986,15 +34986,15 @@
       "telefone1": "(11) 97149-8148",
       "telefone2": "CNPJ  NÃO ENCONTRADO",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-26",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 609,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "nan",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
       "email": ""
     },
     {
@@ -62595,6 +62595,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-26T17:57:08",
       "seq_global": 408,
+      "usuario": "celso"
+    },
+    {
+      "id": 1829,
+      "empresa_id": 2056,
+      "data_contato": "2026-08-26",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-26T17:58:56",
+      "seq_global": 409,
       "usuario": "celso"
     }
   ],
