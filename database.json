@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T13:33:23",
+    "ultima_atualizacao": "2026-08-26T13:35:28",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -34282,7 +34282,7 @@
       "id": 2015,
       "documento": "64.739.453/0001-17",
       "nome": "ISO SHOP LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(32) 3532-9347",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -34293,7 +34293,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "isoshop2k26@gmail.com"
     },
     {
       "id": 2016,
