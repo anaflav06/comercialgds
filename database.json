@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T18:32:53",
+    "ultima_atualizacao": "2026-08-26T18:33:47",
     "ultimo_usuario": "jessica",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -63028,7 +63028,20 @@
       "usuario": "celso"
     }
   ],
-  "agenda": [],
+  "agenda": [
+    {
+      "id": 1,
+      "data": "2026-08-26",
+      "horario": "18:00",
+      "tipo": "REUNIÃO",
+      "cliente_compromisso": "TESTE JESSICA",
+      "local": "SAO PAULO",
+      "observacao": "CDSP2",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-08-26T18:33:47",
+      "usuario": "jessica"
+    }
+  ],
   "veiculo_registros": [
     {
       "data": "2025-11-18",
