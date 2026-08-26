@@ -1707,12 +1707,28 @@ def gerar_excel_completo(empresas, contatos):
             "Data contato","tipo_contato","resultado","status_novo","observacao",
             "proxima_acao","Data retorno","seq_global","criado_em"
         ]].copy()
-        hist_export.columns = [
-            "ID contato","ID empresa","Empresa / Cliente","CPF/CNPJ","Telefone 1",
-            "Telefone 2","Telefone 3","Data contato","Tipo contato","Resultado",
-            "Status após contato","Observação","Próxima ação","Data retorno",
-            "Sequência global","Registrado em"
-        ]
+
+        # Renomeia por coluna, em vez de substituir a lista inteira.
+        # Isso evita ValueError caso novos campos sejam adicionados ao histórico.
+        hist_export = hist_export.rename(columns={
+            "id": "ID contato",
+            "empresa_id": "ID empresa",
+            "nome": "Empresa / Cliente",
+            "documento": "CPF/CNPJ",
+            "email": "E-mail",
+            "telefone1": "Telefone 1",
+            "telefone2": "Telefone 2",
+            "telefone3": "Telefone 3",
+            "Data contato": "Data contato",
+            "tipo_contato": "Tipo contato",
+            "resultado": "Resultado",
+            "status_novo": "Status após contato",
+            "observacao": "Observação",
+            "proxima_acao": "Próxima ação",
+            "Data retorno": "Data retorno",
+            "seq_global": "Sequência global",
+            "criado_em": "Registrado em",
+        })
     else:
         hist_export = pd.DataFrame()
 
@@ -1765,7 +1781,7 @@ def gerar_excel_completo(empresas, contatos):
                 int((empresas["status"]=="SEM CONTATO").sum()),
                 int((empresas["status"]=="AGUARDANDO CLIENTE").sum()),
                 int(empresas["status"].isin(["EM ANDAMENTO","NEGOCIAÇÃO","PROPOSTA ENVIADA","REUNIÃO AGENDADA"]).sum()),
-                int((empresas["status"]=="FECHADO").sum()),
+                int((empresas["status"]=="FECHADO / GANHO").sum()),
                 int((empresas["status"]=="SEM INTERESSE").sum()),
             ]
         })
@@ -2073,20 +2089,39 @@ if st.sidebar.button("Sair", use_container_width=True):
 st.title("📈 Gestão Comercial")
 st.caption("Prospecção, retornos, agendamentos e acompanhamento da carteira comercial.")
 
-menu = st.sidebar.radio(
-    "Menu",
-    [
-        "📊 Dashboard",
-        "📞 Fila de contatos",
-        "🔥 Clientes em andamento",
-        "📅 Agenda",
-        "🚗 Veículo da empresa",
-        "➕ Adicionar contatos em lote",
-        "🏢 Consulta / Editar Clientes",
-        "➕ Nova Empresa",
-        "📈 Relatórios",
-    ]
-)
+# Navegação em blocos visuais.
+if "menu_selected" not in st.session_state:
+    st.session_state["menu_selected"] = "📊 Dashboard"
+
+def _nav_button(label, destino, key):
+    selecionado = st.session_state.get("menu_selected") == destino
+    if st.sidebar.button(
+        label,
+        key=key,
+        use_container_width=True,
+        type="primary" if selecionado else "secondary"
+    ):
+        st.session_state["menu_selected"] = destino
+        st.rerun()
+
+st.sidebar.markdown("### COMERCIAL")
+_nav_button("📊 Dashboard", "📊 Dashboard", "nav_dashboard")
+_nav_button("📞 Fila de contatos", "📞 Fila de contatos", "nav_fila")
+_nav_button("🔥 Clientes em andamento", "🔥 Clientes em andamento", "nav_andamento")
+_nav_button("📅 Agenda", "📅 Agenda", "nav_agenda")
+
+st.sidebar.divider()
+st.sidebar.markdown("### APOIO")
+_nav_button("🚗 Veículo da empresa", "🚗 Veículo da empresa", "nav_veiculo")
+
+st.sidebar.divider()
+st.sidebar.markdown("### ADMINISTRAÇÃO")
+_nav_button("➕ Importar contatos", "➕ Adicionar contatos em lote", "nav_importar")
+_nav_button("🏢 Clientes / Editar", "🏢 Consulta / Editar Clientes", "nav_clientes")
+_nav_button("➕ Nova empresa", "➕ Nova Empresa", "nav_nova")
+_nav_button("📈 Relatórios", "📈 Relatórios", "nav_relatorios")
+
+menu = st.session_state["menu_selected"]
 
 # ---------------- DASHBOARD ----------------
 
@@ -3028,90 +3063,142 @@ elif menu == "🔥 Clientes em andamento":
 # ---------------- AGENDA ----------------
 elif menu == "📅 Agenda":
     st.markdown("## 📅 Agenda")
-    st.caption("Compromissos, visitas, reuniões e eventos programados.")
+    st.caption("Visitas, reuniões e compromissos comerciais em uma visão simples.")
 
     dados_ag = carregar_database(forcar_github=False)
     agenda = dados_ag.get("agenda", []) or []
     hoje_ag = date.today()
 
-    # Visão rápida do dia
     agenda_df = pd.DataFrame(agenda)
     if not agenda_df.empty:
         agenda_df["data_dt"] = pd.to_datetime(agenda_df["data"], errors="coerce").dt.date
         agenda_df["horario_ord"] = agenda_df["horario"].fillna("")
-        agenda_hoje = agenda_df[
-            (agenda_df["data_dt"] == hoje_ag) &
-            (~agenda_df["status"].isin(["CANCELADO"]))
-        ].sort_values(["horario_ord","id"])
+        agenda_ativos = agenda_df[~agenda_df["status"].isin(["CANCELADO"])].copy()
     else:
-        agenda_hoje = pd.DataFrame()
+        agenda_ativos = pd.DataFrame()
 
-    st.markdown("### Hoje")
+    # Cards rápidos
+    qtd_hoje = 0
+    qtd_amanha = 0
+    qtd_7d = 0
+    if not agenda_ativos.empty:
+        qtd_hoje = int((agenda_ativos["data_dt"] == hoje_ag).sum())
+        qtd_amanha = int((agenda_ativos["data_dt"] == hoje_ag + timedelta(days=1)).sum())
+        qtd_7d = int((
+            (agenda_ativos["data_dt"] >= hoje_ag) &
+            (agenda_ativos["data_dt"] <= hoje_ag + timedelta(days=6))
+        ).sum())
+
+    a1,a2,a3 = st.columns(3)
+    a1.metric("📍 Hoje", qtd_hoje)
+    a2.metric("🌤️ Amanhã", qtd_amanha)
+    a3.metric("📆 Próximos 7 dias", qtd_7d)
+
+    st.markdown("### Compromissos de hoje")
+    if agenda_ativos.empty:
+        agenda_hoje = pd.DataFrame()
+    else:
+        agenda_hoje = agenda_ativos[
+            agenda_ativos["data_dt"] == hoje_ag
+        ].sort_values(["horario_ord","id"])
+
+    cores_agenda = {
+        "VISITA": "#e8f1ff",
+        "REUNIÃO": "#f3e8ff",
+        "EVENTO": "#fff3d6",
+        "RETORNO": "#e8fff2",
+        "OUTRO": "#f2f4f7",
+    }
+
     if agenda_hoje.empty:
         st.info("Nenhum compromisso programado para hoje.")
     else:
         for _, item in agenda_hoje.iterrows():
+            tipo_item = str(item.get("tipo") or "OUTRO").upper()
+            fundo = cores_agenda.get(tipo_item, "#f2f4f7")
+            horario = str(item.get("horario") or "--:--")
+            titulo = str(item.get("cliente_compromisso") or "Compromisso")
+            local = str(item.get("local") or "Local não informado")
+            status_item = str(item.get("status") or "PROGRAMADO")
             st.markdown(
-                f"**{item.get('horario') or '--:--'} — {item.get('cliente_compromisso') or item.get('tipo') or 'Compromisso'}**  \n"
-                f"{item.get('tipo') or ''} • {item.get('local') or 'Local não informado'}"
+                f"""
+                <div style="background:{fundo};border:1px solid #e3e7ee;border-radius:14px;
+                            padding:.8rem 1rem;margin:.35rem 0;">
+                    <div style="font-size:1.05rem;font-weight:800;">{horario} • {titulo}</div>
+                    <div style="font-size:.86rem;color:#5f6878;margin-top:.2rem;">
+                        {tipo_item} • {local} • {status_item}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
             if str(item.get("observacao") or "").strip():
-                st.caption(str(item.get("observacao")))
-            c1,c2 = st.columns([1,4])
+                st.caption(f"📝 {item.get('observacao')}")
+
+            c1,c2 = st.columns(2)
             with c1:
-                if item.get("status") != "REALIZADO":
+                if status_item != "REALIZADO":
                     if st.button("✅ Realizado", key=f"agenda_realizado_{int(item['id'])}", use_container_width=True):
                         atualizar_status_agenda(int(item["id"]), "REALIZADO")
                         st.rerun()
             with c2:
-                if item.get("status") != "CANCELADO":
-                    if st.button("Cancelar", key=f"agenda_cancelar_{int(item['id'])}"):
+                if status_item != "CANCELADO":
+                    if st.button("❌ Cancelar", key=f"agenda_cancelar_{int(item['id'])}", use_container_width=True):
                         atualizar_status_agenda(int(item["id"]), "CANCELADO")
                         st.rerun()
-            st.divider()
 
-    st.markdown("### ➕ Novo compromisso")
-    with st.form("novo_compromisso_agenda", clear_on_submit=True):
-        c1,c2,c3 = st.columns([1,1,1.3])
-        data_comp = c1.date_input("Data *", value=hoje_ag, format="DD/MM/YYYY")
-        hora_comp = c2.time_input("Horário *", value=datetime.now().replace(second=0, microsecond=0).time())
-        tipo_comp = c3.selectbox("Tipo *", ["VISITA","REUNIÃO","EVENTO","RETORNO","OUTRO"])
-
-        cliente_comp = st.text_input("Cliente / Compromisso *", placeholder="Ex.: Visita cliente ABC")
-        c4,c5 = st.columns([1.3,1])
-        local_comp = c4.text_input("Cidade / Local", placeholder="Ex.: Campinas / Cliente ABC")
-        obs_comp = c5.text_input("Observação", placeholder="Opcional")
-
-        salvar_agenda = st.form_submit_button("💾 Salvar compromisso", type="primary", use_container_width=True)
-
-    if salvar_agenda:
-        if not str(cliente_comp or "").strip():
-            st.error("Informe o cliente ou compromisso.")
-        else:
-            salvar_compromisso_agenda(
-                data_comp,
-                hora_comp.strftime("%H:%M"),
-                tipo_comp,
-                cliente_comp,
-                local_comp,
-                obs_comp
+    with st.expander("➕ Novo compromisso", expanded=(qtd_hoje == 0 and len(agenda) == 0)):
+        with st.form("novo_compromisso_agenda", clear_on_submit=True):
+            c1,c2,c3 = st.columns([1,1,1.2])
+            data_comp = c1.date_input("Data *", value=hoje_ag, format="DD/MM/YYYY")
+            hora_comp = c2.time_input(
+                "Horário *",
+                value=datetime.now().replace(second=0, microsecond=0).time()
             )
-            st.success("Compromisso salvo na agenda.")
-            st.rerun()
+            tipo_comp = c3.selectbox(
+                "Tipo *",
+                ["VISITA","REUNIÃO","EVENTO","RETORNO","OUTRO"]
+            )
+            cliente_comp = st.text_input(
+                "Cliente / Compromisso *",
+                placeholder="Ex.: Visita Della Via"
+            )
+            c4,c5 = st.columns([1.2,1])
+            local_comp = c4.text_input("Cidade / Local", placeholder="Ex.: Campinas")
+            obs_comp = c5.text_input("Observação", placeholder="Opcional")
+
+            salvar_agenda = st.form_submit_button(
+                "💾 Salvar compromisso",
+                type="primary",
+                use_container_width=True
+            )
+
+        if salvar_agenda:
+            if not str(cliente_comp or "").strip():
+                st.error("Informe o cliente ou compromisso.")
+            else:
+                salvar_compromisso_agenda(
+                    data_comp,
+                    hora_comp.strftime("%H:%M"),
+                    tipo_comp,
+                    cliente_comp,
+                    local_comp,
+                    obs_comp
+                )
+                st.success("Compromisso salvo na agenda.")
+                st.rerun()
 
     with st.expander("📋 Próximos compromissos", expanded=False):
-        if agenda_df.empty:
+        if agenda_ativos.empty:
             st.info("Agenda vazia.")
         else:
-            futuros = agenda_df[
-                (agenda_df["data_dt"] >= hoje_ag) &
-                (~agenda_df["status"].isin(["CANCELADO"]))
+            futuros = agenda_ativos[
+                agenda_ativos["data_dt"] >= hoje_ag
             ].sort_values(["data_dt","horario_ord"])
             cols = ["data","horario","tipo","cliente_compromisso","local","status","observacao"]
             vis = futuros[cols].copy()
             vis.columns = ["Data","Horário","Tipo","Cliente / Compromisso","Local","Status","Observação"]
             st.dataframe(vis, use_container_width=True, hide_index=True)
-
             st.download_button(
                 "⬇️ Exportar agenda",
                 data=excel_bytes_dataframe(vis, "Agenda"),
@@ -3123,9 +3210,8 @@ elif menu == "📅 Agenda":
 # ---------------- VEÍCULO DA EMPRESA ----------------
 elif menu == "🚗 Veículo da empresa":
     st.markdown("## 🚗 Veículo da empresa")
-    st.caption("Registro simples do uso do veículo, quilometragem, finalidade e gastos.")
+    st.caption("Registro rápido do uso do carro e análise de onde a quilometragem está sendo utilizada.")
 
-    # Importa o histórico enviado uma única vez e mantém tudo no mesmo database.json.
     adicionados_hist = importar_historico_veiculo_se_necessario()
     if adicionados_hist > 0:
         st.success(f"✅ Histórico da planilha incorporado ao banco: {adicionados_hist} registro(s).")
@@ -3134,10 +3220,10 @@ elif menu == "🚗 Veículo da empresa":
     registros_v = dados_v.get("veiculo_registros", []) or []
     tipos_v = dados_v.get("veiculo_tipos", {}) or {}
 
-    # Normaliza os tipos padrão na visualização mesmo antes de qualquer personalização.
     for tipo, motivos in VEICULO_TIPOS_PADRAO.items():
         tipos_v.setdefault(tipo, motivos)
 
+    # ---------------- REGISTRO SIMPLES ----------------
     st.markdown("### ➕ Registrar uso")
 
     placas_existentes = sorted({
@@ -3147,62 +3233,129 @@ elif menu == "🚗 Veículo da empresa":
     })
     placas_opcoes = placas_existentes + ["OUTRA PLACA"]
 
-    c1,c2,c3 = st.columns([1,1,1])
-    data_v = c1.date_input("Data *", value=date.today(), format="DD/MM/YYYY", key="veic_data")
-    placa_sel = c2.selectbox("Placa *", placas_opcoes, index=max(len(placas_existentes)-1,0), key="veic_placa_sel")
-    if placa_sel == "OUTRA PLACA":
-        placa_v = c3.text_input("Informe a placa", key="veic_placa_nova")
-    else:
-        placa_v = placa_sel
-        km_sugerido = ultimo_km_final(registros_v, placa_v)
-        c3.caption(f"Último KM final: **{km_sugerido if km_sugerido is not None else '-'}**")
+    r1,r2 = st.columns(2)
+    data_v = r1.date_input("Data *", value=date.today(), format="DD/MM/YYYY", key="veic_data")
+    placa_sel = r2.selectbox(
+        "Placa *",
+        placas_opcoes,
+        index=max(len(placas_existentes)-1,0),
+        key="veic_placa_sel"
+    )
+    placa_v = (
+        st.text_input("Informe a placa", key="veic_placa_nova")
+        if placa_sel == "OUTRA PLACA"
+        else placa_sel
+    )
 
     km_default = ultimo_km_final(registros_v, placa_v) if placa_v else None
-    k1,k2,k3,k4 = st.columns(4)
-    km_ini = k1.number_input("KM inicial *", min_value=0, value=int(km_default or 0), step=1, key="veic_km_ini")
-    km_fim = k2.number_input("KM final", min_value=0, value=int(km_default or 0), step=1, key="veic_km_fim")
-    hora_saida_v = k3.time_input("Hora de saída", value=datetime.now().replace(second=0,microsecond=0).time(), key="veic_h_saida")
-    hora_retorno_v = k4.time_input("Hora de retorno", value=datetime.now().replace(second=0,microsecond=0).time(), key="veic_h_retorno")
+    k1,k2 = st.columns(2)
+    km_ini = k1.number_input(
+        "KM inicial *",
+        min_value=0,
+        value=int(km_default or 0),
+        step=1,
+        key="veic_km_ini"
+    )
+    km_fim = k2.number_input(
+        "KM final",
+        min_value=0,
+        value=int(km_default or 0),
+        step=1,
+        key="veic_km_fim"
+    )
+    if km_default is not None:
+        st.caption(f"Último KM final cadastrado para esta placa: **{km_default}**")
 
     tipos_lista = sorted(tipos_v.keys())
-    tipo_uso_v = st.selectbox("Tipo de uso *", tipos_lista, key="veic_tipo")
-    motivos_lista = list(tipos_v.get(tipo_uso_v, []) or [])
-    motivos_lista = sorted(set(motivos_lista + ["OUTRO"]))
-    motivo_sel = st.selectbox("Motivo / Situação *", motivos_lista, key="veic_motivo")
-    motivo_v = st.text_input("Descreva o motivo", key="veic_motivo_outro") if motivo_sel == "OUTRO" else motivo_sel
+    tipo_uso_v = st.pills(
+        "Tipo de uso *",
+        tipos_lista,
+        selection_mode="single",
+        key="veic_tipo_pills"
+    )
 
-    c5,c6 = st.columns(2)
-    cidade_v = c5.text_input("Cidade / Região", key="veic_cidade")
-    cliente_v = c6.text_input("Cliente (se aplicável)", key="veic_cliente")
+    motivo_v = ""
+    if tipo_uso_v:
+        motivos_lista = sorted(set(list(tipos_v.get(tipo_uso_v, []) or []) + ["OUTRO"]))
+        motivo_sel = st.pills(
+            "Motivo / Situação *",
+            motivos_lista,
+            selection_mode="single",
+            key=f"veic_motivo_pills_{tipo_uso_v}"
+        )
+        if motivo_sel == "OUTRO":
+            motivo_v = st.text_input("Descreva o motivo", key="veic_motivo_outro")
+        else:
+            motivo_v = motivo_sel or ""
 
-    endereco_v = st.text_input("Endereço do cliente / destino (opcional)", key="veic_endereco")
-    obs_v = st.text_area("Observação (opcional)", height=75, key="veic_obs")
+    cidade_v = st.text_input(
+        "Cidade / Região",
+        placeholder="Ex.: Campinas / SP",
+        key="veic_cidade"
+    )
+    obs_v = st.text_area(
+        "Observação (opcional)",
+        height=65,
+        key="veic_obs"
+    )
 
-    with st.expander("💰 Abastecimento e gastos", expanded=False):
-        c7,c8,c9 = st.columns(3)
-        abasteceu_v = c7.selectbox("Abasteceu?", ["NÃO","SIM"], key="veic_abasteceu")
-        valor_abast_v = c8.number_input("Valor abastecido (R$)", min_value=0.0, value=0.0, step=0.01, key="veic_valor_abast")
-        litros_v = c9.number_input("Litros abastecidos", min_value=0.0, value=0.0, step=0.01, key="veic_litros")
+    # Valores padrão dos campos opcionais
+    cliente_v = ""
+    endereco_v = ""
+    hora_saida_v = None
+    hora_retorno_v = None
+    abasteceu_v = "NÃO"
+    valor_abast_v = 0.0
+    litros_v = 0.0
+    combustivel_v = ""
+    pedagio_v = 0.0
+    estacionamento_v = 0.0
+    outros_v = 0.0
+    descricao_outros_v = ""
 
-        c10,c11,c12 = st.columns(3)
-        combustivel_v = c10.selectbox("Combustível", ["","ETANOL","GASOLINA","DIESEL","OUTRO"], key="veic_comb")
-        pedagio_v = c11.number_input("Pedágio (R$)", min_value=0.0, value=0.0, step=0.01, key="veic_pedagio")
-        estacionamento_v = c12.number_input("Estacionamento (R$)", min_value=0.0, value=0.0, step=0.01, key="veic_estac")
+    copt1,copt2 = st.columns(2)
+    with copt1:
+        with st.expander("👤 Cliente / destino", expanded=False):
+            cliente_v = st.text_input("Cliente", key="veic_cliente")
+            endereco_v = st.text_input("Endereço / destino", key="veic_endereco")
+            t1,t2 = st.columns(2)
+            hora_saida_v = t1.time_input(
+                "Hora de saída",
+                value=datetime.now().replace(second=0,microsecond=0).time(),
+                key="veic_h_saida"
+            )
+            hora_retorno_v = t2.time_input(
+                "Hora de retorno",
+                value=datetime.now().replace(second=0,microsecond=0).time(),
+                key="veic_h_retorno"
+            )
 
-        c13,c14 = st.columns([1,2])
-        outros_v = c13.number_input("Outros gastos (R$)", min_value=0.0, value=0.0, step=0.01, key="veic_outros")
-        descricao_outros_v = c14.text_input("Descrição dos outros gastos", key="veic_desc_outros")
+    with copt2:
+        with st.expander("💰 Gastos / abastecimento", expanded=False):
+            abasteceu_v = st.selectbox("Abasteceu?", ["NÃO","SIM"], key="veic_abasteceu")
+            if abasteceu_v == "SIM":
+                g1,g2,g3 = st.columns(3)
+                valor_abast_v = g1.number_input("Valor (R$)", min_value=0.0, value=0.0, step=0.01, key="veic_valor_abast")
+                litros_v = g2.number_input("Litros", min_value=0.0, value=0.0, step=0.01, key="veic_litros")
+                combustivel_v = g3.selectbox("Combustível", ["","ETANOL","GASOLINA","DIESEL","OUTRO"], key="veic_comb")
+
+            g4,g5,g6 = st.columns(3)
+            pedagio_v = g4.number_input("Pedágio (R$)", min_value=0.0, value=0.0, step=0.01, key="veic_pedagio")
+            estacionamento_v = g5.number_input("Estacionamento (R$)", min_value=0.0, value=0.0, step=0.01, key="veic_estac")
+            outros_v = g6.number_input("Outros (R$)", min_value=0.0, value=0.0, step=0.01, key="veic_outros")
+            if outros_v > 0:
+                descricao_outros_v = st.text_input("Descrição do outro gasto", key="veic_desc_outros")
 
     if st.button("💾 Salvar uso do veículo", type="primary", use_container_width=True, key="veic_salvar"):
         erros_v = []
         if not str(placa_v or "").strip():
             erros_v.append("Informe a placa.")
         if km_fim and km_ini and km_fim < km_ini:
-            erros_v.append("O KM final não pode ser menor que o KM inicial nos novos registros.")
-        if not str(tipo_uso_v or "").strip():
+            erros_v.append("O KM final não pode ser menor que o KM inicial.")
+        if not tipo_uso_v:
             erros_v.append("Selecione o tipo de uso.")
         if not str(motivo_v or "").strip():
-            erros_v.append("Informe o motivo/situação.")
+            erros_v.append("Selecione ou informe o motivo.")
 
         if erros_v:
             for e in erros_v:
@@ -3235,10 +3388,14 @@ elif menu == "🚗 Veículo da empresa":
             st.success("Uso do veículo salvo no banco permanente.")
             st.rerun()
 
-    # Cadastro simples de novos tipos/motivos.
-    with st.expander("➕ Adicionar novo tipo ou motivo", expanded=False):
-        modo_cad = st.radio("O que deseja adicionar?", ["Novo motivo em um tipo existente","Novo tipo"], horizontal=True)
-        if modo_cad == "Novo motivo em um tipo existente":
+    with st.expander("⚙️ Cadastrar novo tipo ou motivo", expanded=False):
+        modo_cad = st.radio(
+            "Adicionar",
+            ["Novo motivo","Novo tipo"],
+            horizontal=True,
+            key="veic_cad_modo"
+        )
+        if modo_cad == "Novo motivo":
             tipo_existente = st.selectbox("Tipo", sorted(tipos_v.keys()), key="cad_mot_tipo")
             novo_motivo = st.text_input("Novo motivo", key="cad_mot_nome")
             if st.button("Adicionar motivo", key="cad_mot_salvar"):
@@ -3246,21 +3403,23 @@ elif menu == "🚗 Veículo da empresa":
                     st.warning("Informe o motivo.")
                 else:
                     adicionar_tipo_motivo_veiculo(tipo_existente, novo_motivo)
-                    st.success("Motivo adicionado e salvo no banco.")
+                    st.success("Motivo adicionado.")
                     st.rerun()
         else:
-            novo_tipo = st.text_input("Nome do novo tipo", key="cad_tipo_nome")
+            novo_tipo = st.text_input("Novo tipo", key="cad_tipo_nome")
             primeiro_motivo = st.text_input("Primeiro motivo (opcional)", key="cad_tipo_motivo")
             if st.button("Adicionar tipo", key="cad_tipo_salvar"):
                 if not novo_tipo.strip():
-                    st.warning("Informe o nome do tipo.")
+                    st.warning("Informe o tipo.")
                 else:
                     adicionar_tipo_motivo_veiculo(novo_tipo, primeiro_motivo)
-                    st.success("Tipo adicionado e salvo no banco.")
+                    st.success("Tipo adicionado.")
                     st.rerun()
 
+    # ---------------- ANÁLISE ----------------
     st.divider()
-    st.markdown("### 📊 Consulta e relatório")
+    st.markdown("## 📊 Análise do uso do veículo")
+    st.caption("Os gráficos mostram onde o carro está sendo mais utilizado no período selecionado.")
 
     rel = dataframe_relatorio_veiculo(registros_v)
     if rel.empty:
@@ -3268,34 +3427,146 @@ elif menu == "🚗 Veículo da empresa":
     else:
         rel["Data_dt"] = pd.to_datetime(rel["Data"], errors="coerce").dt.date
 
-        c15,c16,c17 = st.columns(3)
-        periodo_ini = c15.date_input("De", value=max(rel["Data_dt"].dropna().min(), date.today()-timedelta(days=30)), format="DD/MM/YYYY", key="rel_veic_de")
-        periodo_fim = c16.date_input("Até", value=date.today(), format="DD/MM/YYYY", key="rel_veic_ate")
-        tipo_filtro = c17.selectbox("Tipo de uso", ["TODOS"] + sorted(rel["Tipo de uso"].dropna().astype(str).unique().tolist()), key="rel_veic_tipo")
-
-        fil = rel[(rel["Data_dt"] >= periodo_ini) & (rel["Data_dt"] <= periodo_fim)].copy()
-        if tipo_filtro != "TODOS":
-            fil = fil[fil["Tipo de uso"] == tipo_filtro].copy()
-
-        km_total = pd.to_numeric(fil["KM Rodado"], errors="coerce")
-        # Não "corrige" anomalias históricas; apenas mostra a soma conforme a fonte.
-        gastos_total = pd.to_numeric(fil["Total de gastos (R$)"], errors="coerce").fillna(0)
-
-        m1,m2,m3 = st.columns(3)
-        m1.metric("Registros", len(fil))
-        m2.metric("KM registrados", f"{km_total.sum():,.0f}".replace(",", ".") if not fil.empty else "0")
-        m3.metric("Gastos", f"R$ {gastos_total.sum():,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-
-        mostrar = fil.drop(columns=["Data_dt"], errors="ignore")
-        st.dataframe(mostrar.tail(100).iloc[::-1], use_container_width=True, hide_index=True)
-
-        st.download_button(
-            "⬇️ Exportar relatório completo em Excel",
-            data=excel_bytes_dataframe(mostrar, "Uso do Veículo"),
-            file_name=f"relatorio_veiculo_{periodo_ini.strftime('%d-%m-%Y')}_a_{periodo_fim.strftime('%d-%m-%Y')}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True
+        f1,f2,f3 = st.columns(3)
+        data_minima = rel["Data_dt"].dropna().min()
+        periodo_ini = f1.date_input(
+            "De",
+            value=max(data_minima, date.today()-timedelta(days=30)),
+            format="DD/MM/YYYY",
+            key="rel_veic_de"
         )
+        periodo_fim = f2.date_input(
+            "Até",
+            value=date.today(),
+            format="DD/MM/YYYY",
+            key="rel_veic_ate"
+        )
+        placas_rel = sorted(rel["Placa do veículo"].dropna().astype(str).unique().tolist())
+        placa_filtro = f3.selectbox("Placa", ["TODAS"] + placas_rel, key="rel_veic_placa")
+
+        fil = rel[
+            (rel["Data_dt"] >= periodo_ini) &
+            (rel["Data_dt"] <= periodo_fim)
+        ].copy()
+        if placa_filtro != "TODAS":
+            fil = fil[fil["Placa do veículo"] == placa_filtro].copy()
+
+        km_num = pd.to_numeric(fil["KM Rodado"], errors="coerce")
+        km_validos = km_num.where(km_num >= 0)
+        anomalias_km = int((km_num < 0).sum())
+        gastos_total = pd.to_numeric(
+            fil["Total de gastos (R$)"],
+            errors="coerce"
+        ).fillna(0)
+
+        m1,m2,m3,m4 = st.columns(4)
+        m1.metric("Registros", len(fil))
+        m2.metric("KM válidos", f"{km_validos.sum():,.0f}".replace(",", ".") if not fil.empty else "0")
+        m3.metric("Gastos", f"R$ {gastos_total.sum():,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        m4.metric("Inconsistências KM", anomalias_km)
+
+        if anomalias_km:
+            st.caption(
+                f"⚠️ {anomalias_km} registro(s) histórico(s) têm KM final menor que KM inicial. "
+                "Eles foram preservados no relatório, mas não entram nos gráficos de KM."
+            )
+
+        if not fil.empty:
+            analise = fil.copy()
+            analise["KM_analise"] = pd.to_numeric(analise["KM Rodado"], errors="coerce")
+            analise.loc[analise["KM_analise"] < 0, "KM_analise"] = None
+
+            por_tipo = analise.groupby("Tipo de uso", dropna=False).agg(
+                Registros=("Tipo de uso","size"),
+                KM=("KM_analise","sum")
+            ).reset_index()
+            por_tipo["Tipo de uso"] = por_tipo["Tipo de uso"].fillna("SEM CLASSIFICAÇÃO")
+            por_tipo["KM"] = por_tipo["KM"].fillna(0)
+
+            st.markdown("### Onde o carro está sendo mais utilizado")
+
+            base_km = alt.Chart(por_tipo).encode(
+                y=alt.Y("Tipo de uso:N", sort="-x", title=None, axis=alt.Axis(labelLimit=230)),
+                x=alt.X("KM:Q", title="KM rodados", axis=alt.Axis(format=".0f")),
+                color=alt.Color(
+                    "Tipo de uso:N",
+                    title="Tipo de uso",
+                    scale=alt.Scale(scheme="tableau10"),
+                    legend=alt.Legend(orient="bottom")
+                ),
+                tooltip=[
+                    "Tipo de uso:N",
+                    alt.Tooltip("KM:Q", format=".0f", title="KM"),
+                    alt.Tooltip("Registros:Q", format="d", title="Saídas")
+                ]
+            )
+            barras_km = base_km.mark_bar(cornerRadiusEnd=6)
+            labels_km = alt.Chart(por_tipo).mark_text(
+                align="left",
+                dx=6,
+                fontWeight="bold"
+            ).encode(
+                y=alt.Y("Tipo de uso:N", sort="-x"),
+                x="KM:Q",
+                text=alt.Text("KM:Q", format=".0f")
+            )
+            st.altair_chart(
+                (barras_km + labels_km).properties(height=max(280, len(por_tipo)*38)),
+                use_container_width=True
+            )
+
+            cga, cgb = st.columns([1,1])
+            with cga:
+                st.markdown("### Participação das saídas")
+                donut = alt.Chart(por_tipo).mark_arc(innerRadius=55).encode(
+                    theta=alt.Theta("Registros:Q"),
+                    color=alt.Color(
+                        "Tipo de uso:N",
+                        title="Tipo de uso",
+                        scale=alt.Scale(scheme="tableau10"),
+                        legend=alt.Legend(orient="bottom")
+                    ),
+                    tooltip=[
+                        "Tipo de uso:N",
+                        alt.Tooltip("Registros:Q", format="d", title="Saídas")
+                    ]
+                ).properties(height=340)
+                st.altair_chart(donut, use_container_width=True)
+
+            with cgb:
+                st.markdown("### Ranking dos motivos")
+                motivos_rank = analise.groupby(
+                    ["Tipo de uso","Motivo / Situação"],
+                    dropna=False
+                ).agg(
+                    Saídas=("Motivo / Situação","size"),
+                    KM=("KM_analise","sum")
+                ).reset_index()
+                motivos_rank["KM"] = motivos_rank["KM"].fillna(0)
+                motivos_rank = motivos_rank.sort_values(
+                    ["Saídas","KM"],
+                    ascending=[False,False]
+                ).head(12)
+                st.dataframe(
+                    motivos_rank.rename(columns={"Saídas":"Qtd. saídas"}),
+                    use_container_width=True,
+                    hide_index=True
+                )
+
+        with st.expander("📋 Ver registros e exportar", expanded=False):
+            mostrar = fil.drop(columns=["Data_dt"], errors="ignore")
+            st.dataframe(
+                mostrar.tail(150).iloc[::-1],
+                use_container_width=True,
+                hide_index=True
+            )
+            st.download_button(
+                "⬇️ Exportar relatório em Excel",
+                data=excel_bytes_dataframe(mostrar, "Uso do Veículo"),
+                file_name=f"relatorio_veiculo_{periodo_ini.strftime('%d-%m-%Y')}_a_{periodo_fim.strftime('%d-%m-%Y')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True
+            )
 
 # ---------------- IMPORTAÇÃO EM LOTE ----------------
 elif menu == "➕ Adicionar contatos em lote":
@@ -3576,5 +3847,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V10 • Agenda + Veículo")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V11 • UX + Análise Veículo")
 
