@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T18:00:30",
+    "ultima_atualizacao": "2026-08-26T18:02:54",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -36931,15 +36931,16 @@
       "telefone1": "(41) 9138-2822",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "JÁ UTILIZA AZUL",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-26",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 610,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": ""
     },
     {
       "id": 2171,
