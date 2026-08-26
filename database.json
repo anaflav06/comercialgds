@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T18:14:01",
+    "ultima_atualizacao": "2026-08-26T18:14:06",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -62737,6 +62737,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-26T18:14:01",
       "seq_global": 418,
+      "usuario": "celso"
+    },
+    {
+      "id": 1839,
+      "empresa_id": 2180,
+      "data_contato": "2026-08-26",
+      "tipo_contato": "FINALIZAÇÃO RÁPIDA",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Finalizado manualmente na fila.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-26T18:14:06",
+      "seq_global": 419,
       "usuario": "celso"
     }
   ],
