@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T18:51:10",
-    "ultimo_usuario": "celso",
+    "ultima_atualizacao": "2026-08-26T18:55:51",
+    "ultimo_usuario": "jessica",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
     "veiculo_planilha_importada_v1_data": "2026-08-26T18:32:53"
@@ -63037,9 +63037,11 @@
       "cliente_compromisso": "TESTE JESSICA",
       "local": "SAO PAULO",
       "observacao": "CDSP2",
-      "status": "PROGRAMADO",
+      "status": "CANCELADO",
       "criado_em": "2026-08-26T18:33:47",
-      "usuario": "jessica"
+      "usuario": "jessica",
+      "atualizado_em": "2026-08-26T18:55:51",
+      "atualizado_por": "jessica"
     },
     {
       "id": 2,
