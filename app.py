@@ -3077,6 +3077,14 @@ elif menu == "📅 Agenda":
     else:
         agenda_ativos = pd.DataFrame()
 
+    cores_agenda = {
+        "VISITA": "#e8f1ff",
+        "REUNIÃO": "#f3e8ff",
+        "EVENTO": "#fff3d6",
+        "RETORNO": "#e8fff2",
+        "OUTRO": "#f2f4f7",
+    }
+
     # Cards rápidos
     qtd_hoje = 0
     qtd_amanha = 0
@@ -3094,6 +3102,49 @@ elif menu == "📅 Agenda":
     a2.metric("🌤️ Amanhã", qtd_amanha)
     a3.metric("📆 Próximos 7 dias", qtd_7d)
 
+    # Próximos compromissos em cards, mesmo que estejam a semanas/meses de distância.
+    if not agenda_ativos.empty:
+        proximos_cards = agenda_ativos[
+            agenda_ativos["data_dt"] >= hoje_ag
+        ].sort_values(["data_dt","horario_ord","id"]).head(4)
+    else:
+        proximos_cards = pd.DataFrame()
+
+    st.markdown("### Próximos compromissos")
+    if proximos_cards.empty:
+        st.caption("Nenhum compromisso futuro programado.")
+    else:
+        colunas_cards = st.columns(min(4, len(proximos_cards)))
+        for idx, (_, item) in enumerate(proximos_cards.iterrows()):
+            data_card = item.get("data_dt")
+            data_txt = data_card.strftime("%d/%m/%Y") if pd.notna(data_card) else "-"
+            hora_txt = str(item.get("horario") or "--:--")
+            tipo_txt = str(item.get("tipo") or "OUTRO").upper()
+            titulo_txt = str(item.get("cliente_compromisso") or "Compromisso")
+            local_txt = str(item.get("local") or "Local não informado")
+            fundo = cores_agenda.get(tipo_txt, "#f2f4f7")
+            with colunas_cards[idx]:
+                st.markdown(
+                    f"""
+                    <div style="background:{fundo};border:1px solid #e3e7ee;border-radius:14px;
+                                padding:.9rem;min-height:150px;">
+                        <div style="font-size:.78rem;color:#667085;font-weight:700;">
+                            {data_txt} • {hora_txt}
+                        </div>
+                        <div style="font-size:1rem;font-weight:800;margin-top:.35rem;">
+                            {titulo_txt}
+                        </div>
+                        <div style="font-size:.82rem;color:#5f6878;margin-top:.35rem;">
+                            {tipo_txt}
+                        </div>
+                        <div style="font-size:.82rem;color:#5f6878;margin-top:.15rem;">
+                            📍 {local_txt}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
     st.markdown("### Compromissos de hoje")
     if agenda_ativos.empty:
         agenda_hoje = pd.DataFrame()
@@ -3101,14 +3152,6 @@ elif menu == "📅 Agenda":
         agenda_hoje = agenda_ativos[
             agenda_ativos["data_dt"] == hoje_ag
         ].sort_values(["horario_ord","id"])
-
-    cores_agenda = {
-        "VISITA": "#e8f1ff",
-        "REUNIÃO": "#f3e8ff",
-        "EVENTO": "#fff3d6",
-        "RETORNO": "#e8fff2",
-        "OUTRO": "#f2f4f7",
-    }
 
     if agenda_hoje.empty:
         st.info("Nenhum compromisso programado para hoje.")
@@ -3197,6 +3240,7 @@ elif menu == "📅 Agenda":
             ].sort_values(["data_dt","horario_ord"])
             cols = ["data","horario","tipo","cliente_compromisso","local","status","observacao"]
             vis = futuros[cols].copy()
+            vis["data"] = pd.to_datetime(vis["data"], errors="coerce").dt.strftime("%d/%m/%Y")
             vis.columns = ["Data","Horário","Tipo","Cliente / Compromisso","Local","Status","Observação"]
             st.dataframe(vis, use_container_width=True, hide_index=True)
             st.download_button(
@@ -3916,5 +3960,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V11.2 • Uso x KM")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V11.3 • Agenda Visual")
 
