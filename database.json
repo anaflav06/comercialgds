@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T13:54:32",
+    "ultima_atualizacao": "2026-08-26T13:56:43",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -24803,7 +24803,7 @@
       "id": 1459,
       "documento": "10.760.001/0003-50",
       "nome": "JOEL AR GARRETT COMPUTADORES LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(41) 3032-1878",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -24814,7 +24814,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1460,
