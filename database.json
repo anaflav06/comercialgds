@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T18:33:47",
-    "ultimo_usuario": "jessica",
+    "ultima_atualizacao": "2026-08-26T18:51:10",
+    "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
     "veiculo_planilha_importada_v1_data": "2026-08-26T18:32:53"
@@ -63040,6 +63040,18 @@
       "status": "PROGRAMADO",
       "criado_em": "2026-08-26T18:33:47",
       "usuario": "jessica"
+    },
+    {
+      "id": 2,
+      "data": "2026-09-15",
+      "horario": "18:51",
+      "tipo": "EVENTO",
+      "cliente_compromisso": "Feira Intralog x Label Pack",
+      "local": "São Paulo",
+      "observacao": "Expo Center Norte",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-08-26T18:51:10",
+      "usuario": "celso"
     }
   ],
   "veiculo_registros": [
