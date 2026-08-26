@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T18:22:17",
+    "ultima_atualizacao": "2026-08-26T18:23:24",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -29668,10 +29668,10 @@
       "data_primeiro_contato": null,
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 625,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "PULADO POR ENQUANTO"
     },
     {
       "id": 1745,
