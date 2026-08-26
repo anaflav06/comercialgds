@@ -3483,11 +3483,22 @@ elif menu == "🚗 Veículo da empresa":
             por_tipo["Tipo de uso"] = por_tipo["Tipo de uso"].fillna("SEM CLASSIFICAÇÃO")
             por_tipo["KM"] = por_tipo["KM"].fillna(0)
 
-            st.markdown("### Onde o carro está sendo mais utilizado")
+            # 1) Quantidade de usos por tipo
+            st.markdown("### Quantidade de usos por tipo")
+            por_tipo["Uso_label"] = por_tipo["Registros"].astype(int).astype(str) + " usos"
 
-            base_km = alt.Chart(por_tipo).encode(
-                y=alt.Y("Tipo de uso:N", sort="-x", title=None, axis=alt.Axis(labelLimit=230)),
-                x=alt.X("KM:Q", title="KM rodados", axis=alt.Axis(format=".0f")),
+            base_usos = alt.Chart(por_tipo).encode(
+                y=alt.Y(
+                    "Tipo de uso:N",
+                    sort="-x",
+                    title=None,
+                    axis=alt.Axis(labelLimit=230)
+                ),
+                x=alt.X(
+                    "Registros:Q",
+                    title="Quantidade de usos",
+                    axis=alt.Axis(format="d")
+                ),
                 color=alt.Color(
                     "Tipo de uso:N",
                     title="Tipo de uso",
@@ -3496,22 +3507,80 @@ elif menu == "🚗 Veículo da empresa":
                 ),
                 tooltip=[
                     "Tipo de uso:N",
-                    alt.Tooltip("KM:Q", format=".0f", title="KM"),
-                    alt.Tooltip("Registros:Q", format="d", title="Saídas")
+                    alt.Tooltip("Registros:Q", format="d", title="Usos"),
+                    alt.Tooltip("KM:Q", format=".0f", title="KM")
                 ]
             )
-            barras_km = base_km.mark_bar(cornerRadiusEnd=6)
-            labels_km = alt.Chart(por_tipo).mark_text(
+            barras_usos = base_usos.mark_bar(cornerRadiusEnd=6)
+            labels_usos = alt.Chart(por_tipo).mark_text(
                 align="left",
                 dx=6,
                 fontWeight="bold"
             ).encode(
                 y=alt.Y("Tipo de uso:N", sort="-x"),
-                x="KM:Q",
-                text=alt.Text("KM:Q", format=".0f")
+                x="Registros:Q",
+                text="Uso_label:N"
             )
             st.altair_chart(
-                (barras_km + labels_km).properties(height=max(280, len(por_tipo)*38)),
+                (barras_usos + labels_usos).properties(
+                    height=max(280, len(por_tipo) * 38)
+                ),
+                use_container_width=True
+            )
+
+            # 2) Relação Uso x KM
+            st.markdown("### Uso x KM")
+            st.caption(
+                "Compara quantas vezes o veículo foi utilizado com a quilometragem rodada em cada tipo de uso."
+            )
+
+            por_tipo["KM_label"] = por_tipo["KM"].round(0).astype(int).astype(str) + " km"
+            por_tipo["Comparativo"] = (
+                por_tipo["Registros"].astype(int).astype(str)
+                + " usos • "
+                + por_tipo["KM_label"]
+            )
+
+            pontos = alt.Chart(por_tipo).mark_circle(
+                size=260,
+                opacity=0.85
+            ).encode(
+                x=alt.X(
+                    "Registros:Q",
+                    title="Quantidade de usos",
+                    axis=alt.Axis(format="d")
+                ),
+                y=alt.Y(
+                    "KM:Q",
+                    title="KM rodados",
+                    axis=alt.Axis(format=".0f")
+                ),
+                color=alt.Color(
+                    "Tipo de uso:N",
+                    title="Tipo de uso",
+                    scale=alt.Scale(scheme="tableau10"),
+                    legend=alt.Legend(orient="bottom")
+                ),
+                tooltip=[
+                    "Tipo de uso:N",
+                    alt.Tooltip("Registros:Q", format="d", title="Usos"),
+                    alt.Tooltip("KM:Q", format=".0f", title="KM rodados")
+                ]
+            )
+
+            textos = alt.Chart(por_tipo).mark_text(
+                align="left",
+                dx=10,
+                dy=-8,
+                fontWeight="bold"
+            ).encode(
+                x="Registros:Q",
+                y="KM:Q",
+                text="Comparativo:N"
+            )
+
+            st.altair_chart(
+                (pontos + textos).properties(height=420),
                 use_container_width=True
             )
 
@@ -3847,5 +3916,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V11 • UX + Análise Veículo")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V11.2 • Uso x KM")
 
