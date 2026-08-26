@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-26T13:57:40",
+    "ultima_atualizacao": "2026-08-26T17:47:19",
     "ultimo_usuario": "celso"
   },
   "empresas": [
@@ -38398,6 +38398,24 @@
       "observacao_atual": "Cliente tem efetuado cotações",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-24T13:32:48",
+      "origem": "APP",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
+    },
+    {
+      "id": 2257,
+      "documento": "",
+      "nome": "LIDILÍ",
+      "email": "",
+      "telefone1": "(11) 93202-0503",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "Cliente efetuou cotação 26/08/2026 destino Belém : 73246025",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-08-26T17:47:19",
       "origem": "APP",
       "retorno_apos_seq": null,
       "data_agendamento": null,
