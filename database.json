@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-27T18:01:52",
+    "ultima_atualizacao": "2026-08-27T18:02:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37453,15 +37453,15 @@
       "telefone1": "(11) 5073-1021",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-27",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 687,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2201,
@@ -63699,6 +63699,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-27T18:01:52",
       "seq_global": 486,
+      "usuario": "celso"
+    },
+    {
+      "id": 1907,
+      "empresa_id": 2200,
+      "data_contato": "2026-08-27",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-27T18:02:37",
+      "seq_global": 487,
       "usuario": "celso"
     }
   ],
