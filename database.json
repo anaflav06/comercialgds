@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-27T13:54:18",
+    "ultima_atualizacao": "2026-08-27T13:56:22",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -34232,7 +34232,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "loomastore@hotmail.com"
     },
     {
       "id": 2012,
