@@ -250,6 +250,8 @@ def salvar_database(dados):
     dados.setdefault("agenda", [])
     dados.setdefault("veiculo_registros", [])
     dados.setdefault("veiculo_tipos", {})
+    dados.setdefault("clientes_ticlog", [])
+    dados.setdefault("historico_ticlog", [])
     dados["metadata"]["ultima_atualizacao"] = datetime.now().isoformat(timespec="seconds")
     dados["metadata"]["ultimo_usuario"] = st.session_state.get("usuario_logado", "")
 
@@ -285,6 +287,8 @@ def carregar_database(forcar_github=False):
                     "agenda": [],
                     "veiculo_registros": [],
                     "veiculo_tipos": {},
+                    "clientes_ticlog": [],
+                    "historico_ticlog": [],
                 }
                 with open(DATABASE_PATH, "w", encoding="utf-8") as f:
                     json.dump(dados_seed, f, ensure_ascii=False, indent=2)
@@ -315,6 +319,8 @@ def carregar_database(forcar_github=False):
     dados.setdefault("agenda", [])
     dados.setdefault("veiculo_registros", [])
     dados.setdefault("veiculo_tipos", {})
+    dados.setdefault("clientes_ticlog", [])
+    dados.setdefault("historico_ticlog", [])
     return dados
 
 def proximo_id(lista):
@@ -502,7 +508,9 @@ def criar_banco():
             "acoes_base": [],
             "agenda": [],
             "veiculo_registros": [],
-            "veiculo_tipos": {}
+            "veiculo_tipos": {},
+            "clientes_ticlog": [],
+            "historico_ticlog": []
         })
 
 # -----------------------------
@@ -2001,6 +2009,233 @@ def excel_bytes_dataframe(df, nome_aba="Relatório"):
     return buffer.getvalue()
 
 
+
+# ============================================================
+# CLIENTES TICLOG
+# ============================================================
+
+CLIENTES_TICLOG_INICIAIS = [{'empresa': 'ABBA LOGISTICA', 'endereco': 'RUA ARMANDO DE CAMPOS, 420', 'telefone': '(19) 99168-9800', 'site': ''}, {'empresa': 'ACCERT TRANSPORTES E LOGÍSTICA LTDA', 'endereco': 'JOÃO GALVÃO ANDERSON, 250', 'telefone': '(19) 99881-4434', 'site': ''}, {'empresa': 'ALPHA CARGO TRANSPORTES LTDA', 'endereco': 'ALFREDO VIEIRA ALVES, 69', 'telefone': '(19) 3212-1430 / (19) 3245-1113', 'site': ''}, {'empresa': 'ATIVA LOGISTICA', 'endereco': 'ALFREDO VIEIRA ALVES, 261', 'telefone': '', 'site': ''}, {'empresa': 'ATIVA DIST. E LOG. LTDA', 'endereco': 'SARA HELENA MANTELLO, 240', 'telefone': '(19) 3282-2121 / (19) 3282-4416', 'site': ''}, {'empresa': 'AUTO POSTO TIC CAMPINAS', 'endereco': 'ANTONIO BOSCATTO, 325', 'telefone': '(19) 3281-2385', 'site': ''}, {'empresa': 'AMALOG', 'endereco': 'LAZARO BIBIANO DA SILVA, 87', 'telefone': '(19) 98222-6533 / (19) 98730-1535', 'site': ''}, {'empresa': 'ARGIUS', 'endereco': 'ANCILA TONINI GAGO, 111', 'telefone': '(19) 99168-9800', 'site': ''}, {'empresa': 'BRASPRESS TRANSPORTES', 'endereco': 'RICARDO DIAS ALVES, 87, 311 E 381', 'telefone': '(19) 2115-0100', 'site': ''}, {'empresa': 'BR7 TRANSPORTES', 'endereco': 'SARA HELENA MANTELLO, 397', 'telefone': '', 'site': ''}, {'empresa': 'BURAN E GOVEIA TRANSPORTES RODOVIÁRIOS DE CARGAS LTDA', 'endereco': 'ARMANDO DE CAMPOS, 367', 'telefone': '(19) 3281-3579', 'site': ''}, {'empresa': 'BYD DO BRASIL', 'endereco': 'ANTONIO BUSCATTO, 230', 'telefone': '(19) 3514-2551 / (19) 3514-2565', 'site': ''}, {'empresa': 'BYD DO BRASIL', 'endereco': 'AV. JOÃO GALVÃO ANDERSON, 250', 'telefone': '(19) 3514-2551 / (19) 3514-2565', 'site': ''}, {'empresa': 'BYD ENERGY', 'endereco': 'JOÃO GALVÃO ANDERSON, 439 E 479', 'telefone': '(19) 3514-2551 / (19) 3514-2565', 'site': ''}, {'empresa': 'CARGO HANDLING TRANSPORTES EXPRESS LTDA.', 'endereco': 'AV. JOÃO GALVÃO ANDERSON, 337', 'telefone': '(19) 3281-0067', 'site': ''}, {'empresa': 'CAROBA TRANSPORTES E COMERCIO LTDA', 'endereco': 'ANCILLA TONINI GAGO, 31', 'telefone': '(19) 3256-0516 / (19) 3113-8001', 'site': ''}, {'empresa': 'CNLOG', 'endereco': 'SARA HELENA MANTELLO, 167', 'telefone': '(19) 98443-5870', 'site': ''}, {'empresa': 'CUNZOLO LOC. E MAQUINAS TRANSPORTES', 'endereco': 'ALFREDO VIEIRA ALVES, 289', 'telefone': '(19) 3281-0922 / (19) 3281-6899', 'site': ''}, {'empresa': 'DISPLAN ENCOMENDAS URGENTES', 'endereco': 'ARMANDO DE CAMPOS, 111', 'telefone': '(19) 3282-0211 / (19) 3282-4673', 'site': ''}, {'empresa': 'DUALTI TRANSPORTES', 'endereco': 'LÁZARO BIBIANO DA SILVA, 67', 'telefone': '(19) 99353-2077', 'site': 'www.dualtitransportes.com.br'}, {'empresa': 'EFFI CARGO LOGISTICS', 'endereco': 'ARMANDO DE CAMPOS, 100', 'telefone': '(19) 3113-4443 / (19) 3113-4440', 'site': ''}, {'empresa': 'EMPÓRIO EXPRESS BEBIDAS E EVENTOS LTDA', 'endereco': 'ALFREDO VIEIRA ALVES, 317', 'telefone': '', 'site': ''}, {'empresa': 'EUCATUR TRANSPORTES E TURISMO LTDA', 'endereco': 'SARA HELENA MANTELLO, 227', 'telefone': '(19) 3116-0300 / (19) 3116-0301', 'site': ''}, {'empresa': 'EUREKA TRANSPORTES LTDA', 'endereco': 'ALFREDO VIEIRA ALVES, 371', 'telefone': '(19) 3281-3075 / (19) 3281-3076', 'site': ''}, {'empresa': 'EBTRANS', 'endereco': 'RUA ADALBERTO PANZAN, 42', 'telefone': '', 'site': ''}, {'empresa': 'EXPRESSO SALOMÉ', 'endereco': 'SARA HELENA MANTELLO, 50', 'telefone': '(19) 3245-2780 / (19) 3245-1105', 'site': ''}, {'empresa': 'GRUPO COLLONI', 'endereco': 'ARMANDO DE CAMPOS, 210', 'telefone': '(11) 98800-5053 / (54) 3359-2400', 'site': ''}, {'empresa': 'GM TENDAS EVENTOS E ARMAZENAGENS LTDA', 'endereco': 'SARA HELENA MANTELLO, 410', 'telefone': '(19) 3291-3756', 'site': ''}, {'empresa': 'HOLD TRANSPORTES', 'endereco': 'LÁZARO BIBIANO DA SILVA, 67', 'telefone': '(19) 99369-8830', 'site': ''}, {'empresa': 'HSE TRANSPORTES', 'endereco': 'RUA ANCILLA TONINI GAGO, 565', 'telefone': '(19) 3281-6555 / (19) 98728-2827', 'site': ''}, {'empresa': 'JAMEF', 'endereco': 'AVENIDA ANTONIO BOSCATTO, 322 A', 'telefone': '2102-2000 / 2102-2019', 'site': ''}, {'empresa': 'JNR TRANSPORTES', 'endereco': 'RUA ARMANDO DE CAMPOS, 120', 'telefone': '(19) 2042-2429 / (35) 99708-5318 / (35) 98413-2790', 'site': 'jnrlogistica.com.br'}, {'empresa': 'M. FERRETI COMERCIO DE IMP. E EXP. LTDA', 'endereco': 'ALFREDO VIEIRA ALVES, 31', 'telefone': '(19) 3241-8844', 'site': ''}, {'empresa': 'MACAMP DISTRIBUIDORA DE PRODUTOS ALIMENTICIOS', 'endereco': 'ARMANDO DE CAMPOS, 500', 'telefone': '(19) 98132-0504', 'site': ''}, {'empresa': 'MARDONIO CARGO EXPRESS TRANSPORTES LTDA', 'endereco': 'ARMANDO DE CAMPOS, 140', 'telefone': '(19) 3267-9799', 'site': ''}, {'empresa': 'MIRA TRANSPORTES LTDA', 'endereco': 'SARA HELENA MANTELLO, 352 / 374', 'telefone': '(19) 2117-9900', 'site': ''}, {'empresa': 'MOSCA LOGISTICA LTDA', 'endereco': 'ANTONIO BUSCATTO, 171', 'telefone': '(19) 3781-2222', 'site': ''}, {'empresa': 'PERCILOG TRANSPORTES', 'endereco': 'LÁZARO BIBIANO DA SILVA, 67', 'telefone': '(19) 98319-0743', 'site': ''}, {'empresa': 'RAK LOG', 'endereco': 'RICARDO DIAS ALVES, 265', 'telefone': '(19) 3800-3725', 'site': ''}, {'empresa': 'RNG TRANSPORTES', 'endereco': 'LÁZARO BIBIANO DA SILVA, 67', 'telefone': '(19) 98198-0623', 'site': 'www.rngtransportes.com.br'}, {'empresa': 'RODOGARCIA TRANSPORTES LTDA', 'endereco': 'ANCILLA TONINI GAGO, 151', 'telefone': '(19) 3781-2230', 'site': ''}, {'empresa': 'RODOMAXLOG ARMAZENAGEM E LOGISTICA LTDA', 'endereco': 'AVENIDA JOÃO GALVÃO ANDERSON, 470', 'telefone': '(19) 3265-5263', 'site': 'www.rodomaxlog.com'}, {'empresa': 'RODOSERGIO / TRANS-OPEN', 'endereco': 'ALFREDO VIEIRA ALVES, 220', 'telefone': '(19) 3281-3277 / (19) 8211-9771', 'site': ''}, {'empresa': 'RUMON TRANSPORTES', 'endereco': 'SARA HELENA MANTELLO, 785', 'telefone': '(19) 2137-6200 / (19) 99760-64480', 'site': ''}, {'empresa': 'RIOTRANS', 'endereco': 'ANCILA TONINI GAGO, 61', 'telefone': '(19) 3513-1834', 'site': ''}, {'empresa': 'RÁPIDO GARIBALDI', 'endereco': 'RUA LAZARO BIBIANO DA SILVA, 361', 'telefone': '', 'site': ''}, {'empresa': 'SÃO RAFAEL TRANSPORTES', 'endereco': 'RUA SARA HELENA MANTELLO, 86', 'telefone': '', 'site': ''}, {'empresa': 'SCHREIBER LOG', 'endereco': 'ANCILA TONINI GAGO, 61', 'telefone': '(19) 2218-7988 / (19) 3281-1963', 'site': ''}, {'empresa': 'SINDICAMP SINDICATO DE EMPRESAS DE TRANSPORTES LTDA', 'endereco': 'ADALBERTO PANZAN, 92', 'telefone': '(19) 3781-6200', 'site': ''}, {'empresa': 'TELEMONT', 'endereco': 'RICARDO DIAS ALVES, 381', 'telefone': '(19) 3284-2600', 'site': ''}, {'empresa': 'TECMAR TRANSPORTES LTDA', 'endereco': 'JOÃO GALVÃO ANDERSON, 1411', 'telefone': '(19) 3281-1611 / (19) 3282-4804', 'site': ''}, {'empresa': 'TELE CARGA EXPRESS TRANSPORTE', 'endereco': 'RUA SARA HELENA MANTELLO, 187', 'telefone': '', 'site': ''}, {'empresa': 'TJ4 TRANSPORTES LTDA (FRILOG)', 'endereco': 'LAZARO BIBIANO DA SILVA, 441', 'telefone': '(19) 3407-4122 / (19) 3407-1521', 'site': ''}, {'empresa': 'TRANS. NASIF', 'endereco': 'ANTONIO BOSCATTO, 50', 'telefone': '(19) 3782-6122', 'site': ''}, {'empresa': 'TRANSPORTADORA RISSO LTDA', 'endereco': 'ADALBERTO PANZAN, 20', 'telefone': '(19) 3781-6700', 'site': ''}, {'empresa': 'TRANSPORTADORA SCARPATTO (TRANSUNI)', 'endereco': 'SARA HELENA MANTELLO, 449', 'telefone': '(19) 3281-0110 / (19) 3281-0060', 'site': ''}, {'empresa': 'TRANSPORTES MAROSO', 'endereco': 'RUA ALFREDO VIEIRA ALVES, 390', 'telefone': '2220-9757', 'site': ''}, {'empresa': 'TRANSPORTES OURO NEGRO LTDA', 'endereco': 'ANCILA TONINI GAGO, 531', 'telefone': '(19) 3014-8065 / (19) 94728-3618', 'site': ''}, {'empresa': 'TRANSUNI TRANSPORTES', 'endereco': 'SARA HELENA MANTELLO, 188', 'telefone': '', 'site': ''}, {'empresa': 'TRLOG TRANSPORTES E LOGÍSTICA EIRELI', 'endereco': 'SARA HELENA MANTELO, 20', 'telefone': '(19) 3282-1124 / (19) 3281-0432', 'site': ''}, {'empresa': 'TRUCK PARK CENTER', 'endereco': 'ARMANDO DE CAMPOS, 455', 'telefone': '(19) 3281-4622', 'site': ''}, {'empresa': 'TRIMAK', 'endereco': 'ARMANDO DE CAMPOS, 180', 'telefone': '(19) 99928-1266', 'site': ''}, {'empresa': 'TRANSMAC', 'endereco': 'RUA SARA HELENA MANTELLO, 448', 'telefone': '(19) 99159-1237', 'site': ''}, {'empresa': 'VALNI TRANSPORTES RODOV. LTDA', 'endereco': 'ANTONIO BOSCATTO, 140', 'telefone': '(19) 3781-5132 / (19) 3781-5157', 'site': ''}, {'empresa': 'XANDÔ', 'endereco': 'LARAZARO BIBIANO, 161', 'telefone': '', 'site': ''}]
+
+TICLOG_STATUS_FINAIS = {
+    "SEM INTERESSE",
+    "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+    "EMPRESA NÃO EXISTE / ENCERRADA",
+}
+
+TICLOG_ACOES = [
+    "📞 Ligar",
+    "💬 WhatsApp",
+    "✉️ E-mail",
+    "🚶 Visitar presencialmente",
+    "📅 Agendar visita",
+]
+
+TICLOG_RESULTADOS = [
+    "NÃO ATENDEU / SEM RESPOSTA",
+    "FALOU COM RESPONSÁVEL",
+    "RETORNAR CONTATO",
+    "VISITA PRESENCIAL REALIZADA",
+    "VISITA NECESSÁRIA",
+    "INTERESSADO",
+    "SEM INTERESSE",
+    "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+    "EMPRESA NÃO EXISTE / ENCERRADA",
+]
+
+def chave_ticlog(empresa, endereco):
+    return re.sub(r"\s+", " ", f"{empresa}|{endereco}".strip().upper())
+
+def importar_clientes_ticlog_se_necessario():
+    """
+    Importação única da carteira TICLOG fornecida.
+    Nunca recria o database.json e nunca remove dados existentes.
+    """
+    dados = carregar_database(forcar_github=True)
+    dados.setdefault("clientes_ticlog", [])
+    dados.setdefault("historico_ticlog", [])
+    dados.setdefault("metadata", {})
+
+    existentes = {
+        chave_ticlog(c.get("empresa"), c.get("endereco"))
+        for c in dados["clientes_ticlog"]
+    }
+
+    prox = proximo_id_lista(dados["clientes_ticlog"])
+    adicionados = 0
+    agora = datetime.now().isoformat(timespec="seconds")
+
+    for origem in CLIENTES_TICLOG_INICIAIS:
+        chave = chave_ticlog(origem.get("empresa"), origem.get("endereco"))
+        if chave in existentes:
+            continue
+        novo = {
+            "id": prox,
+            "empresa": str(origem.get("empresa") or "").strip(),
+            "endereco": str(origem.get("endereco") or "").strip(),
+            "telefone": str(origem.get("telefone") or "").strip(),
+            "site": str(origem.get("site") or "").strip(),
+            "status": "SEM CONTATO",
+            "ultima_acao": "",
+            "ultima_observacao": "",
+            "total_tentativas": 0,
+            "data_ultima_acao": None,
+            "visita_agendada": 0,
+            "data_visita": None,
+            "hora_visita": None,
+            "criado_em": agora,
+            "origem": "LISTA TICLOG INICIAL",
+        }
+        dados["clientes_ticlog"].append(novo)
+        prox += 1
+        adicionados += 1
+        existentes.add(chave)
+
+    if adicionados > 0 or not dados["metadata"].get("clientes_ticlog_importados_v1"):
+        dados["metadata"]["clientes_ticlog_importados_v1"] = True
+        dados["metadata"]["clientes_ticlog_importados_v1_qtd"] = len(CLIENTES_TICLOG_INICIAIS)
+        dados["metadata"]["clientes_ticlog_importados_v1_data"] = agora
+        salvar_database(dados)
+
+    return adicionados
+
+def salvar_cliente_ticlog_novo(empresa, endereco, telefone="", site=""):
+    dados = carregar_database(forcar_github=True)
+    dados.setdefault("clientes_ticlog", [])
+    chave = chave_ticlog(empresa, endereco)
+    if any(chave_ticlog(c.get("empresa"), c.get("endereco")) == chave for c in dados["clientes_ticlog"]):
+        return False, "Este cliente/endereço já existe na carteira TICLOG."
+
+    dados["clientes_ticlog"].append({
+        "id": proximo_id_lista(dados["clientes_ticlog"]),
+        "empresa": str(empresa or "").strip().upper(),
+        "endereco": str(endereco or "").strip().upper(),
+        "telefone": str(telefone or "").strip(),
+        "site": str(site or "").strip(),
+        "status": "SEM CONTATO",
+        "ultima_acao": "",
+        "ultima_observacao": "",
+        "total_tentativas": 0,
+        "data_ultima_acao": None,
+        "visita_agendada": 0,
+        "data_visita": None,
+        "hora_visita": None,
+        "criado_em": datetime.now().isoformat(timespec="seconds"),
+        "origem": "CADASTRO APP",
+    })
+    salvar_database(dados)
+    return True, "Cliente TICLOG incluído."
+
+def atualizar_cliente_ticlog_cadastro(cliente_id, empresa, endereco, telefone, site):
+    dados = carregar_database(forcar_github=True)
+    for c in dados.get("clientes_ticlog", []):
+        if int(c.get("id", 0) or 0) == int(cliente_id):
+            c["empresa"] = str(empresa or "").strip().upper()
+            c["endereco"] = str(endereco or "").strip().upper()
+            c["telefone"] = str(telefone or "").strip()
+            c["site"] = str(site or "").strip()
+            c["atualizado_em"] = datetime.now().isoformat(timespec="seconds")
+            break
+    salvar_database(dados)
+
+def registrar_acao_ticlog(cliente_id, acao, resultado, observacao="", data_visita=None, hora_visita=None):
+    """
+    Não encerra por ausência de resposta.
+    Só sai da carteira ativa em status explicitamente finais.
+    Se houver data de visita, cria compromisso na Agenda no mesmo salvamento.
+    """
+    dados = carregar_database(forcar_github=True)
+    dados.setdefault("clientes_ticlog", [])
+    dados.setdefault("historico_ticlog", [])
+    dados.setdefault("agenda", [])
+
+    cliente = None
+    for c in dados["clientes_ticlog"]:
+        if int(c.get("id", 0) or 0) == int(cliente_id):
+            cliente = c
+            break
+    if cliente is None:
+        raise RuntimeError("Cliente TICLOG não encontrado.")
+
+    agora = datetime.now()
+    tentativa = int(cliente.get("total_tentativas", 0) or 0) + 1
+
+    # Sem resposta nunca finaliza: continua ativo para ligação ou visita presencial.
+    if resultado == "NÃO ATENDEU / SEM RESPOSTA":
+        status = "TENTAR NOVAMENTE / VISITAR"
+    elif resultado == "VISITA NECESSÁRIA":
+        status = "VISITA A PROGRAMAR"
+    elif resultado == "FALOU COM RESPONSÁVEL":
+        status = "EM CONTATO"
+    elif resultado == "RETORNAR CONTATO":
+        status = "RETORNAR CONTATO"
+    elif resultado == "VISITA PRESENCIAL REALIZADA":
+        status = "VISITA REALIZADA"
+    elif resultado == "INTERESSADO":
+        status = "INTERESSADO"
+    elif resultado in TICLOG_STATUS_FINAIS:
+        status = resultado
+    else:
+        status = "EM ACOMPANHAMENTO"
+
+    data_visita_iso = data_visita.isoformat() if data_visita else None
+    hora_visita_txt = hora_visita.strftime("%H:%M") if hasattr(hora_visita, "strftime") else str(hora_visita or "").strip()
+
+    if data_visita:
+        status = "VISITA AGENDADA"
+        # Evita duplicar a mesma visita TICLOG.
+        ja_existe = any(
+            str(a.get("origem") or "") == "TICLOG"
+            and int(a.get("ticlog_cliente_id", 0) or 0) == int(cliente_id)
+            and str(a.get("data") or "") == data_visita_iso
+            and str(a.get("horario") or "") == hora_visita_txt
+            and str(a.get("status") or "") != "CANCELADO"
+            for a in dados["agenda"]
+        )
+        if not ja_existe:
+            dados["agenda"].append({
+                "id": proximo_id_lista(dados["agenda"]),
+                "data": data_visita_iso,
+                "horario": hora_visita_txt,
+                "tipo": "VISITA TICLOG",
+                "cliente_compromisso": cliente.get("empresa") or "Cliente TICLOG",
+                "local": cliente.get("endereco") or "TICLOG",
+                "observacao": str(observacao or "").strip(),
+                "status": "PROGRAMADO",
+                "criado_em": agora.isoformat(timespec="seconds"),
+                "usuario": st.session_state.get("usuario_logado", ""),
+                "origem": "TICLOG",
+                "ticlog_cliente_id": int(cliente_id),
+            })
+
+    cliente["status"] = status
+    cliente["ultima_acao"] = str(acao or "").strip()
+    cliente["ultima_observacao"] = str(observacao or "").strip()
+    cliente["total_tentativas"] = tentativa
+    cliente["data_ultima_acao"] = agora.date().isoformat()
+    cliente["visita_agendada"] = 1 if data_visita else 0
+    cliente["data_visita"] = data_visita_iso
+    cliente["hora_visita"] = hora_visita_txt if data_visita else None
+
+    dados["historico_ticlog"].append({
+        "id": proximo_id_lista(dados["historico_ticlog"]),
+        "cliente_id": int(cliente_id),
+        "empresa": cliente.get("empresa"),
+        "data": agora.date().isoformat(),
+        "hora": agora.strftime("%H:%M"),
+        "acao": str(acao or "").strip(),
+        "resultado": str(resultado or "").strip(),
+        "status_novo": status,
+        "observacao": str(observacao or "").strip(),
+        "data_visita": data_visita_iso,
+        "hora_visita": hora_visita_txt if data_visita else None,
+        "usuario": st.session_state.get("usuario_logado", ""),
+        "criado_em": agora.isoformat(timespec="seconds"),
+    })
+
+    salvar_database(dados)
+    return status
+
+
 # -----------------------------
 # APP
 # -----------------------------
@@ -2109,6 +2344,7 @@ _nav_button("📊 Dashboard", "📊 Dashboard", "nav_dashboard")
 _nav_button("📞 Fila de contatos", "📞 Fila de contatos", "nav_fila")
 _nav_button("🔥 Clientes em andamento", "🔥 Clientes em andamento", "nav_andamento")
 _nav_button("📅 Agenda", "📅 Agenda", "nav_agenda")
+_nav_button("🏢 Clientes TICLOG", "🏢 Clientes TICLOG", "nav_ticlog")
 
 st.sidebar.divider()
 st.sidebar.markdown("### APOIO")
@@ -3061,6 +3297,260 @@ elif menu == "🔥 Clientes em andamento":
 
 
 # ---------------- AGENDA ----------------
+
+elif menu == "🏢 Clientes TICLOG":
+    st.markdown("## 🏢 Clientes TICLOG")
+    st.caption(
+        "Carteira de prospecção local. Sem resposta não encerra o cliente: "
+        "continuamos tentando contato e, quando necessário, visitamos presencialmente."
+    )
+
+    adicionados = importar_clientes_ticlog_se_necessario()
+    if adicionados > 0:
+        st.success(f"✅ Carteira TICLOG carregada: {adicionados} novo(s) cliente(s).")
+
+    dados_t = carregar_database(forcar_github=False)
+    clientes_t = dados_t.get("clientes_ticlog", []) or []
+    historico_t = dados_t.get("historico_ticlog", []) or []
+
+    if not clientes_t:
+        st.info("Nenhum cliente TICLOG cadastrado.")
+    else:
+        df_t = pd.DataFrame(clientes_t)
+        for col in ["status","empresa","endereco","telefone","site","data_visita","hora_visita","total_tentativas"]:
+            if col not in df_t.columns:
+                df_t[col] = None
+
+        finais_t = df_t["status"].isin(TICLOG_STATUS_FINAIS)
+        ativos_t = df_t[~finais_t].copy()
+
+        total = len(df_t)
+        ativos_qtd = len(ativos_t)
+        visitas_qtd = int((ativos_t["status"] == "VISITA AGENDADA").sum()) if not ativos_t.empty else 0
+        sem_contato_qtd = int((ativos_t["status"] == "SEM CONTATO").sum()) if not ativos_t.empty else 0
+
+        q1,q2,q3,q4 = st.columns(4)
+        q1.metric("Carteira TICLOG", total)
+        q2.metric("Ativos", ativos_qtd)
+        q3.metric("Sem contato", sem_contato_qtd)
+        q4.metric("Visitas agendadas", visitas_qtd)
+
+        # Prioridade: visita mais próxima -> sem contato -> demais ativos.
+        if not ativos_t.empty:
+            ativos_t["visita_dt"] = pd.to_datetime(ativos_t["data_visita"], errors="coerce")
+            hoje_t = pd.Timestamp(date.today())
+            ativos_t["_p"] = 3
+            ativos_t.loc[ativos_t["status"] == "SEM CONTATO", "_p"] = 1
+            ativos_t.loc[ativos_t["status"] == "VISITA AGENDADA", "_p"] = 0
+            ativos_t = ativos_t.sort_values(
+                ["_p","visita_dt","total_tentativas","empresa"],
+                na_position="last"
+            ).reset_index(drop=True)
+
+        if ativos_t.empty:
+            st.success("Todos os clientes TICLOG estão em status final.")
+        else:
+            if "ticlog_pos" not in st.session_state:
+                st.session_state["ticlog_pos"] = 0
+            pos = int(st.session_state.get("ticlog_pos", 0) or 0)
+            pos = max(0, min(pos, len(ativos_t)-1))
+            st.session_state["ticlog_pos"] = pos
+
+            with st.expander("🔎 Procurar cliente TICLOG", expanded=False):
+                mapa_busca = {
+                    f"{r['empresa']} — {r.get('status','')}": idx
+                    for idx, r in ativos_t.iterrows()
+                }
+                esc = st.selectbox("Cliente", list(mapa_busca.keys()), index=pos, key="ticlog_busca")
+                if st.button("Abrir cliente", key="ticlog_abrir", use_container_width=True):
+                    st.session_state["ticlog_pos"] = int(mapa_busca[esc])
+                    st.rerun()
+
+            atual = ativos_t.iloc[pos]
+            tid = int(atual["id"])
+
+            tag = "📍 TICLOG"
+            if atual.get("status") == "VISITA AGENDADA":
+                tag = "📅 VISITA AGENDADA"
+            elif atual.get("status") == "SEM CONTATO":
+                tag = "🆕 SEM CONTATO"
+
+            st.markdown(
+                f"""
+                <div style="padding:.2rem 0 .4rem 0;">
+                    <div style="display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;">
+                        <span style="font-size:1.5rem;font-weight:800;color:#20263a;">
+                            {atual.get('empresa') or '-'}
+                        </span>
+                        <span style="font-size:.8rem;padding:.18rem .5rem;border-radius:.6rem;
+                                     background:#eef3ff;">{tag}</span>
+                    </div>
+                    <div style="margin-top:.35rem;color:#586174;font-size:.9rem;">
+                        <b>Status:</b> {atual.get('status') or 'SEM CONTATO'}
+                        &nbsp;•&nbsp;
+                        <b>Tentativas:</b> {int(atual.get('total_tentativas') or 0)}
+                        &nbsp;•&nbsp;
+                        <b>Cliente:</b> {pos+1} de {len(ativos_t)}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                f"""
+                <div style="background:#f6f8fb;border:1px solid #e6e9ef;border-radius:10px;
+                            padding:.7rem .9rem;margin:.2rem 0 .4rem 0;">
+                    📍 <b>{atual.get('endereco') or 'Endereço não informado'}</b><br>
+                    📞 {atual.get('telefone') or 'Sem telefone'}<br>
+                    🌐 {atual.get('site') or 'Sem site informado'}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            if str(atual.get("ultima_observacao") or "").strip():
+                st.caption(f"📝 Última observação: {atual.get('ultima_observacao')}")
+            if atual.get("status") == "VISITA AGENDADA" and atual.get("data_visita"):
+                dtv = pd.to_datetime(atual.get("data_visita"), errors="coerce")
+                dtv_txt = dtv.strftime("%d/%m/%Y") if pd.notna(dtv) else atual.get("data_visita")
+                st.info(f"📅 Visita: **{dtv_txt} às {atual.get('hora_visita') or '--:--'}**")
+
+            c_hist, c_edit = st.columns(2)
+            with c_hist:
+                hist_cliente = [
+                    h for h in historico_t
+                    if int(h.get("cliente_id",0) or 0) == tid
+                ]
+                with st.expander("🕘 Histórico", expanded=False):
+                    if not hist_cliente:
+                        st.caption("Sem histórico ainda.")
+                    else:
+                        hdf = pd.DataFrame(hist_cliente)
+                        if "data" in hdf.columns:
+                            hdf["data"] = pd.to_datetime(hdf["data"], errors="coerce").dt.strftime("%d/%m/%Y")
+                        cols_h = [c for c in ["data","hora","acao","resultado","status_novo","observacao","data_visita","hora_visita"] if c in hdf.columns]
+                        st.dataframe(hdf[cols_h].iloc[::-1], use_container_width=True, hide_index=True)
+
+            with c_edit:
+                with st.expander("✏️ Editar cadastro", expanded=False):
+                    e_nome = st.text_input("Empresa", value=str(atual.get("empresa") or ""), key=f"tic_nome_{tid}")
+                    e_end = st.text_input("Endereço", value=str(atual.get("endereco") or ""), key=f"tic_end_{tid}")
+                    e_tel = st.text_input("Telefone", value=str(atual.get("telefone") or ""), key=f"tic_tel_{tid}")
+                    e_site = st.text_input("Site", value=str(atual.get("site") or ""), key=f"tic_site_{tid}")
+                    if st.button("Salvar cadastro", key=f"tic_edit_salvar_{tid}", use_container_width=True):
+                        atualizar_cliente_ticlog_cadastro(tid, e_nome, e_end, e_tel, e_site)
+                        st.success("Cadastro atualizado.")
+                        st.rerun()
+
+            st.divider()
+            st.markdown("### Próxima ação")
+
+            acao_t = st.pills(
+                "Ação",
+                TICLOG_ACOES,
+                selection_mode="single",
+                key=f"tic_acao_{tid}"
+            )
+
+            resultado_t = st.pills(
+                "Resultado",
+                TICLOG_RESULTADOS,
+                selection_mode="single",
+                key=f"tic_resultado_{tid}"
+            )
+
+            obs_t = st.text_area(
+                "Observação (opcional)",
+                placeholder="Ex.: ninguém atendeu; fazer visita presencial na próxima ida ao TICLOG.",
+                height=75,
+                key=f"tic_obs_{tid}"
+            )
+
+            data_visita_t = None
+            hora_visita_t = None
+            if acao_t == "📅 Agendar visita" or resultado_t == "VISITA NECESSÁRIA":
+                agendar_agora = st.checkbox(
+                    "Já tenho a data da visita",
+                    value=acao_t == "📅 Agendar visita",
+                    key=f"tic_tem_data_{tid}"
+                )
+                if agendar_agora:
+                    a,b = st.columns(2)
+                    data_visita_t = a.date_input(
+                        "Data da visita *",
+                        value=date.today()+timedelta(days=1),
+                        min_value=date.today(),
+                        format="DD/MM/YYYY",
+                        key=f"tic_data_visita_{tid}"
+                    )
+                    hora_visita_t = b.time_input(
+                        "Horário *",
+                        value=datetime.now().replace(second=0,microsecond=0).time(),
+                        key=f"tic_hora_visita_{tid}"
+                    )
+                    st.caption("✅ Ao salvar, esta visita também será incluída automaticamente na Agenda.")
+
+            b1,b2,b3 = st.columns([1,1,1.8])
+            with b1:
+                anterior = st.button("⬅️ Anterior", key=f"tic_ant_{tid}", use_container_width=True)
+            with b2:
+                pular = st.button("⏭️ Pular", key=f"tic_pular_{tid}", use_container_width=True)
+            with b3:
+                salvar = st.button("💾 Salvar e próximo", key=f"tic_salvar_{tid}", type="primary", use_container_width=True)
+
+            if anterior:
+                st.session_state["ticlog_pos"] = (pos-1) % len(ativos_t)
+                st.rerun()
+
+            if pular:
+                st.session_state["ticlog_pos"] = (pos+1) % len(ativos_t)
+                st.rerun()
+
+            if salvar:
+                if not acao_t:
+                    st.warning("Selecione a ação realizada/próxima ação.")
+                elif not resultado_t:
+                    st.warning("Selecione o resultado.")
+                elif acao_t == "📅 Agendar visita" and data_visita_t is None:
+                    st.warning("Informe a data da visita.")
+                else:
+                    registrar_acao_ticlog(
+                        tid,
+                        acao_t,
+                        resultado_t,
+                        obs_t,
+                        data_visita_t,
+                        hora_visita_t
+                    )
+                    st.session_state["ticlog_pos"] = min(pos, max(len(ativos_t)-1, 0))
+                    st.success("Ação salva.")
+                    st.rerun()
+
+        st.divider()
+        with st.expander("➕ Adicionar cliente TICLOG", expanded=False):
+            with st.form("form_novo_ticlog", clear_on_submit=True):
+                n_empresa = st.text_input("Empresa *")
+                n_end = st.text_input("Endereço *")
+                n_tel = st.text_input("Telefone")
+                n_site = st.text_input("Site")
+                n_salvar = st.form_submit_button("Adicionar cliente", type="primary", use_container_width=True)
+            if n_salvar:
+                if not n_empresa.strip() or not n_end.strip():
+                    st.error("Informe empresa e endereço.")
+                else:
+                    ok,msg = salvar_cliente_ticlog_novo(n_empresa,n_end,n_tel,n_site)
+                    (st.success if ok else st.warning)(msg)
+                    if ok:
+                        st.rerun()
+
+        with st.expander("📋 Ver carteira completa / finalizados", expanded=False):
+            visual = df_t.copy()
+            if "data_visita" in visual.columns:
+                visual["data_visita"] = pd.to_datetime(visual["data_visita"], errors="coerce").dt.strftime("%d/%m/%Y")
+            cols = [c for c in ["empresa","endereco","telefone","site","status","total_tentativas","data_visita","hora_visita","ultima_observacao"] if c in visual.columns]
+            st.dataframe(visual[cols], use_container_width=True, hide_index=True)
+
 elif menu == "📅 Agenda":
     st.markdown("## 📅 Agenda")
     st.caption("Visitas, reuniões e compromissos comerciais em uma visão simples.")
@@ -3079,6 +3569,7 @@ elif menu == "📅 Agenda":
 
     cores_agenda = {
         "VISITA": "#e8f1ff",
+        "VISITA TICLOG": "#dff7e8",
         "REUNIÃO": "#f3e8ff",
         "EVENTO": "#fff3d6",
         "RETORNO": "#e8fff2",
@@ -3960,5 +4451,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V11.3 • Agenda Visual")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V12 • Clientes TICLOG")
 
