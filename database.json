@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-27T17:47:34",
+    "ultima_atualizacao": "2026-08-27T17:49:22",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -30895,7 +30895,7 @@
       "id": 1816,
       "documento": "54.937.006/0001-19",
       "nome": "LUDVIGER LUDVIGER LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(41) 99888-0068",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -30906,7 +30906,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1817,
