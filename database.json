@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-27T18:06:52",
+    "ultima_atualizacao": "2026-08-27T20:30:07",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -69869,11 +69869,11 @@
       "endereco": "RUA ARMANDO DE CAMPOS, 420",
       "telefone": "(19) 99168-9800",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "EM CONTATO",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "Falei com Marcelo  em Abril tentando já agendar uma visita, hoje 27/08 retomei o assunto e aguardo a resposta dele.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-08-27",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -70969,5 +70969,21 @@
       "origem": "LISTA TICLOG INICIAL"
     }
   ],
-  "historico_ticlog": []
+  "historico_ticlog": [
+    {
+      "id": 1,
+      "cliente_id": 1,
+      "empresa": "ABBA LOGISTICA",
+      "data": "2026-08-27",
+      "hora": "20:30",
+      "acao": "💬 WhatsApp",
+      "resultado": "FALOU COM RESPONSÁVEL",
+      "status_novo": "EM CONTATO",
+      "observacao": "Falei com Marcelo  em Abril tentando já agendar uma visita, hoje 27/08 retomei o assunto e aguardo a resposta dele.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-08-27T20:30:07"
+    }
+  ]
 }
