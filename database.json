@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-27T20:31:55",
+    "ultima_atualizacao": "2026-08-27T20:33:35",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -69903,11 +69903,11 @@
       "endereco": "ALFREDO VIEIRA ALVES, 69",
       "telefone": "(19) 3212-1430 / (19) 3245-1113",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
+      "status": "TENTAR NOVAMENTE / VISITAR",
+      "ultima_acao": "📞 Ligar",
       "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-08-27",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -70999,6 +70999,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-08-27T20:31:55"
+    },
+    {
+      "id": 3,
+      "cliente_id": 3,
+      "empresa": "ALPHA CARGO TRANSPORTES LTDA",
+      "data": "2026-08-27",
+      "hora": "20:33",
+      "acao": "📞 Ligar",
+      "resultado": "NÃO ATENDEU / SEM RESPOSTA",
+      "status_novo": "TENTAR NOVAMENTE / VISITAR",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-08-27T20:33:35"
     }
   ]
 }
