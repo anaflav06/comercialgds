@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-27T12:56:07",
+    "ultima_atualizacao": "2026-08-27T12:57:56",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -32254,7 +32254,7 @@
       "id": 1896,
       "documento": "58.977.492/0001-50",
       "nome": "LITWOD MAGAZINE LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(19) 3803-9124",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -32265,7 +32265,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1897,
