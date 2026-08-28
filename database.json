@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-28T17:46:44",
+    "ultima_atualizacao": "2026-08-28T17:47:15",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -34727,15 +34727,15 @@
       "telefone1": "(66) 99251-5487",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-28",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 720,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2041,
@@ -64167,6 +64167,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-28T17:46:44",
       "seq_global": 519,
+      "usuario": "celso"
+    },
+    {
+      "id": 1940,
+      "empresa_id": 2040,
+      "data_contato": "2026-08-28",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-28T17:47:15",
+      "seq_global": 520,
       "usuario": "celso"
     }
   ],
