@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-28T13:17:32",
+    "ultima_atualizacao": "2026-08-28T13:39:01",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -33661,7 +33661,7 @@
       "id": 1978,
       "documento": "62.324.351/0001-05",
       "nome": "MAS COMERCIO VAREJISTA LTDA",
-      "telefone1": "NÃO TEM",
+      "telefone1": "(41) 99788-0145",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -33672,7 +33672,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1979,
