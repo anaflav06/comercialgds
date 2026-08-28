@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-28T13:57:35",
+    "ultima_atualizacao": "2026-08-28T13:58:19",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37523,7 +37523,7 @@
       "telefone1": "(82) 9900-5630",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "EM ANDAMENTO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-28",
       "criado_em": "2026-08-14T20:21:10",
@@ -37531,7 +37531,8 @@
       "retorno_apos_seq": 694,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": ""
     },
     {
       "id": 2205,
