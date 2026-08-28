@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-28T13:07:46",
+    "ultima_atualizacao": "2026-08-28T13:09:26",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -34926,7 +34926,7 @@
       "id": 2052,
       "documento": "66.732.810/0001-40",
       "nome": "MARIA MARIETA DISTRIBUIDORA LTDA",
-      "telefone1": "",
+      "telefone1": "(19) 99185-4385",
       "telefone2": "CNPJ  NÃO ENCONTRADO",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -34937,7 +34937,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 2053,
