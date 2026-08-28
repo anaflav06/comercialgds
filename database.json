@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-28T18:39:41",
+    "ultima_atualizacao": "2026-08-28T18:41:03",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -64743,6 +64743,18 @@
       "observacao": "",
       "status": "PROGRAMADO",
       "criado_em": "2026-08-28T18:39:41",
+      "usuario": "celso"
+    },
+    {
+      "id": 5,
+      "data": "2026-09-03",
+      "horario": "18:41",
+      "tipo": "VISITA",
+      "cliente_compromisso": "Continuar visitas no TIC identificando possíveis clientes para CPQ08",
+      "local": "Campinas",
+      "observacao": "",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-08-28T18:41:03",
       "usuario": "celso"
     }
   ],
