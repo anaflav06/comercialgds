@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-28T18:01:32",
+    "ultima_atualizacao": "2026-08-28T18:37:32",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -64719,6 +64719,18 @@
       "observacao": "Expo Center Norte",
       "status": "PROGRAMADO",
       "criado_em": "2026-08-26T18:51:10",
+      "usuario": "celso"
+    },
+    {
+      "id": 3,
+      "data": "2026-08-31",
+      "horario": "18:37",
+      "tipo": "VISITA",
+      "cliente_compromisso": "Visitas aos clientes na região de  SAO12",
+      "local": "São Paulo",
+      "observacao": "",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-08-28T18:37:32",
       "usuario": "celso"
     }
   ],
