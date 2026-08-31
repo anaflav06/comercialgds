@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-31T16:47:53",
+    "ultima_atualizacao": "2026-08-31T18:55:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -65626,6 +65626,18 @@
       "observacao": "",
       "status": "PROGRAMADO",
       "criado_em": "2026-08-31T10:53:52",
+      "usuario": "celso"
+    },
+    {
+      "id": 7,
+      "data": "2026-08-01",
+      "horario": "18:55",
+      "tipo": "VISITA",
+      "cliente_compromisso": "Trabalho de campo no TYIC Campinas",
+      "local": "Campinas",
+      "observacao": "",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-08-31T18:55:27",
       "usuario": "celso"
     }
   ],
