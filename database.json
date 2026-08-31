@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-31T11:56:38",
+    "ultima_atualizacao": "2026-08-31T11:57:14",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -26466,15 +26466,15 @@
       "telefone1": "(11) 93111-7800",
       "telefone2": "(19) 3456-8029",
       "telefone3": "(19) 3546-8029",
-      "status": "SEM CONTATO",
+      "status": "1ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-31",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 757,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS"
     },
     {
       "id": 1557,
@@ -64686,6 +64686,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-31T11:56:38",
       "seq_global": 556,
+      "usuario": "celso"
+    },
+    {
+      "id": 1977,
+      "empresa_id": 1556,
+      "data_contato": "2026-08-31",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "1ª TENTATIVA SEM RETORNO",
+      "observacao": "",
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-31T11:57:14",
+      "seq_global": 557,
       "usuario": "celso"
     }
   ],
