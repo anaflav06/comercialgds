@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-31T19:03:30",
+    "ultima_atualizacao": "2026-08-31T19:24:41",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -26995,15 +26995,16 @@
       "telefone1": "(51) 99373-6353",
       "telefone2": "(11) 98240-3025",
       "telefone3": "",
-      "status": "SEM CONTATO",
-      "observacao_atual": "",
+      "status": "NÃO UTILIZA TRANSPORTE",
+      "observacao_atual": "Trata-se hoje de uma lanchonete",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 1588,
