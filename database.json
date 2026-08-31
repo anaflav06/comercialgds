@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-31T10:52:31",
+    "ultima_atualizacao": "2026-08-31T10:53:52",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -64757,6 +64757,18 @@
       "observacao": "",
       "status": "PROGRAMADO",
       "criado_em": "2026-08-28T18:41:03",
+      "usuario": "celso"
+    },
+    {
+      "id": 6,
+      "data": "2026-09-01",
+      "horario": "10:53",
+      "tipo": "VISITA",
+      "cliente_compromisso": "Visita a clientes na região de SAO12",
+      "local": "São Paulo",
+      "observacao": "",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-08-31T10:53:52",
       "usuario": "celso"
     }
   ],
