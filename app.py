@@ -1,4 +1,5 @@
 
+
 import streamlit as st
 import pandas as pd
 import re
@@ -1890,6 +1891,49 @@ def atualizar_status_agenda(agenda_id, novo_status):
             break
     salvar_database(dados)
 
+def atualizar_compromisso_agenda(
+    agenda_id, data_compromisso, horario, tipo, cliente, local, observacao, status
+):
+    dados = carregar_database(forcar_github=True)
+    dados.setdefault("agenda", [])
+    encontrado = False
+
+    for item in dados["agenda"]:
+        if int(item.get("id", 0) or 0) == int(agenda_id):
+            # Preserva origem/TICLOG e demais metadados do compromisso.
+            item["data"] = data_compromisso.isoformat() if hasattr(data_compromisso, "isoformat") else str(data_compromisso)
+            item["horario"] = horario.strftime("%H:%M") if hasattr(horario, "strftime") else str(horario or "").strip()
+            item["tipo"] = str(tipo or "").strip().upper()
+            item["cliente_compromisso"] = str(cliente or "").strip()
+            item["local"] = str(local or "").strip()
+            item["observacao"] = str(observacao or "").strip()
+            item["status"] = str(status or "PROGRAMADO").strip().upper()
+            item["atualizado_em"] = datetime.now().isoformat(timespec="seconds")
+            item["atualizado_por"] = st.session_state.get("usuario_logado", "")
+            encontrado = True
+            break
+
+    if not encontrado:
+        raise RuntimeError("Compromisso não encontrado na agenda.")
+
+    salvar_database(dados)
+
+
+def excluir_compromisso_agenda(agenda_id):
+    dados = carregar_database(forcar_github=True)
+    dados.setdefault("agenda", [])
+
+    antes = len(dados["agenda"])
+    dados["agenda"] = [
+        item for item in dados["agenda"]
+        if int(item.get("id", 0) or 0) != int(agenda_id)
+    ]
+
+    if len(dados["agenda"]) == antes:
+        raise RuntimeError("Compromisso não encontrado na agenda.")
+
+    salvar_database(dados)
+
 def salvar_registro_veiculo(registro):
     dados = carregar_database(forcar_github=True)
     dados.setdefault("veiculo_registros", [])
@@ -3636,6 +3680,119 @@ elif menu == "📅 Agenda":
                     unsafe_allow_html=True
                 )
 
+                eid_card = int(item["id"])
+                cb1, cb2 = st.columns(2)
+                with cb1:
+                    if st.button("✏️ Editar", key=f"agenda_card_edit_{eid_card}", use_container_width=True):
+                        st.session_state["agenda_editar_id"] = eid_card
+                        st.session_state.pop("agenda_excluir_id", None)
+                        st.rerun()
+                with cb2:
+                    if st.button("🗑️ Excluir", key=f"agenda_card_del_{eid_card}", use_container_width=True):
+                        st.session_state["agenda_excluir_id"] = eid_card
+                        st.session_state.pop("agenda_editar_id", None)
+                        st.rerun()
+
+    # Confirmação de exclusão
+    excluir_id = st.session_state.get("agenda_excluir_id")
+    if excluir_id:
+        item_exc = next(
+            (a for a in agenda if int(a.get("id", 0) or 0) == int(excluir_id)),
+            None
+        )
+        if item_exc:
+            st.warning(
+                f"Excluir o compromisso **{item_exc.get('cliente_compromisso') or 'Compromisso'}** "
+                f"de {pd.to_datetime(item_exc.get('data'), errors='coerce').strftime('%d/%m/%Y') if pd.notna(pd.to_datetime(item_exc.get('data'), errors='coerce')) else item_exc.get('data')}?"
+            )
+            ex1, ex2 = st.columns(2)
+            with ex1:
+                if st.button("✅ Sim, excluir", type="primary", key="agenda_confirmar_exclusao", use_container_width=True):
+                    excluir_compromisso_agenda(int(excluir_id))
+                    st.session_state.pop("agenda_excluir_id", None)
+                    st.success("Compromisso excluído.")
+                    st.rerun()
+            with ex2:
+                if st.button("Cancelar", key="agenda_cancelar_exclusao", use_container_width=True):
+                    st.session_state.pop("agenda_excluir_id", None)
+                    st.rerun()
+
+    # Edição do compromisso selecionado
+    editar_id = st.session_state.get("agenda_editar_id")
+    if editar_id:
+        item_ed = next(
+            (a for a in agenda if int(a.get("id", 0) or 0) == int(editar_id)),
+            None
+        )
+        if item_ed:
+            st.markdown("### ✏️ Editar compromisso")
+            data_ed_atual = pd.to_datetime(item_ed.get("data"), errors="coerce")
+            data_ed_default = data_ed_atual.date() if pd.notna(data_ed_atual) else hoje_ag
+
+            hora_txt_atual = str(item_ed.get("horario") or "09:00")
+            try:
+                hora_ed_default = datetime.strptime(hora_txt_atual, "%H:%M").time()
+            except Exception:
+                hora_ed_default = datetime.now().replace(second=0, microsecond=0).time()
+
+            tipos_agenda = ["VISITA","VISITA TICLOG","REUNIÃO","EVENTO","RETORNO","OUTRO"]
+            tipo_atual = str(item_ed.get("tipo") or "OUTRO").upper()
+            if tipo_atual not in tipos_agenda:
+                tipos_agenda.append(tipo_atual)
+
+            status_agenda = ["PROGRAMADO","REALIZADO","CANCELADO"]
+            status_atual = str(item_ed.get("status") or "PROGRAMADO").upper()
+            if status_atual not in status_agenda:
+                status_agenda.append(status_atual)
+
+            with st.form(f"form_editar_agenda_{editar_id}"):
+                e1,e2,e3 = st.columns([1,1,1.2])
+                ed_data = e1.date_input("Data *", value=data_ed_default, format="DD/MM/YYYY")
+                ed_hora = e2.time_input("Horário *", value=hora_ed_default)
+                ed_tipo = e3.selectbox(
+                    "Tipo *",
+                    tipos_agenda,
+                    index=tipos_agenda.index(tipo_atual)
+                )
+                ed_cliente = st.text_input(
+                    "Cliente / Compromisso *",
+                    value=str(item_ed.get("cliente_compromisso") or "")
+                )
+                e4,e5 = st.columns([1.2,1])
+                ed_local = e4.text_input("Cidade / Local", value=str(item_ed.get("local") or ""))
+                ed_status = e5.selectbox(
+                    "Status",
+                    status_agenda,
+                    index=status_agenda.index(status_atual)
+                )
+                ed_obs = st.text_input("Observação", value=str(item_ed.get("observacao") or ""))
+
+                ec1, ec2 = st.columns(2)
+                salvar_ed = ec1.form_submit_button("💾 Salvar alterações", type="primary", use_container_width=True)
+                cancelar_ed = ec2.form_submit_button("Cancelar edição", use_container_width=True)
+
+            if salvar_ed:
+                if not ed_cliente.strip():
+                    st.error("Informe o cliente ou compromisso.")
+                else:
+                    atualizar_compromisso_agenda(
+                        int(editar_id),
+                        ed_data,
+                        ed_hora,
+                        ed_tipo,
+                        ed_cliente,
+                        ed_local,
+                        ed_obs,
+                        ed_status
+                    )
+                    st.session_state.pop("agenda_editar_id", None)
+                    st.success("Compromisso atualizado.")
+                    st.rerun()
+
+            if cancelar_ed:
+                st.session_state.pop("agenda_editar_id", None)
+                st.rerun()
+
     st.markdown("### Compromissos de hoje")
     if agenda_ativos.empty:
         agenda_hoje = pd.DataFrame()
@@ -3669,17 +3826,22 @@ elif menu == "📅 Agenda":
             if str(item.get("observacao") or "").strip():
                 st.caption(f"📝 {item.get('observacao')}")
 
-            c1,c2 = st.columns(2)
+            c1,c2,c3 = st.columns(3)
             with c1:
                 if status_item != "REALIZADO":
                     if st.button("✅ Realizado", key=f"agenda_realizado_{int(item['id'])}", use_container_width=True):
                         atualizar_status_agenda(int(item["id"]), "REALIZADO")
                         st.rerun()
             with c2:
-                if status_item != "CANCELADO":
-                    if st.button("❌ Cancelar", key=f"agenda_cancelar_{int(item['id'])}", use_container_width=True):
-                        atualizar_status_agenda(int(item["id"]), "CANCELADO")
-                        st.rerun()
+                if st.button("✏️ Editar", key=f"agenda_hoje_edit_{int(item['id'])}", use_container_width=True):
+                    st.session_state["agenda_editar_id"] = int(item["id"])
+                    st.session_state.pop("agenda_excluir_id", None)
+                    st.rerun()
+            with c3:
+                if st.button("🗑️ Excluir", key=f"agenda_hoje_del_{int(item['id'])}", use_container_width=True):
+                    st.session_state["agenda_excluir_id"] = int(item["id"])
+                    st.session_state.pop("agenda_editar_id", None)
+                    st.rerun()
 
     with st.expander("➕ Novo compromisso", expanded=(qtd_hoje == 0 and len(agenda) == 0)):
         with st.form("novo_compromisso_agenda", clear_on_submit=True):
@@ -4451,5 +4613,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V12 • Clientes TICLOG")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V12.1 • Agenda Editável")
 
