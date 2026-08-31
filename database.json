@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-31T11:54:39",
+    "ultima_atualizacao": "2026-08-31T11:55:10",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -29021,15 +29021,15 @@
       "telefone1": "(19) 3272-0341",
       "telefone2": "(19) 3203-0031",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "SEM INTERESSE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-08-31",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 1707,
@@ -64630,6 +64630,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-08-31T11:54:39",
       "seq_global": 552,
+      "usuario": "celso"
+    },
+    {
+      "id": 1973,
+      "empresa_id": 1706,
+      "data_contato": "2026-08-31",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-08-31T11:55:10",
+      "seq_global": 553,
       "usuario": "celso"
     }
   ],
