@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-08-31T16:42:55",
+    "ultima_atualizacao": "2026-08-31T16:43:40",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37870,7 +37870,7 @@
       "telefone1": "(11) 99495-9429",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "JÁ UTILIZA AZUL",
       "observacao_atual": "",
       "data_primeiro_contato": null,
       "criado_em": "2026-08-14T20:21:10",
@@ -37878,7 +37878,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "email": ""
     },
     {
       "id": 2225,
