@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-01T14:41:54",
+    "ultima_atualizacao": "2026-09-01T14:42:29",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -71969,11 +71969,11 @@
       "endereco": "RICARDO DIAS ALVES, 87, 311 E 381",
       "telefone": "(19) 98857-2817",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "RETORNAR CONTATO",
+      "ultima_acao": "📞 Ligar",
+      "ultima_observacao": "Fui atendido pelo comercial que me encaminhou o contato do responsável (Rodnei) e já enviei mensagem para marcar visita mas ainda sem resposta",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-01",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -73115,6 +73115,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-01T14:39:45"
+    },
+    {
+      "id": 13,
+      "cliente_id": 9,
+      "empresa": "BRASPRESS TRANSPORTES",
+      "data": "2026-09-01",
+      "hora": "14:42",
+      "acao": "📞 Ligar",
+      "resultado": "RETORNAR CONTATO",
+      "status_novo": "RETORNAR CONTATO",
+      "observacao": "Fui atendido pelo comercial que me encaminhou o contato do responsável (Rodnei) e já enviei mensagem para marcar visita mas ainda sem resposta",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-01T14:42:29"
     }
   ]
 }
