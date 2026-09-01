@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-01T14:35:11",
+    "ultima_atualizacao": "2026-09-01T14:38:24",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -71901,11 +71901,11 @@
       "endereco": "SARA HELENA MANTELLO, 240",
       "telefone": "(19) 3282-2121 / (19) 3282-4416",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "VISITA REALIZADA",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Fui atendido por Sandra que solicitou encaminhamento de e-mail para a matriz em São Paulo para conseguir uma autorização para visita após análise.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-01",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -73084,6 +73084,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-01T14:35:11"
+    },
+    {
+      "id": 11,
+      "cliente_id": 5,
+      "empresa": "ATIVA DIST. E LOG. LTDA",
+      "data": "2026-09-01",
+      "hora": "14:38",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "VISITA PRESENCIAL REALIZADA",
+      "status_novo": "VISITA REALIZADA",
+      "observacao": "Fui atendido por Sandra que solicitou encaminhamento de e-mail para a matriz em São Paulo para conseguir uma autorização para visita após análise.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-01T14:38:24"
     }
   ]
 }
