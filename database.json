@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-01T16:34:53",
+    "ultima_atualizacao": "2026-09-01T16:39:22",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -72160,11 +72160,11 @@
       "endereco": "LÁZARO BIBIANO DA SILVA, 67",
       "telefone": "(19) 99353-2077",
       "site": "www.dualtitransportes.com.br",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
+      "status": "TENTAR NOVAMENTE / VISITAR",
+      "ultima_acao": "💬 WhatsApp",
       "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-01",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -73222,6 +73222,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-01T16:34:53"
+    },
+    {
+      "id": 20,
+      "cliente_id": 20,
+      "empresa": "DUALTI TRANSPORTES",
+      "data": "2026-09-01",
+      "hora": "16:39",
+      "acao": "💬 WhatsApp",
+      "resultado": "NÃO ATENDEU / SEM RESPOSTA",
+      "status_novo": "TENTAR NOVAMENTE / VISITAR",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-01T16:39:22"
     }
   ]
 }
