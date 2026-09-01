@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-01T14:38:24",
+    "ultima_atualizacao": "2026-09-01T14:39:45",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -71986,11 +71986,11 @@
       "endereco": "SARA HELENA MANTELLO, 397",
       "telefone": "(11)99995-6666",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
+      "status": "TENTAR NOVAMENTE / VISITAR",
+      "ultima_acao": "💬 WhatsApp",
       "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-01",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -73099,6 +73099,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-01T14:38:24"
+    },
+    {
+      "id": 12,
+      "cliente_id": 10,
+      "empresa": "BR7 TRANSPORTES",
+      "data": "2026-09-01",
+      "hora": "14:39",
+      "acao": "💬 WhatsApp",
+      "resultado": "NÃO ATENDEU / SEM RESPOSTA",
+      "status_novo": "TENTAR NOVAMENTE / VISITAR",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-01T14:39:45"
     }
   ]
 }
