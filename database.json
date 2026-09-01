@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-01T14:25:00",
+    "ultima_atualizacao": "2026-09-01T14:35:11",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -72072,11 +72072,11 @@
       "endereco": "AV. JOÃO GALVÃO ANDERSON, 337",
       "telefone": "(19) 3281-0067",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "VISITA REALIZADA",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Falei com Fabiane, e eles ainda não trabalham no Modal Aéreo, apenas rodoviário que fazem com própria frota.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-01",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -73069,6 +73069,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-01T14:25:00"
+    },
+    {
+      "id": 10,
+      "cliente_id": 15,
+      "empresa": "CARGO HANDLING TRANSPORTES EXPRESS LTDA.",
+      "data": "2026-09-01",
+      "hora": "14:35",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "VISITA PRESENCIAL REALIZADA",
+      "status_novo": "VISITA REALIZADA",
+      "observacao": "Falei com Fabiane, e eles ainda não trabalham no Modal Aéreo, apenas rodoviário que fazem com própria frota.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-01T14:35:11"
     }
   ]
 }
