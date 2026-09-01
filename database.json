@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-01T13:55:48",
+    "ultima_atualizacao": "2026-09-01T14:04:06",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -71984,7 +71984,7 @@
       "id": 10,
       "empresa": "BR7 TRANSPORTES",
       "endereco": "SARA HELENA MANTELLO, 397",
-      "telefone": "",
+      "telefone": "(11)99995-6666",
       "site": "",
       "status": "SEM CONTATO",
       "ultima_acao": "",
@@ -71995,7 +71995,8 @@
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "atualizado_em": "2026-09-01T14:04:06"
     },
     {
       "id": 11,
