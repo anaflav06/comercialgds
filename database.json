@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-01T13:50:29",
+    "ultima_atualizacao": "2026-09-01T13:55:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -71918,11 +71918,11 @@
       "endereco": "ANTONIO BOSCATTO, 325",
       "telefone": "(19) 3281-2385",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "📞 Ligar",
       "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-01",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -73008,6 +73008,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-01T13:50:29"
+    },
+    {
+      "id": 6,
+      "cliente_id": 6,
+      "empresa": "AUTO POSTO TIC CAMPINAS",
+      "data": "2026-09-01",
+      "hora": "13:55",
+      "acao": "📞 Ligar",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-01T13:55:48"
     }
   ]
 }
