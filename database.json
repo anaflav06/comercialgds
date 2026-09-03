@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-03T13:58:18",
+    "ultima_atualizacao": "2026-09-03T13:59:28",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -72940,7 +72940,7 @@
     },
     {
       "id": 66,
-      "empresa": "HANDLIN EXPRESS TRANSPORTES",
+      "empresa": "HANDLING EXPRESS TRANSPORTES",
       "endereco": "RUA SALA HELENA MANTELLO, 352",
       "telefone": "(19) 99871-2463",
       "site": "http://handlingexpress.com.br",
@@ -72953,7 +72953,8 @@
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-09-03T13:58:18",
-      "origem": "CADASTRO APP"
+      "origem": "CADASTRO APP",
+      "atualizado_em": "2026-09-03T13:59:28"
     }
   ],
   "historico_ticlog": [
