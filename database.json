@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-03T13:59:28",
+    "ultima_atualizacao": "2026-09-03T14:00:59",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -72944,11 +72944,11 @@
       "endereco": "RUA SALA HELENA MANTELLO, 352",
       "telefone": "(19) 99871-2463",
       "site": "http://handlingexpress.com.br",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Não utiliza transporte Aéreo mas caso apareça ficou com meu contato. Para o rodoviário utiliza frotas próprias.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-03",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -73257,6 +73257,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-01T16:39:22"
+    },
+    {
+      "id": 21,
+      "cliente_id": 66,
+      "empresa": "HANDLING EXPRESS TRANSPORTES",
+      "data": "2026-09-03",
+      "hora": "14:00",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Não utiliza transporte Aéreo mas caso apareça ficou com meu contato. Para o rodoviário utiliza frotas próprias.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-03T14:00:59"
     }
   ]
 }
