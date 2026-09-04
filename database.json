@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T19:40:50",
+    "ultima_atualizacao": "2026-09-04T19:41:45",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38246,7 +38246,7 @@
       "documento": "",
       "nome": "THIAGO",
       "telefone1": "(11) 99787-1127",
-      "telefone2": "",
+      "telefone2": "(11) 91668-4136",
       "telefone3": "",
       "status": "SEM CONTATO",
       "observacao_atual": "",
@@ -38256,7 +38256,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "email": ""
     },
     {
       "id": 2247,
