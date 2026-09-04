@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T14:13:19",
+    "ultima_atualizacao": "2026-09-04T14:14:35",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -72511,7 +72511,7 @@
       "valor_abastecido": null,
       "litros_abastecidos": null,
       "tipo_combustivel": null,
-      "pedagio": null,
+      "pedagio": 20.3,
       "estacionamento": null,
       "outros_gastos": null,
       "descricao_outros_gastos": "",
@@ -72521,7 +72521,9 @@
       "origem": "APP",
       "criado_em": "2026-09-03T19:44:18",
       "usuario": "celso",
-      "id_importacao": null
+      "id_importacao": null,
+      "atualizado_em": "2026-09-04T14:14:35",
+      "atualizado_por": "celso"
     },
     {
       "data": "2026-09-02",
