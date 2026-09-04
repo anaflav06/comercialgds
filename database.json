@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T18:24:48",
+    "ultima_atualizacao": "2026-09-04T18:25:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38159,7 +38159,7 @@
       "id": 2241,
       "documento": "",
       "nome": "STEFFANY 99 8142- 4332",
-      "telefone1": "",
+      "telefone1": "(99) 8142-4332",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM CONTATO",
@@ -38170,7 +38170,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "email": ""
     },
     {
       "id": 2242,
