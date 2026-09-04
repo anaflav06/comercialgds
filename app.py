@@ -1,5 +1,4 @@
 
-
 import streamlit as st
 import pandas as pd
 import re
@@ -1946,6 +1945,45 @@ def salvar_registro_veiculo(registro):
     dados["veiculo_registros"].append(novo)
     salvar_database(dados)
 
+def atualizar_registro_veiculo(registro_id, novos_dados):
+    dados = carregar_database(forcar_github=True)
+    dados.setdefault("veiculo_registros", [])
+    encontrado = False
+
+    for item in dados["veiculo_registros"]:
+        if int(item.get("id", 0) or 0) == int(registro_id):
+            # Preserva ID, origem, importação e criação; altera somente dados operacionais.
+            campos_preservados = {
+                "id": item.get("id"),
+                "origem": item.get("origem"),
+                "id_importacao": item.get("id_importacao"),
+                "criado_em": item.get("criado_em"),
+            }
+            item.update(dict(novos_dados))
+            item.update(campos_preservados)
+            item["atualizado_em"] = datetime.now().isoformat(timespec="seconds")
+            item["atualizado_por"] = st.session_state.get("usuario_logado", "")
+            encontrado = True
+            break
+
+    if not encontrado:
+        raise RuntimeError("Registro do veículo não encontrado.")
+
+    salvar_database(dados)
+
+
+def excluir_registro_veiculo(registro_id):
+    dados = carregar_database(forcar_github=True)
+    dados.setdefault("veiculo_registros", [])
+    antes = len(dados["veiculo_registros"])
+    dados["veiculo_registros"] = [
+        r for r in dados["veiculo_registros"]
+        if int(r.get("id", 0) or 0) != int(registro_id)
+    ]
+    if len(dados["veiculo_registros"]) == antes:
+        raise RuntimeError("Registro do veículo não encontrado.")
+    salvar_database(dados)
+
 def adicionar_tipo_motivo_veiculo(tipo, motivo):
     dados = carregar_database(forcar_github=True)
     dados.setdefault("veiculo_tipos", {})
@@ -2471,6 +2509,71 @@ if menu == "📊 Dashboard":
             & analitico["empresa_id"].notna()
         ].copy()
 
+    # Integra o histórico TICLOG às métricas comerciais.
+    # Cada ação TICLOG conta como contato realizado, mas ausência de resposta
+    # continua sendo apenas "sem retorno" e nunca finaliza a carteira TICLOG.
+    dados_dash_extra = carregar_database(forcar_github=False)
+    hist_ticlog_dash = dados_dash_extra.get("historico_ticlog", []) or []
+
+    if hist_ticlog_dash:
+        tic = pd.DataFrame(hist_ticlog_dash).copy()
+
+        def _canal_ticlog(valor):
+            v = str(valor or "")
+            if "Ligar" in v:
+                return "LIGAÇÃO"
+            if "WhatsApp" in v:
+                return "WHATSAPP"
+            if "E-mail" in v:
+                return "E-MAIL"
+            if "Visitar" in v:
+                return "VISITA PRESENCIAL"
+            if "Agendar visita" in v:
+                return "VISITA / AGENDAMENTO"
+            return "OUTRO"
+
+        def _status_ticlog_dashboard(row):
+            s = str(row.get("status_novo") or "").strip().upper()
+            r = str(row.get("resultado") or "").strip().upper()
+            if s == "TENTAR NOVAMENTE / VISITAR" or r == "NÃO ATENDEU / SEM RESPOSTA":
+                return "SEM RETORNO"
+            if s == "EM CONTATO":
+                return "EM ANDAMENTO"
+            if s == "RETORNAR CONTATO":
+                return "RETORNO AGENDADO"
+            if s == "VISITA AGENDADA":
+                return "VISITA AGENDADA"
+            if s == "VISITA REALIZADA":
+                return "EM ANDAMENTO"
+            if s == "INTERESSADO":
+                return "EM ANDAMENTO"
+            return s or r or "SEM CLASSIFICAÇÃO"
+
+        tic_dash = pd.DataFrame({
+            "id": tic.get("id"),
+            "empresa_id": tic.get("cliente_id").apply(
+                lambda x: f"TICLOG-{int(x)}" if pd.notna(x) else None
+            ),
+            "data_contato": tic.get("data"),
+            "tipo_contato": tic.get("acao").apply(_canal_ticlog),
+            "resultado": tic.get("resultado"),
+            "status_novo": tic.get("status_novo"),
+        })
+        tic_dash["_data_parse"] = tic_dash["data_contato"].apply(normalizar_data_historico)
+        tic_dash["data_dt"] = tic_dash["_data_parse"].apply(
+            lambda x: x.date() if pd.notna(x) else None
+        )
+        tic_dash["status_gerencial"] = tic.apply(_status_ticlog_dashboard, axis=1)
+        tic_dash = tic_dash[
+            tic_dash["data_dt"].notna() &
+            tic_dash["empresa_id"].notna()
+        ].copy()
+
+        if analitico.empty:
+            analitico = tic_dash.copy()
+        else:
+            analitico = pd.concat([analitico, tic_dash], ignore_index=True, sort=False)
+
     periodo = st.selectbox(
         "Período",
         ["Hoje","Ontem","Últimos 7 dias","Últimos 15 dias","Últimos 30 dias",
@@ -2524,7 +2627,7 @@ if menu == "📊 Dashboard":
     sem_retorno = int((status_s=="SEM RETORNO").sum()) if total else 0
     contatos_efetivos = max(total - sem_retorno - problemas_base, 0)
     avanços = int(status_s.isin(["AGUARDANDO CONTATO DO RESPONSÁVEL","RETORNO AGENDADO",
-                                 "EM ANDAMENTO","REUNIÃO AGENDADA","COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA",
+                                 "VISITA AGENDADA","EM ANDAMENTO","REUNIÃO AGENDADA","COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA",
                                  "PROPOSTA SOLICITADA","PROPOSTA ENVIADA","EM NEGOCIAÇÃO","FECHADO / GANHO"]).sum()) if total else 0
     fechados = int((status_s=="FECHADO / GANHO").sum()) if total else 0
     taxa_contato = round(contatos_efetivos/max(total-problemas_base,1)*100,1) if total else 0
@@ -2618,7 +2721,7 @@ if menu == "📊 Dashboard":
     with cc2:
         st.markdown('<div class="sec">🔻 Funil comercial do período</div>', unsafe_allow_html=True)
         oportunidades=int(status_s.isin(["AGUARDANDO CONTATO DO RESPONSÁVEL","RETORNO AGENDADO",
-                                          "EM ANDAMENTO","REUNIÃO AGENDADA","COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA",
+                                          "VISITA AGENDADA","EM ANDAMENTO","REUNIÃO AGENDADA","COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA",
                                           "PROPOSTA SOLICITADA","PROPOSTA ENVIADA","EM NEGOCIAÇÃO","FECHADO / GANHO"]).sum()) if total else 0
         cotacoes=int(status_s.isin(["COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA","PROPOSTA SOLICITADA","PROPOSTA ENVIADA"]).sum()) if total else 0
         negociacoes=int((status_s=="EM NEGOCIAÇÃO").sum()) if total else 0
@@ -2974,7 +3077,7 @@ elif menu == "🔥 Clientes em andamento":
     andamento = empresas[empresas["status"].isin(STATUS_EM_ANDAMENTO)].copy()
 
     if andamento.empty:
-        st.info("Nenhum cliente em andamento no momento.")
+        st.info("Nenhum cliente da carteira geral em andamento no momento.")
     else:
         hoje = date.today()
         hoje_ts = pd.Timestamp(hoje).normalize()
@@ -3229,6 +3332,69 @@ elif menu == "🔥 Clientes em andamento":
                 st.session_state["flash_andamento"] = f"✅ {atual_and['nome']}: andamento salvo."
                 st.rerun()
 
+
+    # TICLOG também aparece em Clientes em andamento quando houve avanço real.
+    dados_and_tic = carregar_database(forcar_github=False)
+    clientes_tic_and = dados_and_tic.get("clientes_ticlog", []) or []
+    status_tic_avancados = {
+        "EM CONTATO",
+        "RETORNAR CONTATO",
+        "VISITA AGENDADA",
+        "VISITA REALIZADA",
+        "INTERESSADO",
+    }
+    tic_and = [
+        c for c in clientes_tic_and
+        if str(c.get("status") or "").upper() in status_tic_avancados
+    ]
+
+    st.divider()
+    st.markdown("### 🏢 TICLOG em andamento")
+    st.caption(
+        "Clientes TICLOG que já tiveram avanço real. "
+        "Sem contato, tentativa sem resposta e visita ainda sem data continuam somente na carteira TICLOG."
+    )
+
+    if not tic_and:
+        st.caption("Nenhum cliente TICLOG em andamento no momento.")
+    else:
+        st.metric("Clientes TICLOG em andamento", len(tic_and))
+        tic_and = sorted(
+            tic_and,
+            key=lambda c: (
+                str(c.get("data_visita") or "9999-12-31"),
+                str(c.get("empresa") or "")
+            )
+        )
+        for c in tic_and:
+            data_vis = pd.to_datetime(c.get("data_visita"), errors="coerce")
+            data_vis_txt = data_vis.strftime("%d/%m/%Y") if pd.notna(data_vis) else ""
+            complemento = ""
+            if data_vis_txt:
+                complemento = f" • 📅 {data_vis_txt} {c.get('hora_visita') or ''}".strip()
+            st.markdown(
+                f"""
+                <div style="background:#f7f9fc;border:1px solid #e4e8ef;border-radius:12px;
+                            padding:.7rem .9rem;margin:.3rem 0;">
+                    <div style="font-weight:800;">{c.get('empresa') or '-'}</div>
+                    <div style="font-size:.85rem;color:#5f6878;">
+                        {c.get('status') or '-'}{complemento}
+                    </div>
+                    <div style="font-size:.82rem;color:#667085;margin-top:.15rem;">
+                        📞 {c.get('telefone') or 'Sem telefone'} • 📍 {c.get('endereco') or '-'}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        if st.button(
+            "🏢 Abrir Clientes TICLOG",
+            key="andamento_abrir_ticlog",
+            use_container_width=True
+        ):
+            st.session_state["menu_selected"] = "🏢 Clientes TICLOG"
+            st.rerun()
 
     # Inclusão direta de oportunidade que não veio da fila de prospecção.
     st.divider()
@@ -3904,6 +4070,104 @@ elif menu == "📅 Agenda":
                 use_container_width=True
             )
 
+    # Histórico permanente: compromissos passados nunca somem da consulta.
+    with st.expander("🕘 Histórico da agenda", expanded=False):
+        if agenda_df.empty:
+            st.info("Nenhum compromisso histórico.")
+        else:
+            passados = agenda_df[
+                agenda_df["data_dt"] < hoje_ag
+            ].copy()
+
+            if passados.empty:
+                st.caption("Ainda não há compromissos passados.")
+            else:
+                min_hist = passados["data_dt"].dropna().min()
+                max_hist = passados["data_dt"].dropna().max()
+
+                h1,h2,h3 = st.columns(3)
+                hist_de = h1.date_input(
+                    "De",
+                    value=min_hist,
+                    max_value=hoje_ag,
+                    format="DD/MM/YYYY",
+                    key="agenda_hist_de"
+                )
+                hist_ate = h2.date_input(
+                    "Até",
+                    value=max_hist,
+                    max_value=hoje_ag,
+                    format="DD/MM/YYYY",
+                    key="agenda_hist_ate"
+                )
+                tipos_hist = sorted(passados["tipo"].dropna().astype(str).unique().tolist())
+                tipo_hist = h3.selectbox(
+                    "Tipo",
+                    ["TODOS"] + tipos_hist,
+                    key="agenda_hist_tipo"
+                )
+
+                hist_f = passados[
+                    (passados["data_dt"] >= hist_de) &
+                    (passados["data_dt"] <= hist_ate)
+                ].copy()
+                if tipo_hist != "TODOS":
+                    hist_f = hist_f[hist_f["tipo"] == tipo_hist].copy()
+
+                busca_hist = st.text_input(
+                    "Pesquisar cliente/compromisso ou local",
+                    key="agenda_hist_busca"
+                ).strip().lower()
+                if busca_hist:
+                    hist_f = hist_f[
+                        hist_f["cliente_compromisso"].fillna("").astype(str).str.lower().str.contains(busca_hist, regex=False)
+                        | hist_f["local"].fillna("").astype(str).str.lower().str.contains(busca_hist, regex=False)
+                    ]
+
+                hist_f = hist_f.sort_values(["data_dt","horario_ord"], ascending=[False,False])
+
+                vis_hist = hist_f[
+                    ["id","data","horario","tipo","cliente_compromisso","local","status","observacao"]
+                ].copy()
+                vis_hist["data"] = pd.to_datetime(vis_hist["data"], errors="coerce").dt.strftime("%d/%m/%Y")
+                vis_hist.columns = [
+                    "ID","Data","Horário","Tipo","Cliente / Compromisso",
+                    "Local","Status","Observação"
+                ]
+                st.dataframe(vis_hist, use_container_width=True, hide_index=True)
+
+                if not hist_f.empty:
+                    mapa_hist = {
+                        f"{pd.to_datetime(r['data'], errors='coerce').strftime('%d/%m/%Y')} • "
+                        f"{r.get('horario') or '--:--'} • {r.get('cliente_compromisso') or 'Compromisso'} "
+                        f"[ID {int(r['id'])}]": int(r["id"])
+                        for _, r in hist_f.iterrows()
+                    }
+                    selecionado_hist = st.selectbox(
+                        "Selecionar compromisso histórico",
+                        list(mapa_hist.keys()),
+                        key="agenda_hist_selecao"
+                    )
+                    hc1,hc2 = st.columns(2)
+                    with hc1:
+                        if st.button("✏️ Editar histórico", key="agenda_hist_editar", use_container_width=True):
+                            st.session_state["agenda_editar_id"] = mapa_hist[selecionado_hist]
+                            st.session_state.pop("agenda_excluir_id", None)
+                            st.rerun()
+                    with hc2:
+                        if st.button("🗑️ Excluir histórico", key="agenda_hist_excluir", use_container_width=True):
+                            st.session_state["agenda_excluir_id"] = mapa_hist[selecionado_hist]
+                            st.session_state.pop("agenda_editar_id", None)
+                            st.rerun()
+
+                st.download_button(
+                    "⬇️ Exportar histórico da agenda",
+                    data=excel_bytes_dataframe(vis_hist.drop(columns=["ID"], errors="ignore"), "Histórico Agenda"),
+                    file_name=f"historico_agenda_ate_{date.today().strftime('%d-%m-%Y')}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True
+                )
+
 # ---------------- VEÍCULO DA EMPRESA ----------------
 elif menu == "🚗 Veículo da empresa":
     st.markdown("## 🚗 Veículo da empresa")
@@ -4326,6 +4590,188 @@ elif menu == "🚗 Veículo da empresa":
                 use_container_width=True,
                 hide_index=True
             )
+
+            # Edição/exclusão de registro salvo.
+            registros_periodo = []
+            for r in registros_v:
+                dt_r = pd.to_datetime(r.get("data"), errors="coerce")
+                if pd.isna(dt_r):
+                    continue
+                d_r = dt_r.date()
+                if not (periodo_ini <= d_r <= periodo_fim):
+                    continue
+                if placa_filtro != "TODAS" and str(r.get("placa") or "") != placa_filtro:
+                    continue
+                registros_periodo.append(r)
+
+            if registros_periodo:
+                registros_periodo = sorted(
+                    registros_periodo,
+                    key=lambda r: (str(r.get("data") or ""), int(r.get("id",0) or 0)),
+                    reverse=True
+                )
+                mapa_reg = {
+                    f"{pd.to_datetime(r.get('data'), errors='coerce').strftime('%d/%m/%Y')} • "
+                    f"{r.get('tipo_uso') or '-'} • {r.get('motivo') or '-'} • "
+                    f"KM {r.get('km_inicial') if r.get('km_inicial') is not None else '-'}"
+                    f"→{r.get('km_final') if r.get('km_final') is not None else '-'} "
+                    f"[ID {int(r.get('id',0) or 0)}]": int(r.get("id",0) or 0)
+                    for r in registros_periodo
+                }
+
+                st.markdown("#### ✏️ Editar ou excluir um registro")
+                escolha_reg = st.selectbox(
+                    "Registro",
+                    list(mapa_reg.keys()),
+                    key="veic_registro_edicao"
+                )
+                rid = mapa_reg[escolha_reg]
+                registro_ed = next(
+                    (r for r in registros_v if int(r.get("id",0) or 0) == rid),
+                    None
+                )
+
+                vr1,vr2 = st.columns(2)
+                with vr1:
+                    if st.button("✏️ Editar registro", key="veic_btn_editar_reg", use_container_width=True):
+                        st.session_state["veic_editar_id"] = rid
+                        st.session_state.pop("veic_excluir_id", None)
+                        st.rerun()
+                with vr2:
+                    if st.button("🗑️ Excluir registro", key="veic_btn_excluir_reg", use_container_width=True):
+                        st.session_state["veic_excluir_id"] = rid
+                        st.session_state.pop("veic_editar_id", None)
+                        st.rerun()
+
+                excluir_vid = st.session_state.get("veic_excluir_id")
+                if excluir_vid and registro_ed and int(excluir_vid) == rid:
+                    st.warning(
+                        "Tem certeza que deseja excluir este registro de uso do veículo? "
+                        "A exclusão remove somente este lançamento."
+                    )
+                    vx1,vx2 = st.columns(2)
+                    with vx1:
+                        if st.button("✅ Confirmar exclusão", key="veic_confirmar_exclusao", type="primary", use_container_width=True):
+                            excluir_registro_veiculo(rid)
+                            st.session_state.pop("veic_excluir_id", None)
+                            st.success("Registro excluído.")
+                            st.rerun()
+                    with vx2:
+                        if st.button("Cancelar", key="veic_cancelar_exclusao", use_container_width=True):
+                            st.session_state.pop("veic_excluir_id", None)
+                            st.rerun()
+
+                editar_vid = st.session_state.get("veic_editar_id")
+                if editar_vid and registro_ed and int(editar_vid) == rid:
+                    if str(registro_ed.get("origem") or "").upper().startswith("PLANILHA"):
+                        st.info("ℹ️ Este registro veio da planilha histórica. A edição é permitida, mas a origem será preservada.")
+
+                    data_default = pd.to_datetime(registro_ed.get("data"), errors="coerce")
+                    data_default = data_default.date() if pd.notna(data_default) else date.today()
+
+                    tipos_edit = sorted(set(list(tipos_v.keys()) + [str(registro_ed.get("tipo_uso") or "OUTROS / CORPORATIVO")]))
+                    tipo_atual = str(registro_ed.get("tipo_uso") or tipos_edit[0])
+
+                    with st.form(f"form_editar_veiculo_{rid}"):
+                        ev1,ev2,ev3 = st.columns(3)
+                        ev_data = ev1.date_input("Data", value=data_default, format="DD/MM/YYYY")
+                        ev_placa = ev2.text_input("Placa", value=str(registro_ed.get("placa") or ""))
+                        ev_tipo = ev3.selectbox("Tipo de uso", tipos_edit, index=tipos_edit.index(tipo_atual))
+
+                        ev4,ev5 = st.columns(2)
+                        ev_kmi = ev4.number_input(
+                            "KM inicial",
+                            min_value=0,
+                            value=int(float(registro_ed.get("km_inicial") or 0)),
+                            step=1
+                        )
+                        ev_kmf = ev5.number_input(
+                            "KM final",
+                            min_value=0,
+                            value=int(float(registro_ed.get("km_final") or 0)),
+                            step=1
+                        )
+
+                        motivos_edit = sorted(set(
+                            list(tipos_v.get(ev_tipo, []) or [])
+                            + [str(registro_ed.get("motivo") or "OUTRO"), "OUTRO"]
+                        ))
+                        motivo_atual = str(registro_ed.get("motivo") or "OUTRO")
+                        if motivo_atual not in motivos_edit:
+                            motivos_edit.append(motivo_atual)
+                        ev_motivo_sel = st.selectbox(
+                            "Motivo / Situação",
+                            motivos_edit,
+                            index=motivos_edit.index(motivo_atual)
+                        )
+                        ev_motivo = (
+                            st.text_input("Descreva o motivo", value=motivo_atual)
+                            if ev_motivo_sel == "OUTRO"
+                            else ev_motivo_sel
+                        )
+
+                        ev_cidade = st.text_input("Cidade / Região", value=str(registro_ed.get("cidade_regiao") or ""))
+                        ev_obs = st.text_area("Observação", value=str(registro_ed.get("observacoes") or ""), height=70)
+
+                        with st.expander("👤 Cliente / destino", expanded=False):
+                            ev_cliente = st.text_input("Cliente", value=str(registro_ed.get("cliente") or ""))
+                            ev_endereco = st.text_input("Endereço / destino", value=str(registro_ed.get("endereco") or ""))
+
+                        with st.expander("💰 Gastos / abastecimento", expanded=False):
+                            abasteceu_atual = str(registro_ed.get("abasteceu") or "NÃO").upper()
+                            if abasteceu_atual not in ["NÃO","SIM"]:
+                                abasteceu_atual = "NÃO"
+                            ev_abasteceu = st.selectbox("Abasteceu?", ["NÃO","SIM"], index=["NÃO","SIM"].index(abasteceu_atual))
+                            eg1,eg2 = st.columns(2)
+                            ev_valor = eg1.number_input("Valor abastecido (R$)", min_value=0.0, value=float(registro_ed.get("valor_abastecido") or 0.0), step=0.01)
+                            ev_litros = eg2.number_input("Litros", min_value=0.0, value=float(registro_ed.get("litros_abastecidos") or 0.0), step=0.01)
+                            eg3,eg4,eg5 = st.columns(3)
+                            ev_pedagio = eg3.number_input("Pedágio (R$)", min_value=0.0, value=float(registro_ed.get("pedagio") or 0.0), step=0.01)
+                            ev_estac = eg4.number_input("Estacionamento (R$)", min_value=0.0, value=float(registro_ed.get("estacionamento") or 0.0), step=0.01)
+                            ev_outros = eg5.number_input("Outros gastos (R$)", min_value=0.0, value=float(registro_ed.get("outros_gastos") or 0.0), step=0.01)
+                            ev_desc_outros = st.text_input("Descrição dos outros gastos", value=str(registro_ed.get("descricao_outros_gastos") or ""))
+
+                        es1,es2 = st.columns(2)
+                        salvar_ev = es1.form_submit_button("💾 Salvar alterações", type="primary", use_container_width=True)
+                        cancelar_ev = es2.form_submit_button("Cancelar edição", use_container_width=True)
+
+                    if salvar_ev:
+                        if ev_kmf and ev_kmi and ev_kmf < ev_kmi:
+                            st.error("O KM final não pode ser menor que o KM inicial.")
+                        elif not ev_tipo or not str(ev_motivo or "").strip():
+                            st.error("Informe tipo de uso e motivo.")
+                        else:
+                            atualizar_registro_veiculo(
+                                rid,
+                                {
+                                    "data": ev_data.isoformat(),
+                                    "placa": ev_placa.strip().upper(),
+                                    "km_inicial": int(ev_kmi),
+                                    "km_final": int(ev_kmf),
+                                    "tipo_uso": ev_tipo,
+                                    "motivo": str(ev_motivo).strip().upper(),
+                                    "motivo_original": str(ev_motivo).strip().upper(),
+                                    "cliente": ev_cliente.strip(),
+                                    "endereco": ev_endereco.strip(),
+                                    "cidade_regiao": ev_cidade.strip(),
+                                    "observacoes": ev_obs.strip(),
+                                    "abasteceu": ev_abasteceu,
+                                    "valor_abastecido": float(ev_valor) if ev_valor else None,
+                                    "litros_abastecidos": float(ev_litros) if ev_litros else None,
+                                    "pedagio": float(ev_pedagio) if ev_pedagio else None,
+                                    "estacionamento": float(ev_estac) if ev_estac else None,
+                                    "outros_gastos": float(ev_outros) if ev_outros else None,
+                                    "descricao_outros_gastos": ev_desc_outros.strip(),
+                                }
+                            )
+                            st.session_state.pop("veic_editar_id", None)
+                            st.success("Registro atualizado.")
+                            st.rerun()
+
+                    if cancelar_ev:
+                        st.session_state.pop("veic_editar_id", None)
+                        st.rerun()
+
             st.download_button(
                 "⬇️ Exportar relatório em Excel",
                 data=excel_bytes_dataframe(mostrar, "Uso do Veículo"),
@@ -4613,5 +5059,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V12.1 • Agenda Editável")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V13 • Integração TICLOG")
 
