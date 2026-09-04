@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T14:05:06",
+    "ultima_atualizacao": "2026-09-04T14:13:19",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -72524,7 +72524,7 @@
       "id_importacao": null
     },
     {
-      "data": "2026-09-04",
+      "data": "2026-09-02",
       "placa": "FMZ0A92",
       "km_inicial": 247414,
       "km_final": 247436,
@@ -72549,7 +72549,9 @@
       "origem": "APP",
       "criado_em": "2026-09-04T12:39:02",
       "usuario": "celso",
-      "id_importacao": null
+      "id_importacao": null,
+      "atualizado_em": "2026-09-04T14:13:19",
+      "atualizado_por": "celso"
     },
     {
       "data": "2026-09-01",
