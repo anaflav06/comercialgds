@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T13:06:10",
+    "ultima_atualizacao": "2026-09-04T13:12:42",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -16712,7 +16712,7 @@
     {
       "id": 983,
       "documento": "nan",
-      "nome": "HERON",
+      "nome": "AN TELECOM HERON",
       "telefone1": "(71) 9953-5842",
       "telefone2": "",
       "telefone3": "",
