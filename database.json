@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T14:01:38",
+    "ultima_atualizacao": "2026-09-04T14:04:05",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -72660,6 +72660,7 @@
       "***",
       "HOSPEDAGEM EM SÃO PAULO",
       "HOSPEDAGEM SÃO PAULO",
+      "RETORNO PARA RESIDÊNCIA SALTO/SP",
       "REUNIÃO COMERCIAL AZUL",
       "TREINAMENTO DE VENDAS"
     ],
