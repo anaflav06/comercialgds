@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T12:39:02",
+    "ultima_atualizacao": "2026-09-04T12:52:49",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38437,15 +38437,15 @@
       "telefone1": "(11) 93202-0503",
       "telefone2": "",
       "telefone3": "",
-      "status": "COTAÇÃO SOLICITADA",
-      "observacao_atual": "",
+      "status": "FECHADO / GANHO",
+      "observacao_atual": "Fechou embarque destino Belém - dia 26/08/2026, mas é esporádico, não tem frequencia. cotação 73246025",
       "data_primeiro_contato": "2026-08-27",
       "criado_em": "2026-08-26T17:47:19",
       "origem": "APP",
-      "retorno_apos_seq": 648,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO"
+      "proxima_acao": "🏆 Fechado / ganho"
     }
   ],
   "contatos": [
@@ -66357,6 +66357,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-03T18:51:52",
       "seq_global": 675,
+      "usuario": "celso"
+    },
+    {
+      "id": 2096,
+      "empresa_id": 2257,
+      "data_contato": "2026-09-04",
+      "tipo_contato": "OUTRO",
+      "resultado": "FECHADO",
+      "status_novo": "FECHADO / GANHO",
+      "observacao": "Fechou embarque destino Belém - dia 26/08/2026, mas é esporádico, não tem frequencia. cotação 73246025",
+      "proxima_acao": "🏆 Fechado / ganho",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-04T12:52:49",
+      "seq_global": 676,
       "usuario": "celso"
     }
   ],
