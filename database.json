@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T12:58:06",
+    "ultima_atualizacao": "2026-09-04T12:59:56",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37561,7 +37561,7 @@
     {
       "id": 2206,
       "documento": "119.447.858-17",
-      "nome": "MARIANA",
+      "nome": "INOVE MARIANA",
       "telefone1": "(11) 94478-5817",
       "telefone2": "",
       "telefone3": "",
