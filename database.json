@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-08T14:57:16",
+    "ultima_atualizacao": "2026-09-08T14:58:16",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38459,15 +38459,15 @@
       "telefone1": "(91) 9288-1566",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-08",
       "criado_em": "2026-09-08T14:57:16",
       "origem": "APP",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 941,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     }
   ],
   "contatos": [
@@ -67289,6 +67289,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-08T14:46:37",
       "seq_global": 740,
+      "usuario": "celso"
+    },
+    {
+      "id": 2161,
+      "empresa_id": 2258,
+      "data_contato": "2026-09-08",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-08T14:58:16",
+      "seq_global": 741,
       "usuario": "celso"
     }
   ],
