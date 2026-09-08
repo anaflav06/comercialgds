@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-08T19:07:00",
+    "ultima_atualizacao": "2026-09-08T19:08:47",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35779,11 +35779,11 @@
     {
       "id": 2101,
       "documento": "",
-      "nome": "BRUNO",
+      "nome": "WAVE MEDICAL",
       "telefone1": "(62) 8147-7362",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-14T20:21:10",
@@ -35791,7 +35791,8 @@
       "retorno_apos_seq": 357,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "ENVIAR WHATSAPP"
+      "proxima_acao": "ENVIAR WHATSAPP",
+      "email": ""
     },
     {
       "id": 2102,
