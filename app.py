@@ -2318,6 +2318,65 @@ def registrar_acao_ticlog(cliente_id, acao, resultado, observacao="", data_visit
     return status
 
 
+
+def normalizar_busca_texto(valor):
+    return re.sub(r"\s+", " ", str(valor or "").strip().upper())
+
+def normalizar_telefone_busca(valor):
+    return re.sub(r"\D", "", str(valor or ""))
+
+def localizar_clientes_carteira(empresas_df, termo):
+    termo_txt = str(termo or "").strip()
+    if not termo_txt or empresas_df is None or empresas_df.empty:
+        return pd.DataFrame()
+
+    termo_norm = normalizar_busca_texto(termo_txt)
+    termo_dig = normalizar_telefone_busca(termo_txt)
+    achados = []
+
+    for _, row in empresas_df.iterrows():
+        nome = normalizar_busca_texto(row.get("nome"))
+        email = normalizar_busca_texto(row.get("email"))
+        doc = normalizar_telefone_busca(row.get("documento"))
+        tels = [
+            normalizar_telefone_busca(row.get("telefone1")),
+            normalizar_telefone_busca(row.get("telefone2")),
+            normalizar_telefone_busca(row.get("telefone3")),
+        ]
+        tels = [t for t in tels if t]
+
+        match = False
+        criterio = ""
+
+        if termo_norm and termo_norm in nome:
+            match, criterio = True, "Nome"
+        elif termo_norm and termo_norm in email:
+            match, criterio = True, "E-mail"
+
+        if not match and termo_dig and len(termo_dig) >= 6 and doc:
+            if termo_dig == doc or doc.endswith(termo_dig) or termo_dig.endswith(doc):
+                match, criterio = True, "CPF/CNPJ"
+
+        if not match and termo_dig:
+            if len(termo_dig) >= 10:
+                for tel in tels:
+                    if tel == termo_dig or tel.endswith(termo_dig) or termo_dig.endswith(tel):
+                        match, criterio = True, "Telefone"
+                        break
+            elif len(termo_dig) in (8, 9):
+                for tel in tels:
+                    if tel.endswith(termo_dig):
+                        match, criterio = True, "Telefone sem DDD"
+                        break
+
+        if match:
+            r = row.to_dict()
+            r["_criterio_busca"] = criterio
+            achados.append(r)
+
+    return pd.DataFrame(achados)
+
+
 # -----------------------------
 # APP
 # -----------------------------
@@ -2785,6 +2844,57 @@ elif menu == "📞 Fila de contatos":
     seq_atual = seq_global_atual()
     base = empresas.copy()
 
+    # Busca manual: permite localizar rapidamente um cliente que retornou,
+    # sem alterar a ordem normal da fila.
+    with st.expander("🔎 Buscar cliente na carteira", expanded=False):
+        termo_busca_fila = st.text_input(
+            "Nome, CPF/CNPJ ou telefone",
+            placeholder="Ex.: (19) 99999-9999, 999999999 ou nome do cliente",
+            key="fila_busca_manual"
+        )
+        if termo_busca_fila.strip():
+            encontrados_fila = localizar_clientes_carteira(base, termo_busca_fila)
+            if encontrados_fila.empty:
+                st.warning("Nenhum cliente encontrado.")
+            else:
+                opcoes_busca_fila = {}
+                for _, r in encontrados_fila.head(30).iterrows():
+                    tels_busca = [
+                        str(r.get("telefone1") or "").strip(),
+                        str(r.get("telefone2") or "").strip(),
+                        str(r.get("telefone3") or "").strip(),
+                    ]
+                    tels_busca = [t for t in tels_busca if t and t.lower() not in {"nan","none"}]
+                    tel_txt = " / ".join(tels_busca) if tels_busca else "sem telefone"
+                    rotulo = (
+                        f"{r.get('nome') or '-'} • {tel_txt} • "
+                        f"{r.get('status') or '-'} • {r.get('_criterio_busca') or ''}"
+                    )
+                    opcoes_busca_fila[rotulo] = int(r["id"])
+
+                cliente_busca_escolhido = st.selectbox(
+                    "Resultado da busca",
+                    list(opcoes_busca_fila.keys()),
+                    key="fila_busca_resultado"
+                )
+                if st.button(
+                    "Abrir este cliente",
+                    key="fila_busca_abrir",
+                    type="primary",
+                    use_container_width=True
+                ):
+                    st.session_state["fila_cliente_manual_id"] = opcoes_busca_fila[cliente_busca_escolhido]
+                    st.rerun()
+
+        if st.session_state.get("fila_cliente_manual_id"):
+            if st.button(
+                "↩️ Voltar para a ordem normal da fila",
+                key="fila_busca_voltar_normal",
+                use_container_width=True
+            ):
+                st.session_state.pop("fila_cliente_manual_id", None)
+                st.rerun()
+
     if base.empty:
         st.info("A carteira está vazia.")
     else:
@@ -2823,11 +2933,30 @@ elif menu == "📞 Fila de contatos":
         atrasados["_p"]=1; hoje_ag["_p"]=2; novos["_p"]=3; retornos["_p"]=4; legado["_p"]=5
         fila_df=pd.concat([atrasados,hoje_ag,novos,retornos,legado],ignore_index=True).drop_duplicates("id")
 
-        if fila_df.empty:
+        manual_id = st.session_state.get("fila_cliente_manual_id")
+        manual_disponivel = (
+            manual_id is not None
+            and not base[base["id"] == int(manual_id)].empty
+        )
+
+        if fila_df.empty and not manual_disponivel:
             st.success("Não há clientes aguardando prospecção inicial.")
         else:
-            fila_df=fila_df.sort_values(["_p","ag_dt","nome"],na_position="last").reset_index(drop=True)
-            atual=fila_df.iloc[0]
+            if fila_df.empty:
+                fila_df = pd.DataFrame(columns=base.columns)
+            else:
+                manual_id = st.session_state.get("fila_cliente_manual_id")
+            if manual_id is not None:
+                manual_match = base[base["id"] == int(manual_id)]
+                if not manual_match.empty:
+                    atual = manual_match.iloc[0]
+                    st.info("🔎 Cliente aberto pela busca manual. A ordem normal da fila foi preservada.")
+                else:
+                    st.session_state.pop("fila_cliente_manual_id", None)
+                    atual = fila_df.iloc[0]
+            else:
+                atual = fila_df.iloc[0]
+
             empresa_id=int(atual["id"])
             prefixo=f"fila_simple_{empresa_id}"
 
@@ -2867,7 +2996,7 @@ elif menu == "📞 Fila de contatos":
                         &nbsp;&nbsp;•&nbsp;&nbsp;
                         <b>Status:</b> {atual.get('status') or 'SEM CONTATO'}
                         &nbsp;&nbsp;•&nbsp;&nbsp;
-                        <b>Fila:</b> 1 de {len(fila_df)}
+                        <b>Fila:</b> {"busca manual" if st.session_state.get("fila_cliente_manual_id") else f"1 de {len(fila_df)}"}
                     </div>
                 </div>
                 """,
@@ -5059,5 +5188,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V13 • Integração TICLOG")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V13.1 • Busca na Fila")
 
