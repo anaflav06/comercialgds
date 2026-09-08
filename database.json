@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-08T15:32:22",
+    "ultima_atualizacao": "2026-09-08T15:41:54",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -36410,7 +36410,7 @@
     {
       "id": 2138,
       "documento": "119.788.994-57",
-      "nome": "GABRIEL",
+      "nome": "MHT IMPORTS",
       "telefone1": "(11) 97889-9457",
       "telefone2": "",
       "telefone3": "",
@@ -36422,7 +36422,8 @@
       "retorno_apos_seq": 512,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": ""
     },
     {
       "id": 2139,
