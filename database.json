@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-08T14:58:16",
+    "ultima_atualizacao": "2026-09-08T15:05:10",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -15675,11 +15675,11 @@
     {
       "id": 922,
       "documento": "nan",
-      "nome": "CLIENTE LIGOU NA LOJA",
+      "nome": "GL EQUIPAMENTOS",
       "telefone1": "(11) 5842-5811",
-      "telefone2": "",
-      "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "telefone2": "(11) 94363-2666",
+      "telefone3": "(11) 94178-2771",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-07-08",
       "criado_em": "2026-08-13T18:21:57",
@@ -15687,7 +15687,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 923,
@@ -16300,7 +16301,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 959,
@@ -16964,7 +16966,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 998,
