@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-04T19:45:51",
+    "ultima_atualizacao": "2026-09-08T14:41:19",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -17121,9 +17121,9 @@
     {
       "id": 1007,
       "documento": "nan",
-      "nome": "JENIFFER",
+      "nome": "GLID MEDICAL COM.IMP.EXP. PROD MED E HOSP",
       "telefone1": "(81) 8252-3370",
-      "telefone2": "",
+      "telefone2": "(11) 9991-5350",
       "telefone3": "",
       "status": "JÁ UTILIZA AZUL",
       "observacao_atual": "",
@@ -17133,7 +17133,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "Novo Contato",
+      "email": ""
     },
     {
       "id": 1008,
