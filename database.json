@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-08T14:46:37",
+    "ultima_atualizacao": "2026-09-08T14:57:16",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38450,6 +38450,24 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "🏆 Fechado / ganho"
+    },
+    {
+      "id": 2258,
+      "documento": "15.356.383/0001-02",
+      "nome": "GPM TELECOMUNICACOES LTDA",
+      "email": "adm@gpmtelecom.com.br",
+      "telefone1": "(91) 9288-1566",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-09-08T14:57:16",
+      "origem": "APP",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
