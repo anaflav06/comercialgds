@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-08T15:06:05",
+    "ultima_atualizacao": "2026-09-08T15:16:54",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38471,6 +38471,24 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "AGUARDANDO RESPOSTA"
+    },
+    {
+      "id": 2259,
+      "documento": "29.508.150/0001-92",
+      "nome": "MDI INDUSTRIAL",
+      "email": "",
+      "telefone1": "(71) 9657-9775",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-09-08T15:16:54",
+      "origem": "APP",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
