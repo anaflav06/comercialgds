@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T19:44:25",
+    "ultima_atualizacao": "2026-09-09T19:45:20",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38732,15 +38732,15 @@
       "telefone1": "(41) 9621-7645",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "EM ANDAMENTO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-09",
       "criado_em": "2026-09-09T19:44:25",
       "origem": "APP",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 953,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "CLIENTE EM ANDAMENTO"
     }
   ],
   "contatos": [
@@ -67730,6 +67730,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-09T14:24:16",
       "seq_global": 752,
+      "usuario": "celso"
+    },
+    {
+      "id": 2173,
+      "empresa_id": 2272,
+      "data_contato": "2026-09-09",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "EM ANDAMENTO",
+      "observacao": "",
+      "proxima_acao": "CLIENTE EM ANDAMENTO",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-09T19:45:20",
+      "seq_global": 753,
       "usuario": "celso"
     }
   ],
