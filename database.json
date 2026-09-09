@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T14:17:45",
+    "ultima_atualizacao": "2026-09-09T14:20:33",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38687,6 +38687,24 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "AGUARDANDO RESPOSTA"
+    },
+    {
+      "id": 2270,
+      "documento": "",
+      "nome": "BRASIL SLA LTDA",
+      "email": "",
+      "telefone1": "(13) 99765-0958",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-09-09T14:20:33",
+      "origem": "APP",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
