@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T13:27:54",
+    "ultima_atualizacao": "2026-09-09T13:52:00",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -16313,11 +16313,11 @@
     {
       "id": 959,
       "documento": "nan",
-      "nome": "CLIENTE LIGOU NA LOJA",
+      "nome": "IOTEC",
       "telefone1": "(11) 5087-6796",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-07-10",
       "criado_em": "2026-08-13T18:21:57",
@@ -16325,7 +16325,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 960,
