@@ -2973,10 +2973,29 @@ elif menu == "📞 Fila de contatos":
                         st.rerun()
 
             tag=""
-            if int(atual["_p"])==1: tag="🔴 ATRASADO"
-            elif int(atual["_p"])==2: tag="🟠 AGENDADO HOJE"
-            elif atual["status"]=="SEM CONTATO": tag="🆕 NOVO"
-            else: tag="🔄 RETORNO"
+            prioridade_atual = atual.get("_p", None)
+
+            if st.session_state.get("fila_cliente_manual_id"):
+                # Cliente aberto diretamente pela busca pode não pertencer ao dataframe
+                # priorizado da fila e, portanto, não possui a coluna interna _p.
+                if str(atual.get("status") or "").upper() == "SEM CONTATO":
+                    tag = "🔎 BUSCA • NOVO"
+                else:
+                    tag = "🔎 BUSCA MANUAL"
+            else:
+                try:
+                    prioridade_num = int(prioridade_atual) if pd.notna(prioridade_atual) else None
+                except Exception:
+                    prioridade_num = None
+
+                if prioridade_num == 1:
+                    tag = "🔴 ATRASADO"
+                elif prioridade_num == 2:
+                    tag = "🟠 AGENDADO HOJE"
+                elif str(atual.get("status") or "").upper() == "SEM CONTATO":
+                    tag = "🆕 NOVO"
+                else:
+                    tag = "🔄 RETORNO"
 
             tels=[
                 str(t).strip() for t in [atual.get("telefone1"),atual.get("telefone2"),atual.get("telefone3")]
@@ -5188,5 +5207,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V13.1 • Busca na Fila")
+st.sidebar.caption("Gestão Comercial • PERSISTENTE V13.2 • Busca Corrigida")
 
