@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T13:58:24",
+    "ultima_atualizacao": "2026-09-09T14:01:20",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -16317,15 +16317,15 @@
       "telefone1": "(11) 5087-6796",
       "telefone2": "",
       "telefone3": "",
-      "status": "2ª TENTATIVA SEM RETORNO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-07-10",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 943,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "nan",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
       "email": ""
     },
     {
@@ -67518,6 +67518,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-09T13:13:32",
       "seq_global": 742,
+      "usuario": "celso"
+    },
+    {
+      "id": 2163,
+      "empresa_id": 959,
+      "data_contato": "2026-09-09",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-09T14:01:20",
+      "seq_global": 743,
       "usuario": "celso"
     }
   ],
