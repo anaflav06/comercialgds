@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T20:09:22",
+    "ultima_atualizacao": "2026-09-09T20:10:09",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38534,15 +38534,15 @@
       "telefone1": "(11) 99443-0067",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "COTAÇÃO ENVIADA",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-09",
       "criado_em": "2026-09-08T17:57:19",
       "origem": "APP",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 970,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO"
     },
     {
       "id": 2262,
@@ -68040,6 +68040,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-09T20:09:22",
       "seq_global": 769,
+      "usuario": "celso"
+    },
+    {
+      "id": 2190,
+      "empresa_id": 2261,
+      "data_contato": "2026-09-09",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "COTAÇÃO ENVIADA",
+      "status_novo": "COTAÇÃO ENVIADA",
+      "observacao": "",
+      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-09T20:10:09",
+      "seq_global": 770,
       "usuario": "celso"
     }
   ],
