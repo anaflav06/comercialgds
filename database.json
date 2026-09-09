@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T14:03:22",
+    "ultima_atualizacao": "2026-09-09T14:04:38",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38552,15 +38552,15 @@
       "telefone1": "(47) 9780-0118",
       "telefone2": "(81) 99244-3742",
       "telefone3": "(81) 99929-0177",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "EM ANDAMENTO",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-09",
       "criado_em": "2026-09-08T19:05:13",
       "origem": "APP",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 945,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "CLIENTE EM ANDAMENTO"
     },
     {
       "id": 2263,
@@ -67546,6 +67546,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-09T14:03:22",
       "seq_global": 744,
+      "usuario": "celso"
+    },
+    {
+      "id": 2165,
+      "empresa_id": 2262,
+      "data_contato": "2026-09-09",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "EM ANDAMENTO",
+      "observacao": "",
+      "proxima_acao": "CLIENTE EM ANDAMENTO",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-09T14:04:38",
+      "seq_global": 745,
       "usuario": "celso"
     }
   ],
