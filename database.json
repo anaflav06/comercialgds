@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T19:50:19",
+    "ultima_atualizacao": "2026-09-09T19:51:06",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38750,15 +38750,15 @@
       "telefone1": "(83) 9909-1477",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-09",
       "criado_em": "2026-09-09T19:50:19",
       "origem": "APP",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 956,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     }
   ],
   "contatos": [
@@ -67790,6 +67790,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-09T19:48:48",
       "seq_global": 755,
+      "usuario": "celso"
+    },
+    {
+      "id": 2176,
+      "empresa_id": 2273,
+      "data_contato": "2026-09-09",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-09T19:51:06",
+      "seq_global": 756,
       "usuario": "celso"
     }
   ],
