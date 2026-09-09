@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T19:48:48",
+    "ultima_atualizacao": "2026-09-09T19:50:19",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38741,6 +38741,24 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "CLIENTE EM ANDAMENTO"
+    },
+    {
+      "id": 2273,
+      "documento": "",
+      "nome": "SAUTEC  EQUIPAMENTOS MEDICO HOSPITALARES",
+      "email": "",
+      "telefone1": "(83) 9909-1477",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "SEM CONTATO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-09-09T19:50:19",
+      "origem": "APP",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
