@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T19:54:48",
+    "ultima_atualizacao": "2026-09-09T19:56:40",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38642,7 +38642,7 @@
       "telefone1": "(11) 97247-3933",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "EM ANDAMENTO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-09",
       "criado_em": "2026-09-09T13:11:18",
@@ -38650,7 +38650,7 @@
       "retorno_apos_seq": 946,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "Cliente Salvou meu contato para futuras cotações"
     },
     {
       "id": 2268,
