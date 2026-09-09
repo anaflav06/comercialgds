@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T13:11:18",
+    "ultima_atualizacao": "2026-09-09T13:12:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -1713,7 +1713,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 101,
@@ -14871,7 +14872,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 875,
@@ -15568,7 +15570,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": ""
     },
     {
       "id": 916,
@@ -36086,7 +36089,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "email": ""
     },
     {
       "id": 2119,
@@ -38632,7 +38636,7 @@
     {
       "id": 2267,
       "documento": "",
-      "nome": "DANIEL",
+      "nome": "DANIEL PURE WATER",
       "email": "",
       "telefone1": "(11) 97247-3933",
       "telefone2": "",
