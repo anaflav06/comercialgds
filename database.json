@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-09T14:05:43",
+    "ultima_atualizacao": "2026-09-09T14:07:23",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38606,15 +38606,15 @@
       "telefone1": "(11) 2946-4646",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "Whatsapp e e-mail enviados",
-      "data_primeiro_contato": null,
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "",
+      "data_primeiro_contato": "2026-09-09",
       "criado_em": "2026-09-08T19:19:52",
       "origem": "APP",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 947,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "CLIENTE EM ANDAMENTO"
     },
     {
       "id": 2266,
@@ -67574,6 +67574,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-09T14:05:43",
       "seq_global": 746,
+      "usuario": "celso"
+    },
+    {
+      "id": 2167,
+      "empresa_id": 2265,
+      "data_contato": "2026-09-09",
+      "tipo_contato": "E-MAIL",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "EM ANDAMENTO",
+      "observacao": "",
+      "proxima_acao": "CLIENTE EM ANDAMENTO",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-09T14:07:23",
+      "seq_global": 747,
       "usuario": "celso"
     }
   ],
