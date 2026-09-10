@@ -1867,6 +1867,29 @@ def gerar_excel_completo(empresas, contatos):
     return buffer.getvalue()
 
 
+
+def _proxima_acao_padrao_24h():
+    agora = pd.Timestamp.now()
+    return (agora + pd.Timedelta(hours=24)).to_pydatetime()
+
+def _status_urgencia_24h(data_proxima):
+    if not data_proxima:
+        return ("SEM PRÓXIMA AÇÃO", "sem")
+    try:
+        dt = pd.to_datetime(data_proxima)
+    except Exception:
+        return ("SEM PRÓXIMA AÇÃO", "sem")
+    agora = pd.Timestamp.now()
+    diff = dt - agora
+    if diff.total_seconds() < 0:
+        horas = int(abs(diff.total_seconds()) // 3600)
+        return (f"ATRASADO HÁ {horas}H", "atrasado")
+    if diff.total_seconds() <= 24*3600:
+        horas = max(1, int(diff.total_seconds() // 3600))
+        return (f"PRÓXIMA AÇÃO EM {horas}H", "24h")
+    return (dt.strftime("%d/%m/%Y %H:%M"), "proximo")
+
+
 # ============================================================
 # AGENDA + VEÍCULO DA EMPRESA
 # ============================================================
@@ -2798,7 +2821,7 @@ if menu == "📊 Dashboard":
     st.markdown('<div class="sec">Desempenho do período</div>', unsafe_allow_html=True)
     st.caption(f"{inicio.strftime('%d/%m/%Y')} a {fim.strftime('%d/%m/%Y')}")
     c1,c2,c3,c4 = st.columns(4)
-    with c1: kpi("📞 Contatos realizados", total, "todas as interações da plataforma")
+    with c1: kpi("📞 Interações realizadas", total, "todas as interações da plataforma")
     with c2: kpi("🏢 Empresas trabalhadas", empresas_periodo, "clientes diferentes")
     with c3: kpi("📈 Média por dia", f"{media:.1f}", "contatos/dia")
     with c4: kpi("📵 Sem retorno", sem_retorno, "tentativas sem retorno")
@@ -3763,13 +3786,13 @@ elif menu == "🏢 Clientes TICLOG":
         q1.metric("Carteira TICLOG", total)
         q2.metric("Ativos", ativos_qtd)
         q3.metric("Sem contato", sem_contato_qtd)
-        q4.metric("Visitas agendadas", visitas_qtd)
+        q4.metric("Visitas realizadas", visitas_qtd)
 
         status_tic_andamento = {"EM CONTATO","RETORNAR CONTATO","VISITA AGENDADA","VISITA REALIZADA","INTERESSADO","EM ACOMPANHAMENTO"}
         tic_em_andamento = ativos_t[ativos_t["status"].isin(status_tic_andamento)].copy() if not ativos_t.empty else pd.DataFrame()
         if not tic_em_andamento.empty:
             st.markdown("### 🔥 TICLOG em andamento")
-            st.caption("Esses clientes ficam aqui e não aparecem mais em Clientes em andamento.")
+            st.caption("Clientes TICLOG com continuidade comercial também aparecem em Clientes em andamento, mantendo a origem TICLOG.")
             tic_em_andamento["prox_dt"] = pd.to_datetime(tic_em_andamento["data_proxima_acao"], errors="coerce")
             tic_em_andamento = tic_em_andamento.sort_values(["prox_dt","empresa"], na_position="first")
             for _, tc in tic_em_andamento.iterrows():
@@ -4318,7 +4341,7 @@ elif menu == "📅 Agenda":
             )
 
     # Histórico permanente: compromissos passados nunca somem da consulta.
-    with st.expander("🕘 Histórico da agenda", expanded=False):
+    with st.expander("📚 Agendas anteriores", expanded=False):
         if agenda_df.empty:
             st.info("Nenhum compromisso histórico.")
         else:
@@ -4432,7 +4455,7 @@ elif menu == "🚗 Veículo da empresa":
     datas_registradas_v = {str(r.get("data") or "")[:10] for r in registros_v}
     hoje_v = date.today(); ontem_v = hoje_v - timedelta(days=1)
     if ontem_v.isoformat() not in datas_registradas_v and ontem_v.isoformat() not in cientes_v:
-        st.warning(f"⚠️ Não há uso do veículo registrado para ontem ({ontem_v.strftime('%d/%m/%Y')}). Você está ciente?")
+        st.warning(f"⚠️ Não há uso do veículo registrado ontem ({ontem_v.strftime('%d/%m/%Y')}). Você está ciente?")
         va1,va2 = st.columns(2)
         if va1.button("✓ Estou ciente", key="veic_ciente_ontem", use_container_width=True):
             marcar_veiculo_dia_ciente(ontem_v); st.rerun()
@@ -5336,5 +5359,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • V14 • CRM Integrado")
+st.sidebar.caption("Gestão Comercial • V15 • CRM Integrado")
 
