@@ -252,6 +252,7 @@ def salvar_database(dados):
     dados.setdefault("veiculo_tipos", {})
     dados.setdefault("clientes_ticlog", [])
     dados.setdefault("historico_ticlog", [])
+    dados.setdefault("veiculo_avisos_cientes", {})
     dados["metadata"]["ultima_atualizacao"] = datetime.now().isoformat(timespec="seconds")
     dados["metadata"]["ultimo_usuario"] = st.session_state.get("usuario_logado", "")
 
@@ -289,6 +290,7 @@ def carregar_database(forcar_github=False):
                     "veiculo_tipos": {},
                     "clientes_ticlog": [],
                     "historico_ticlog": [],
+                    "veiculo_avisos_cientes": {},
                 }
                 with open(DATABASE_PATH, "w", encoding="utf-8") as f:
                     json.dump(dados_seed, f, ensure_ascii=False, indent=2)
@@ -321,6 +323,7 @@ def carregar_database(forcar_github=False):
     dados.setdefault("veiculo_tipos", {})
     dados.setdefault("clientes_ticlog", [])
     dados.setdefault("historico_ticlog", [])
+    dados.setdefault("veiculo_avisos_cientes", {})
     return dados
 
 def proximo_id(lista):
@@ -655,7 +658,8 @@ def importar_planilha_inicial():
             "retorno_apos_seq": None,
             "data_agendamento": None,
             "agendamento_pendente": 0,
-            "proxima_acao": ""
+            "proxima_acao": "",
+            "numero_cotacao": ""
         })
 
         if data1:
@@ -727,12 +731,12 @@ def carregar_empresas():
         return pd.DataFrame(columns=[
             "id","documento","nome","email","telefone1","telefone2","telefone3","status",
             "observacao_atual","data_primeiro_contato","criado_em","origem",
-            "retorno_apos_seq","data_agendamento","agendamento_pendente","proxima_acao"
+            "retorno_apos_seq","data_agendamento","agendamento_pendente","proxima_acao","numero_cotacao"
         ])
     for col in [
         "documento","nome","email","telefone1","telefone2","telefone3","status",
         "observacao_atual","data_primeiro_contato","criado_em","origem",
-        "retorno_apos_seq","data_agendamento","agendamento_pendente","proxima_acao"
+        "retorno_apos_seq","data_agendamento","agendamento_pendente","proxima_acao","numero_cotacao"
     ]:
         if col not in df.columns:
             df[col] = None
@@ -840,6 +844,7 @@ def salvar_empresas_em_lote(registros):
         nome = str(registro.get("nome") or "").strip()
         doc = str(registro.get("documento") or "").strip()
         email = normalizar_email(registro.get("email", ""))
+        numero_cotacao = str(registro.get("numero_cotacao") or "").strip()
         telefones = list(registro.get("telefones") or ["", "", ""])
         while len(telefones) < 3:
             telefones.append("")
@@ -867,6 +872,15 @@ def salvar_empresas_em_lote(registros):
             or (email and email in emails_existentes)
             or any(t in tels_existentes for t in tels_dig)
         ):
+            if numero_cotacao:
+                for emp_exist in dados["empresas"]:
+                    emp_doc=somente_digitos(emp_exist.get("documento","")); emp_email=str(emp_exist.get("email","") or "").strip().lower()
+                    emp_tels={somente_digitos(emp_exist.get(c,"")) for c in ("telefone1","telefone2","telefone3")}
+                    if ((doc_dig and emp_doc==doc_dig) or (email and emp_email==email) or bool(set(tels_dig)&emp_tels)):
+                        atuais=[x.strip() for x in str(emp_exist.get("numero_cotacao") or "").split(" / ") if x.strip()]
+                        if numero_cotacao not in atuais:
+                            atuais.append(numero_cotacao); emp_exist["numero_cotacao"]=" / ".join(atuais)
+                        break
             duplicados += 1
             continue
 
@@ -886,7 +900,8 @@ def salvar_empresas_em_lote(registros):
             "retorno_apos_seq": None,
             "data_agendamento": None,
             "agendamento_pendente": 0,
-            "proxima_acao": ""
+            "proxima_acao": "",
+            "numero_cotacao": numero_cotacao
         })
 
         if doc_dig:
@@ -899,7 +914,7 @@ def salvar_empresas_em_lote(registros):
         proximo += 1
         incluidos += 1
 
-    if incluidos > 0:
+    if incluidos > 0 or duplicados > 0:
         salvar_database(dados)
 
     return incluidos, duplicados, invalidos, sem_identificador
@@ -1108,7 +1123,7 @@ def registrar_contato(empresa_id, data_contato, tipo, resultado, obs,
     return status_novo, tentativa_sem_retorno, retorno_apos
 
 def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefone3,
-                      status, observacao, proxima_acao, data_agendamento=None, email=""):
+                      status, observacao, proxima_acao, data_agendamento=None, email="", numero_cotacao=""):
     """Salva qualquer edição do cadastro e sincroniza imediatamente no database.json."""
     dados = carregar_database(forcar_github=True)
     encontrado = False
@@ -1124,6 +1139,8 @@ def atualizar_empresa(empresa_id, nome, documento, telefone1, telefone2, telefon
             emp["status"] = status
             emp["observacao_atual"] = str(observacao or "").strip()
             emp["proxima_acao"] = str(proxima_acao or "").strip()
+            if numero_cotacao is not None:
+                emp["numero_cotacao"] = str(numero_cotacao or "").strip()
 
             if data_agendamento:
                 emp["data_agendamento"] = data_agendamento.isoformat()
@@ -1505,6 +1522,55 @@ def parsear_texto_livre(texto):
 
     return pd.DataFrame(saida)
 
+def normalizar_cabecalho_importacao(valor):
+    txt = str(valor or "").strip().upper()
+    trans = str.maketrans("ÇÃÁÀÂÉÊÍÓÔÕÚ", "CAAAAEEIOOOU")
+    txt = txt.translate(trans)
+    return re.sub(r"[^A-Z0-9]+", " ", txt).strip()
+
+def dataframe_importacao_flexivel(df):
+    if df is None or df.empty: return pd.DataFrame()
+    mapa={normalizar_cabecalho_importacao(c):c for c in df.columns}
+    def achar(*nomes):
+        ds=[normalizar_cabecalho_importacao(n) for n in nomes]
+        for d in ds:
+            if d in mapa: return mapa[d]
+        for n,o in mapa.items():
+            if any(d in n or n in d for d in ds): return o
+        return None
+    c_nome=achar("NOME DO CLIENTE","NOME","CLIENTE","EMPRESA")
+    c_tel=achar("TELEFONE","CELULAR","CONTATO","TELEFONE 1")
+    c_doc=achar("CPF CNPJ","CNPJ OU CPF","DOCUMENTO","CPF","CNPJ")
+    c_email=achar("E MAIL","EMAIL")
+    c_cot=achar("NUMERO COTACAO","N COTACAO","COTACAO","NUMERO DA COTACAO")
+    if not c_nome or not c_tel: return pd.DataFrame()
+    saida=[]
+    for _,r in df.iterrows():
+        nome=str(r.get(c_nome,"" ) or "").strip(); tel=str(r.get(c_tel,"" ) or "").strip()
+        if nome.lower()=="nan": nome=""
+        if tel.lower()=="nan": tel=""
+        if not nome and not tel: continue
+        cot=str(r.get(c_cot,"") or "").strip() if c_cot else ""
+        if cot.lower()=="nan": cot=""
+        cot=re.sub(r"\.0$","",cot)
+        saida.append({"CPF/CNPJ":formatar_documento(r.get(c_doc,"")) if c_doc else "","Nome":nome.upper(),"E-mail":normalizar_email(r.get(c_email,"")) if c_email else "","Telefone 1":formatar_telefone(tel),"Telefone 2":"","Telefone 3":"","Número cotação":cot})
+    return pd.DataFrame(saida)
+
+def parsear_importacao_inteligente(texto):
+    bruto=str(texto or "")
+    if not bruto.strip(): return pd.DataFrame()
+    linhas=[l for l in bruto.splitlines() if l.strip()]
+    if linhas and ("NOME DO CLIENTE" in linhas[0].upper() or "COTAÇÃO" in linhas[0].upper() or "COTACAO" in linhas[0].upper()):
+        try:
+            sep="\t" if "\t" in linhas[0] else ";"
+            df=pd.read_csv(io.StringIO(bruto),sep=sep,dtype=str,engine="python")
+            x=dataframe_importacao_flexivel(df)
+            if not x.empty: return x
+        except Exception: pass
+    x=parsear_texto_livre(bruto)
+    if not x.empty and "Número cotação" not in x.columns: x["Número cotação"]=""
+    return x
+
 def eh_duplicado(documento, telefones, empresas, email=""):
     doc = somente_digitos(documento)
     if doc:
@@ -1546,6 +1612,8 @@ def painel_edicao_empresa(empresa, prefixo="editar"):
             value=str(empresa.get("email") or ""),
             key=f"{prefixo}_{empresa_id}_email"
         )
+
+        numero_cotacao = st.text_input("Número(s) de cotação", value=str(empresa.get("numero_cotacao") or ""), key=f"{prefixo}_{empresa_id}_cotacao")
 
         c1, c2, c3 = st.columns(3)
         tel1 = c1.text_input(
@@ -1632,7 +1700,7 @@ def painel_edicao_empresa(empresa, prefixo="editar"):
         ):
             atualizar_empresa(
                 empresa_id, nome, documento, tel1, tel2, tel3,
-                status, observacao, proxima_acao, data_ag, email
+                status, observacao, proxima_acao, data_ag, email, numero_cotacao
             )
             st.success("Dados atualizados no database.json.")
             st.rerun()
@@ -1933,6 +2001,14 @@ def excluir_compromisso_agenda(agenda_id):
 
     salvar_database(dados)
 
+def marcar_veiculo_dia_ciente(data_ref):
+    dados = carregar_database(forcar_github=True)
+    dados.setdefault("veiculo_avisos_cientes", {})
+    chave = data_ref.isoformat() if hasattr(data_ref, "isoformat") else str(data_ref)
+    dados["veiculo_avisos_cientes"][chave] = {"ciente_em": datetime.now().isoformat(timespec="seconds"), "usuario": st.session_state.get("usuario_logado", "")}
+    salvar_database(dados)
+
+
 def salvar_registro_veiculo(registro):
     dados = carregar_database(forcar_github=True)
     dados.setdefault("veiculo_registros", [])
@@ -2219,7 +2295,7 @@ def atualizar_cliente_ticlog_cadastro(cliente_id, empresa, endereco, telefone, s
             break
     salvar_database(dados)
 
-def registrar_acao_ticlog(cliente_id, acao, resultado, observacao="", data_visita=None, hora_visita=None):
+def registrar_acao_ticlog(cliente_id, acao, resultado, observacao="", data_visita=None, hora_visita=None, proxima_acao="", data_proxima_acao=None):
     """
     Não encerra por ausência de resposta.
     Só sai da carteira ativa em status explicitamente finais.
@@ -2297,6 +2373,8 @@ def registrar_acao_ticlog(cliente_id, acao, resultado, observacao="", data_visit
     cliente["visita_agendada"] = 1 if data_visita else 0
     cliente["data_visita"] = data_visita_iso
     cliente["hora_visita"] = hora_visita_txt if data_visita else None
+    cliente["proxima_acao"] = str(proxima_acao or "").strip()
+    cliente["data_proxima_acao"] = data_proxima_acao.isoformat() if hasattr(data_proxima_acao, "isoformat") else (str(data_proxima_acao or "").strip() or None)
 
     dados["historico_ticlog"].append({
         "id": proximo_id_lista(dados["historico_ticlog"]),
@@ -2310,6 +2388,8 @@ def registrar_acao_ticlog(cliente_id, acao, resultado, observacao="", data_visit
         "observacao": str(observacao or "").strip(),
         "data_visita": data_visita_iso,
         "hora_visita": hora_visita_txt if data_visita else None,
+        "proxima_acao": str(proxima_acao or "").strip(),
+        "data_proxima_acao": data_proxima_acao.isoformat() if hasattr(data_proxima_acao, "isoformat") else (str(data_proxima_acao or "").strip() or None),
         "usuario": st.session_state.get("usuario_logado", ""),
         "criado_em": agora.isoformat(timespec="seconds"),
     })
@@ -2456,6 +2536,28 @@ if not st.session_state.autenticado:
             st.error("Usuário ou senha inválidos.")
     st.stop()
 
+st.markdown("""
+<style>
+[data-testid="stAppViewContainer"]{background:#f3f5f8;}
+[data-testid="stHeader"]{background:transparent;}
+[data-testid="stSidebar"]{background:#111318;border-right:1px solid #242832;}
+[data-testid="stSidebar"] *{color:#f8fafc;}
+[data-testid="stSidebar"] hr{border-color:#303641;}
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] h3{color:#9ca3af;font-size:.72rem;letter-spacing:.12em;font-weight:800;}
+[data-testid="stSidebar"] .stButton>button{border-radius:10px;min-height:44px;font-weight:700;border:1px solid #313744;}
+[data-testid="stSidebar"] .stButton>button[kind="secondary"]{background:#181b22;color:#f8fafc;}
+[data-testid="stSidebar"] .stButton>button[kind="primary"]{background:#2563eb;color:#fff;border-color:#2563eb;}
+.block-container{padding-top:1.5rem;max-width:1500px;}
+div[data-testid="stMetric"]{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:14px 16px;box-shadow:0 4px 14px rgba(15,23,42,.05);}
+.stButton>button{border-radius:10px;min-height:42px;font-weight:700;}
+div[data-testid="stExpander"]{background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;}
+.pro-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px 18px;box-shadow:0 4px 14px rgba(15,23,42,.05);margin:.45rem 0;}
+.pro-card-title{font-size:1.08rem;font-weight:800;color:#111827}.pro-card-meta{font-size:.86rem;color:#667085;margin-top:.25rem;line-height:1.55}
+.badge-red,.badge-yellow,.badge-blue,.badge-green,.badge-gray{display:inline-block;padding:.2rem .55rem;border-radius:999px;font-size:.74rem;font-weight:800}
+.badge-red{background:#fee2e2;color:#991b1b}.badge-yellow{background:#fef3c7;color:#92400e}.badge-blue{background:#dbeafe;color:#1e40af}.badge-green{background:#dcfce7;color:#166534}.badge-gray{background:#f3f4f6;color:#4b5563}
+</style>
+""", unsafe_allow_html=True)
+
 st.sidebar.write(f"👤 **{st.session_state.get('usuario_logado','').title()}**")
 if st.sidebar.button("Sair", use_container_width=True):
     st.session_state.clear()
@@ -2538,7 +2640,7 @@ if menu == "📊 Dashboard":
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="dash-title">📊 Dashboard Comercial</div>', unsafe_allow_html=True)
-    st.markdown('<div class="dash-sub">Análise objetiva da produtividade, contato efetivo e conversão comercial.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="dash-sub">Visão consolidada de todas as interações comerciais registradas na plataforma.</div>', unsafe_allow_html=True)
 
     analitico = contatos.copy()
     if not analitico.empty:
@@ -2578,17 +2680,17 @@ if menu == "📊 Dashboard":
         tic = pd.DataFrame(hist_ticlog_dash).copy()
 
         def _canal_ticlog(valor):
-            v = str(valor or "")
-            if "Ligar" in v:
+            v = str(valor or "").strip().upper()
+            if "LIG" in v:
                 return "LIGAÇÃO"
-            if "WhatsApp" in v:
+            if "WHATS" in v:
                 return "WHATSAPP"
-            if "E-mail" in v:
+            if "E-MAIL" in v or "EMAIL" in v:
                 return "E-MAIL"
-            if "Visitar" in v:
+            if "REUNI" in v:
+                return "REUNIÃO"
+            if "VISIT" in v:
                 return "VISITA PRESENCIAL"
-            if "Agendar visita" in v:
-                return "VISITA / AGENDAMENTO"
             return "OUTRO"
 
         def _status_ticlog_dashboard(row):
@@ -2696,16 +2798,14 @@ if menu == "📊 Dashboard":
     st.markdown('<div class="sec">Desempenho do período</div>', unsafe_allow_html=True)
     st.caption(f"{inicio.strftime('%d/%m/%Y')} a {fim.strftime('%d/%m/%Y')}")
     c1,c2,c3,c4 = st.columns(4)
-    with c1: kpi("📞 Contatos realizados", total, "registros comerciais")
+    with c1: kpi("📞 Contatos realizados", total, "todas as interações da plataforma")
     with c2: kpi("🏢 Empresas trabalhadas", empresas_periodo, "clientes diferentes")
     with c3: kpi("📈 Média por dia", f"{media:.1f}", "contatos/dia")
-    with c4: kpi("📵 Sem retorno", sem_retorno, "tentativas sem contato")
+    with c4: kpi("📵 Sem retorno", sem_retorno, "tentativas sem retorno")
 
-    c1,c2,c3,c4 = st.columns(4)
-    with c1: kpi("💬 Taxa de contato efetivo", f"{taxa_contato:.1f}%", "desconsidera problemas da base")
-    with c2: kpi("🚀 Taxa de avanço", f"{taxa_avanco:.1f}%", "avanços ÷ contatos efetivos")
-    with c3: kpi("🧹 Problemas de base", problemas_base, "não penalizam resultado comercial")
-    with c4: kpi("🎯 Conversão", f"{conversao:.1f}%", "fechados ÷ contatos efetivos")
+    c1,c2 = st.columns(2)
+    with c1: kpi("🔥 Ações em andamento", avanços, "interações que mantiveram/avançaram oportunidades")
+    with c2: kpi("🏆 Fechamentos", fechados, "fechado / ganho no período")
 
     # Performance só quando há mais de um dia
     if dias_periodo > 1 and not selecionado.empty:
@@ -2786,7 +2886,7 @@ if menu == "📊 Dashboard":
         negociacoes=int((status_s=="EM NEGOCIAÇÃO").sum()) if total else 0
         funil=pd.DataFrame([
             {"Etapa":"Empresas trabalhadas","Quantidade":empresas_periodo,"Ordem":1},
-            {"Etapa":"Contatos efetivos","Quantidade":contatos_efetivos,"Ordem":2},
+            {"Etapa":"Interações comerciais","Quantidade":total,"Ordem":2},
             {"Etapa":"Interesse / oportunidade","Quantidade":oportunidades,"Ordem":3},
             {"Etapa":"Cotação / proposta","Quantidade":cotacoes,"Ordem":4},
             {"Etapa":"Negociação","Quantidade":negociacoes,"Ordem":5},
@@ -3216,7 +3316,7 @@ elif menu == "📞 Fila de contatos":
 # ---------------- CLIENTES EM ANDAMENTO ----------------
 elif menu == "🔥 Clientes em andamento":
     st.markdown("## 🔥 Clientes em andamento")
-    st.caption("Oportunidades que já avançaram. Atualize um cliente por vez, como na fila de contatos.")
+    st.caption("Pendências comerciais em andamento. Os clientes urgentes aparecem primeiro em cards para receber uma nova ação.")
 
     flash_and = st.session_state.pop("flash_andamento", None)
     if flash_and:
@@ -3238,11 +3338,14 @@ elif menu == "🔥 Clientes em andamento":
         # Prioridade: retorno atrasado -> retorno hoje -> demais oportunidades.
         def prioridade_andamento(row):
             ag = row.get("ag_dt")
+            prox = str(row.get("proxima_acao") or "").strip()
             if pd.notna(ag) and ag < hoje_ts:
                 return 1
             if pd.notna(ag) and ag == hoje_ts:
                 return 2
-            return 3
+            if not prox:
+                return 3
+            return 4
 
         andamento["_p"] = andamento.apply(prioridade_andamento, axis=1)
         andamento = andamento.sort_values(
@@ -3251,6 +3354,28 @@ elif menu == "🔥 Clientes em andamento":
         ).reset_index(drop=True)
 
         total_and = len(andamento)
+
+        atrasados_qtd = int((andamento["_p"] == 1).sum())
+        hoje_qtd = int((andamento["_p"] == 2).sum())
+        sem_acao_qtd = int((andamento["_p"] == 3).sum())
+        proximos_qtd = int((andamento["_p"] == 4).sum())
+        st.markdown("### Pendências comerciais")
+        p1,p2,p3,p4 = st.columns(4)
+        p1.metric("🔴 Atrasados", atrasados_qtd); p2.metric("🟠 Para hoje", hoje_qtd)
+        p3.metric("⚪ Sem próxima ação", sem_acao_qtd); p4.metric("🔵 Próximos", proximos_qtd)
+        st.caption("Os clientes mais urgentes aparecem primeiro. Cada nova interação registrada aqui entra no Dashboard geral.")
+        with st.expander(f"📌 Ver os {total_and} clientes em cards", expanded=True):
+            for idx_card, rcard in andamento.iterrows():
+                pri = int(rcard.get("_p") or 4)
+                badge, classe = (("ATRASADO","badge-red") if pri==1 else ("PARA HOJE","badge-yellow") if pri==2 else ("SEM PRÓXIMA AÇÃO","badge-gray") if pri==3 else ("PROGRAMADO","badge-blue"))
+                prox = str(rcard.get("proxima_acao") or "").strip() or "Definir próxima ação"
+                ag_txt = data_br(rcard.get("data_agendamento")) if rcard.get("data_agendamento") else ""
+                ultima = str(rcard.get("observacao_atual") or "").strip()
+                html = f'<div class="pro-card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div class="pro-card-title">{rcard.get("nome") or "-"}</div><span class="{classe}">{badge}</span></div><div class="pro-card-meta"><b>Status:</b> {rcard.get("status") or "-"}<br><b>Próxima ação:</b> {prox}{(" • "+ag_txt) if ag_txt else ""}{("<br><b>Última observação:</b> "+ultima) if ultima else ""}</div></div>'
+                st.markdown(html, unsafe_allow_html=True)
+                if st.button("Abrir e registrar nova ação", key=f"and_card_open_{int(rcard['id'])}", use_container_width=True):
+                    st.session_state["andamento_pos"] = int(idx_card)
+                    st.rerun()
 
         # Navegação local, sem alterar banco ao apenas avançar/voltar.
         if "andamento_pos" not in st.session_state:
@@ -3381,25 +3506,31 @@ elif menu == "🔥 Clientes em andamento":
         )
 
         data_nova = None
-        if etapa in {
-            "📅 Retorno agendado",
-            "🤝 Reunião agendada",
-            "👔 Aguardando responsável"
-        }:
-            usar_data = st.checkbox(
-                "📅 Definir data de retorno",
-                value=etapa in {"📅 Retorno agendado", "🤝 Reunião agendada"},
-                key=f"{prefixo}_usar_data"
-            )
-            if usar_data:
-                data_nova = st.date_input(
-                    "Data do retorno",
-                    value=hoje + timedelta(days=1),
-                    min_value=hoje,
-                    format="DD/MM/YYYY",
-                    key=f"{prefixo}_data"
-                )
 
+        canal_and = st.pills(
+            "Canal utilizado nesta interação",
+            ["LIGAÇÃO", "WHATSAPP", "E-MAIL", "REUNIÃO", "VISITA PRESENCIAL", "OUTRO"],
+            selection_mode="single",
+            key=f"{prefixo}_canal"
+        )
+        proxima_acao_and = st.text_input(
+            "➡️ Próxima ação",
+            placeholder="Ex.: ligar novamente, enviar proposta, cobrar retorno...",
+            key=f"{prefixo}_proxima_acao"
+        )
+        usar_data = st.checkbox(
+            "📅 Definir data da próxima ação",
+            value=etapa in {"📅 Retorno agendado", "🤝 Reunião agendada"} if etapa else False,
+            key=f"{prefixo}_usar_data"
+        )
+        if usar_data:
+            data_nova = st.date_input(
+                "Data da próxima ação",
+                value=hoje + timedelta(days=1),
+                min_value=hoje,
+                format="DD/MM/YYYY",
+                key=f"{prefixo}_data"
+            )
         obs_a = st.text_area(
             "📝 Observação (opcional)",
             placeholder="Ex.: cliente pediu proposta revisada; retornar amanhã.",
@@ -3441,7 +3572,9 @@ elif menu == "🔥 Clientes em andamento":
             st.rerun()
 
         if salvar_bt:
-            if not etapa:
+            if not canal_and:
+                st.warning("Selecione o canal utilizado nesta interação.")
+            elif not etapa:
                 st.warning("Selecione a nova etapa.")
             else:
                 mapa_result = {
@@ -3463,10 +3596,10 @@ elif menu == "🔥 Clientes em andamento":
                     registrar_contato(
                         eid,
                         hoje,
-                        "OUTRO",
+                        canal_and,
                         mapa_result[etapa],
                         obs_a,
-                        etapa,
+                        proxima_acao_and or etapa,
                         data_nova
                     )
 
@@ -3481,68 +3614,7 @@ elif menu == "🔥 Clientes em andamento":
                 st.rerun()
 
 
-    # TICLOG também aparece em Clientes em andamento quando houve avanço real.
-    dados_and_tic = carregar_database(forcar_github=False)
-    clientes_tic_and = dados_and_tic.get("clientes_ticlog", []) or []
-    status_tic_avancados = {
-        "EM CONTATO",
-        "RETORNAR CONTATO",
-        "VISITA AGENDADA",
-        "VISITA REALIZADA",
-        "INTERESSADO",
-    }
-    tic_and = [
-        c for c in clientes_tic_and
-        if str(c.get("status") or "").upper() in status_tic_avancados
-    ]
-
-    st.divider()
-    st.markdown("### 🏢 TICLOG em andamento")
-    st.caption(
-        "Clientes TICLOG que já tiveram avanço real. "
-        "Sem contato, tentativa sem resposta e visita ainda sem data continuam somente na carteira TICLOG."
-    )
-
-    if not tic_and:
-        st.caption("Nenhum cliente TICLOG em andamento no momento.")
-    else:
-        st.metric("Clientes TICLOG em andamento", len(tic_and))
-        tic_and = sorted(
-            tic_and,
-            key=lambda c: (
-                str(c.get("data_visita") or "9999-12-31"),
-                str(c.get("empresa") or "")
-            )
-        )
-        for c in tic_and:
-            data_vis = pd.to_datetime(c.get("data_visita"), errors="coerce")
-            data_vis_txt = data_vis.strftime("%d/%m/%Y") if pd.notna(data_vis) else ""
-            complemento = ""
-            if data_vis_txt:
-                complemento = f" • 📅 {data_vis_txt} {c.get('hora_visita') or ''}".strip()
-            st.markdown(
-                f"""
-                <div style="background:#f7f9fc;border:1px solid #e4e8ef;border-radius:12px;
-                            padding:.7rem .9rem;margin:.3rem 0;">
-                    <div style="font-weight:800;">{c.get('empresa') or '-'}</div>
-                    <div style="font-size:.85rem;color:#5f6878;">
-                        {c.get('status') or '-'}{complemento}
-                    </div>
-                    <div style="font-size:.82rem;color:#667085;margin-top:.15rem;">
-                        📞 {c.get('telefone') or 'Sem telefone'} • 📍 {c.get('endereco') or '-'}
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        if st.button(
-            "🏢 Abrir Clientes TICLOG",
-            key="andamento_abrir_ticlog",
-            use_container_width=True
-        ):
-            st.session_state["menu_selected"] = "🏢 Clientes TICLOG"
-            st.rerun()
+    # Clientes TICLOG são gerenciados exclusivamente no menu Clientes TICLOG.
 
     # Inclusão direta de oportunidade que não veio da fila de prospecção.
     st.divider()
@@ -3675,7 +3747,7 @@ elif menu == "🏢 Clientes TICLOG":
         st.info("Nenhum cliente TICLOG cadastrado.")
     else:
         df_t = pd.DataFrame(clientes_t)
-        for col in ["status","empresa","endereco","telefone","site","data_visita","hora_visita","total_tentativas"]:
+        for col in ["status","empresa","endereco","telefone","site","data_visita","hora_visita","total_tentativas","proxima_acao","data_proxima_acao"]:
             if col not in df_t.columns:
                 df_t[col] = None
 
@@ -3692,6 +3764,19 @@ elif menu == "🏢 Clientes TICLOG":
         q2.metric("Ativos", ativos_qtd)
         q3.metric("Sem contato", sem_contato_qtd)
         q4.metric("Visitas agendadas", visitas_qtd)
+
+        status_tic_andamento = {"EM CONTATO","RETORNAR CONTATO","VISITA AGENDADA","VISITA REALIZADA","INTERESSADO","EM ACOMPANHAMENTO"}
+        tic_em_andamento = ativos_t[ativos_t["status"].isin(status_tic_andamento)].copy() if not ativos_t.empty else pd.DataFrame()
+        if not tic_em_andamento.empty:
+            st.markdown("### 🔥 TICLOG em andamento")
+            st.caption("Esses clientes ficam aqui e não aparecem mais em Clientes em andamento.")
+            tic_em_andamento["prox_dt"] = pd.to_datetime(tic_em_andamento["data_proxima_acao"], errors="coerce")
+            tic_em_andamento = tic_em_andamento.sort_values(["prox_dt","empresa"], na_position="first")
+            for _, tc in tic_em_andamento.iterrows():
+                prox_txt = str(tc.get("proxima_acao") or "").strip() or "Definir próxima ação"
+                prox_data = data_br(tc.get("data_proxima_acao")) if tc.get("data_proxima_acao") else ""
+                html = f'<div class="pro-card"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div class="pro-card-title">{tc.get("empresa") or "-"}</div><span class="badge-green">{tc.get("status") or "-"}</span></div><div class="pro-card-meta"><b>Última ação:</b> {tc.get("ultima_acao") or "-"}<br><b>Próxima ação:</b> {prox_txt}{(" • "+prox_data) if prox_data else ""}<br>📞 {tc.get("telefone") or "Sem telefone"} • 📍 {tc.get("endereco") or "-"}</div></div>'
+                st.markdown(html, unsafe_allow_html=True)
 
         # Prioridade: visita mais próxima -> sem contato -> demais ativos.
         if not ativos_t.empty:
@@ -3769,6 +3854,11 @@ elif menu == "🏢 Clientes TICLOG":
 
             if str(atual.get("ultima_observacao") or "").strip():
                 st.caption(f"📝 Última observação: {atual.get('ultima_observacao')}")
+            if str(atual.get("proxima_acao") or "").strip():
+                prox_t_txt = f"➡️ Próxima ação: {atual.get('proxima_acao')}"
+                if atual.get("data_proxima_acao"):
+                    prox_t_txt += f" • {data_br(atual.get('data_proxima_acao'))}"
+                st.caption(prox_t_txt)
             if atual.get("status") == "VISITA AGENDADA" and atual.get("data_visita"):
                 dtv = pd.to_datetime(atual.get("data_visita"), errors="coerce")
                 dtv_txt = dtv.strftime("%d/%m/%Y") if pd.notna(dtv) else atual.get("data_visita")
@@ -3849,6 +3939,13 @@ elif menu == "🏢 Clientes TICLOG":
                     )
                     st.caption("✅ Ao salvar, esta visita também será incluída automaticamente na Agenda.")
 
+            st.markdown("#### Depois deste contato")
+            prox_tic = st.text_input("Próxima ação", placeholder="Ex.: retornar ligação, enviar apresentação, visitar novamente...", key=f"tic_prox_acao_{tid}")
+            definir_data_prox_tic = st.checkbox("Definir data da próxima ação", key=f"tic_def_data_prox_{tid}")
+            data_prox_tic = None
+            if definir_data_prox_tic:
+                data_prox_tic = st.date_input("Data da próxima ação", value=date.today()+timedelta(days=1), min_value=date.today(), format="DD/MM/YYYY", key=f"tic_data_prox_{tid}")
+
             b1,b2,b3 = st.columns([1,1,1.8])
             with b1:
                 anterior = st.button("⬅️ Anterior", key=f"tic_ant_{tid}", use_container_width=True)
@@ -3879,7 +3976,9 @@ elif menu == "🏢 Clientes TICLOG":
                         resultado_t,
                         obs_t,
                         data_visita_t,
-                        hora_visita_t
+                        hora_visita_t,
+                        prox_tic,
+                        data_prox_tic
                     )
                     st.session_state["ticlog_pos"] = min(pos, max(len(ativos_t)-1, 0))
                     st.success("Ação salva.")
@@ -3906,7 +4005,7 @@ elif menu == "🏢 Clientes TICLOG":
             visual = df_t.copy()
             if "data_visita" in visual.columns:
                 visual["data_visita"] = pd.to_datetime(visual["data_visita"], errors="coerce").dt.strftime("%d/%m/%Y")
-            cols = [c for c in ["empresa","endereco","telefone","site","status","total_tentativas","data_visita","hora_visita","ultima_observacao"] if c in visual.columns]
+            cols = [c for c in ["empresa","endereco","telefone","site","status","total_tentativas","proxima_acao","data_proxima_acao","data_visita","hora_visita","ultima_observacao"] if c in visual.columns]
             st.dataframe(visual[cols], use_container_width=True, hide_index=True)
 
 elif menu == "📅 Agenda":
@@ -4328,6 +4427,20 @@ elif menu == "🚗 Veículo da empresa":
     dados_v = carregar_database(forcar_github=False)
     registros_v = dados_v.get("veiculo_registros", []) or []
     tipos_v = dados_v.get("veiculo_tipos", {}) or {}
+    cientes_v = dados_v.get("veiculo_avisos_cientes", {}) or {}
+
+    datas_registradas_v = {str(r.get("data") or "")[:10] for r in registros_v}
+    hoje_v = date.today(); ontem_v = hoje_v - timedelta(days=1)
+    if ontem_v.isoformat() not in datas_registradas_v and ontem_v.isoformat() not in cientes_v:
+        st.warning(f"⚠️ Não há uso do veículo registrado para ontem ({ontem_v.strftime('%d/%m/%Y')}). Você está ciente?")
+        va1,va2 = st.columns(2)
+        if va1.button("✓ Estou ciente", key="veic_ciente_ontem", use_container_width=True):
+            marcar_veiculo_dia_ciente(ontem_v); st.rerun()
+        if va2.button("＋ Registrar uso de ontem", key="veic_reg_ontem", use_container_width=True):
+            st.session_state["veic_data"] = ontem_v
+            st.rerun()
+    elif hoje_v.isoformat() not in datas_registradas_v:
+        st.info("🚗 Até o momento, nenhum uso do veículo foi registrado hoje.")
 
     for tipo, motivos in VEICULO_TIPOS_PADRAO.items():
         tipos_v.setdefault(tipo, motivos)
@@ -4936,9 +5049,10 @@ elif menu == "➕ Adicionar contatos em lote":
     if flash_lote:
         st.success(flash_lote)
     st.caption(
-        "Cole os contatos do jeito que você recebeu. O sistema tentará identificar "
-        "nome, CPF/CNPJ, e-mail e telefones e mostrará uma prévia antes de incluir."
+        "Cole os contatos ou envie uma planilha. O sistema reconhece formatos diferentes e já está preparado para NOME DO CLIENTE + TELEFONE + NÚMERO COTAÇÃO."
     )
+    st.markdown("**Formato já reconhecido:** `NOME DO CLIENTE | TELEFONE | NÚMERO COTAÇÃO`")
+    arquivo_lote = st.file_uploader("Ou envie Excel/CSV", type=["xlsx","xls","csv"], key="arquivo_import_contatos")
     st.info(
         "💾 O lote inteiro será salvo de uma vez na base oficial do GitHub. "
         "Só considere concluído quando aparecer a confirmação verde com o total da carteira."
@@ -4954,8 +5068,22 @@ elif menu == "➕ Adicionar contatos em lote":
         )
     )
 
-    if bruto.strip():
-        previa = parsear_texto_livre(bruto)
+    previa = pd.DataFrame()
+    if arquivo_lote is not None:
+        try:
+            if arquivo_lote.name.lower().endswith((".xlsx",".xls")):
+                df_arq = pd.read_excel(arquivo_lote, dtype=str)
+            else:
+                df_arq = pd.read_csv(arquivo_lote, dtype=str, sep=None, engine="python")
+            previa = dataframe_importacao_flexivel(df_arq)
+            if previa.empty:
+                st.warning("Não reconheci as colunas da planilha. Use NOME DO CLIENTE, TELEFONE e, se houver, NÚMERO COTAÇÃO.")
+        except Exception as e:
+            st.error(f"Não consegui ler o arquivo: {e}")
+    elif bruto.strip():
+        previa = parsear_importacao_inteligente(bruto)
+
+    if arquivo_lote is not None or bruto.strip():
         if previa.empty:
             st.warning("Não consegui identificar registros nesse texto.")
         else:
@@ -4996,6 +5124,7 @@ elif menu == "➕ Adicionar contatos em lote":
                         "nome": str(r["Nome"] or "").strip(),
                         "documento": str(r["CPF/CNPJ"] or "").strip(),
                         "email": str(r.get("E-mail","") or "").strip(),
+                        "numero_cotacao": str(r.get("Número cotação","") or "").strip(),
                         "telefones": [
                             r["Telefone 1"],
                             r["Telefone 2"],
@@ -5207,5 +5336,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • PERSISTENTE V13.2 • Busca Corrigida")
+st.sidebar.caption("Gestão Comercial • V14 • CRM Integrado")
 
