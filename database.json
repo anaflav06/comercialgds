@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:30:48",
+    "ultima_atualizacao": "2026-09-10T13:31:21",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -75096,11 +75096,11 @@
       "endereco": "ARMANDO DE CAMPOS, 500",
       "telefone": "(19) 98132-0504",
       "site": "",
-      "status": "TENTAR NOVAMENTE / VISITAR",
-      "ultima_acao": "💬 WhatsApp",
-      "ultima_observacao": "",
-      "total_tentativas": 1,
-      "data_ultima_acao": "2026-09-01",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Não tem carga aérea, apenas rodoviária, mas salvou meu contato caso surja algo",
+      "total_tentativas": 2,
+      "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -76208,6 +76208,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:30:48"
+    },
+    {
+      "id": 38,
+      "cliente_id": 34,
+      "empresa": "MACAMP DISTRIBUIDORA DE PRODUTOS ALIMENTICIOS",
+      "data": "2026-09-10",
+      "hora": "13:31",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Não tem carga aérea, apenas rodoviária, mas salvou meu contato caso surja algo",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:31:21"
     }
   ]
 }
