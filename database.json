@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:13:15",
+    "ultima_atualizacao": "2026-09-10T13:16:59",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -75249,11 +75249,11 @@
       "endereco": "ALFREDO VIEIRA ALVES, 220",
       "telefone": "(19) 3281-3277 / (19) 8211-9771",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Empresa especializada em mudanças, não utiliza o transporte aéreo",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -76028,6 +76028,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:13:15"
+    },
+    {
+      "id": 26,
+      "cliente_id": 43,
+      "empresa": "RODOSERGIO / TRANS-OPEN",
+      "data": "2026-09-10",
+      "hora": "13:16",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Empresa especializada em mudanças, não utiliza o transporte aéreo",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:16:59"
     }
   ]
 }
