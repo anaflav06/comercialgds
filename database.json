@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T18:41:34",
+    "ultima_atualizacao": "2026-09-10T18:43:35",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -39521,7 +39521,7 @@
     {
       "id": 2312,
       "documento": "",
-      "nome": "CLAUDIA",
+      "nome": "BRALYX",
       "email": "",
       "telefone1": "(51) 8585-0920",
       "telefone2": "",
@@ -39534,7 +39534,7 @@
       "retorno_apos_seq": 990,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "proxima_acao": "",
       "numero_cotacao": "50472516"
     },
     {
