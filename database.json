@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:18:15",
+    "ultima_atualizacao": "2026-09-10T13:22:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -74531,11 +74531,11 @@
       "endereco": "RUA ARMANDO DE CAMPOS, 420",
       "telefone": "(19) 99168-9800",
       "site": "",
-      "status": "EM CONTATO",
-      "ultima_acao": "💬 WhatsApp",
-      "ultima_observacao": "Falei com Marcelo  em Abril tentando já agendar uma visita, hoje 27/08 retomei o assunto e aguardo a resposta dele.",
-      "total_tentativas": 1,
-      "data_ultima_acao": "2026-08-27",
+      "status": "VISITA REALIZADA",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Possui esporadicamente carga aérea e quando tem leva direto em VCP para emissão, mas \nsalvou meu contato e vai fazer as cotações quando surgir com a gente.\nGeralmente suas cargas são consolidadas, mas ficou de marcar outra reunião com\no gerente Adail.",
+      "total_tentativas": 2,
+      "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -76058,6 +76058,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:18:15"
+    },
+    {
+      "id": 28,
+      "cliente_id": 1,
+      "empresa": "ABBA LOGISTICA",
+      "data": "2026-09-10",
+      "hora": "13:22",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "VISITA PRESENCIAL REALIZADA",
+      "status_novo": "VISITA REALIZADA",
+      "observacao": "Possui esporadicamente carga aérea e quando tem leva direto em VCP para emissão, mas \nsalvou meu contato e vai fazer as cotações quando surgir com a gente.\nGeralmente suas cargas são consolidadas, mas ficou de marcar outra reunião com\no gerente Adail.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:22:37"
     }
   ]
 }
