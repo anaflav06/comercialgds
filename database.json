@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:24:07",
+    "ultima_atualizacao": "2026-09-10T13:24:59",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -74601,9 +74601,9 @@
       "site": "",
       "status": "VISITA REALIZADA",
       "ultima_acao": "🚶 Visitar presencialmente",
-      "ultima_observacao": "Fui atendido por Sandra que solicitou encaminhamento de e-mail para a matriz em São Paulo para conseguir uma autorização para visita após análise.",
-      "total_tentativas": 1,
-      "data_ultima_acao": "2026-09-01",
+      "ultima_observacao": "Fui pessoalmente sem marcar visita e fui atendido pela Sandra e fui\norientado à enviar um e-mail pra Matriz de São Paulo solicitando\nautorização para visitar a empresa, até o momento sem retorno.",
+      "total_tentativas": 2,
+      "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -76088,6 +76088,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:24:07"
+    },
+    {
+      "id": 30,
+      "cliente_id": 5,
+      "empresa": "ATIVA DIST. E LOG. LTDA",
+      "data": "2026-09-10",
+      "hora": "13:24",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "VISITA PRESENCIAL REALIZADA",
+      "status_novo": "VISITA REALIZADA",
+      "observacao": "Fui pessoalmente sem marcar visita e fui atendido pela Sandra e fui\norientado à enviar um e-mail pra Matriz de São Paulo solicitando\nautorização para visitar a empresa, até o momento sem retorno.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:24:59"
     }
   ]
 }
