@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:08:10",
+    "ultima_atualizacao": "2026-09-10T13:11:43",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -75011,11 +75011,11 @@
       "endereco": "LÁZARO BIBIANO DA SILVA, 67",
       "telefone": "(19) 99369-8830",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "VISITA REALIZADA",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Cliente utiliza a loja de Paulínia para emitir no aéreo, porém sabendo que estamos no TIC \npretende emitir conosco e abrir conta corrente. Possui encomendas pro Brasil todo e pensa\nassim que sair carga nos contatar. \nNão comentou de negociação com a loja de Paulínia.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -75983,6 +75983,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:08:10"
+    },
+    {
+      "id": 23,
+      "cliente_id": 29,
+      "empresa": "HOLD TRANSPORTES",
+      "data": "2026-09-10",
+      "hora": "13:11",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "VISITA PRESENCIAL REALIZADA",
+      "status_novo": "VISITA REALIZADA",
+      "observacao": "Cliente utiliza a loja de Paulínia para emitir no aéreo, porém sabendo que estamos no TIC \npretende emitir conosco e abrir conta corrente. Possui encomendas pro Brasil todo e pensa\nassim que sair carga nos contatar. \nNão comentou de negociação com a loja de Paulínia.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:11:43"
     }
   ]
 }
