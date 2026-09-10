@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:25:23",
+    "ultima_atualizacao": "2026-09-10T13:27:18",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -74773,9 +74773,9 @@
       "site": "",
       "status": "VISITA REALIZADA",
       "ultima_acao": "🚶 Visitar presencialmente",
-      "ultima_observacao": "Falei com Fabiane, e eles ainda não trabalham no Modal Aéreo, apenas rodoviário que fazem com própria frota.",
-      "total_tentativas": 1,
-      "data_ultima_acao": "2026-09-01",
+      "ultima_observacao": "A empresa não utiliza transporte aéreo no momento, mas caso surja algo , salvou meu contato.\nPara o Transporte rodoviário, poissui frota própria",
+      "total_tentativas": 2,
+      "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -76118,6 +76118,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:25:23"
+    },
+    {
+      "id": 32,
+      "cliente_id": 15,
+      "empresa": "CARGO HANDLING TRANSPORTES EXPRESS LTDA.",
+      "data": "2026-09-10",
+      "hora": "13:27",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "VISITA PRESENCIAL REALIZADA",
+      "status_novo": "VISITA REALIZADA",
+      "observacao": "A empresa não utiliza transporte aéreo no momento, mas caso surja algo , salvou meu contato.\nPara o Transporte rodoviário, poissui frota própria",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:27:18"
     }
   ]
 }
