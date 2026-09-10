@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T19:39:00",
+    "ultima_atualizacao": "2026-09-10T19:39:17",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -39344,7 +39344,7 @@
       "retorno_apos_seq": 1019,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "CLIENTE EM ANDAMENTO",
+      "proxima_acao": "PULADO POR ENQUANTO",
       "numero_cotacao": "24272076"
     },
     {
