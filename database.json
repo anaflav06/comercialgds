@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:30:02",
+    "ultima_atualizacao": "2026-09-10T13:30:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -75031,7 +75031,7 @@
       "status": "VISITA REALIZADA",
       "ultima_acao": "🚶 Visitar presencialmente",
       "ultima_observacao": "Não possui muita coisa áereo mas quando tem leva direto para VCP, e agradou a idéia\nde pode emitir em nossa loja, citou alguns casos que ele não consegue atender e faria \napenas a ponte conosco passando o cliente. \nPossui conta corrente cvom a AZUL através da sua matriz em Cuiabá, assim que surgir\nalgo entrará em contato comigo para cotação.",
-      "total_tentativas": 1,
+      "total_tentativas": 2,
       "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
@@ -76193,6 +76193,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:30:02"
+    },
+    {
+      "id": 37,
+      "cliente_id": 30,
+      "empresa": "HSE TRANSPORTES",
+      "data": "2026-09-10",
+      "hora": "13:30",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "VISITA PRESENCIAL REALIZADA",
+      "status_novo": "VISITA REALIZADA",
+      "observacao": "Não possui muita coisa áereo mas quando tem leva direto para VCP, e agradou a idéia\nde pode emitir em nossa loja, citou alguns casos que ele não consegue atender e faria \napenas a ponte conosco passando o cliente. \nPossui conta corrente cvom a AZUL através da sua matriz em Cuiabá, assim que surgir\nalgo entrará em contato comigo para cotação.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:30:48"
     }
   ]
 }
