@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T19:54:00",
+    "ultima_atualizacao": "2026-09-10T19:55:10",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -39806,7 +39806,7 @@
     {
       "id": 2327,
       "documento": "",
-      "nome": "LUIZA",
+      "nome": "CAMBIO PARTS PEDRO",
       "email": "",
       "telefone1": "(11) 2337-2547",
       "telefone2": "(11) 98432-8287",
