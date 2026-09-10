@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:12:29",
+    "ultima_atualizacao": "2026-09-10T13:13:15",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -75062,11 +75062,11 @@
       "endereco": "RUA ARMANDO DE CAMPOS, 120",
       "telefone": "(19) 2042-2429 / (35) 99708-5318 / (35) 98413-2790",
       "site": "jnrlogistica.com.br",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Só faz transporte rodoviário, não tem interesse no momento.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -76013,6 +76013,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:12:29"
+    },
+    {
+      "id": 25,
+      "cliente_id": 32,
+      "empresa": "JNR TRANSPORTES",
+      "data": "2026-09-10",
+      "hora": "13:13",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Só faz transporte rodoviário, não tem interesse no momento.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:13:15"
     }
   ]
 }
