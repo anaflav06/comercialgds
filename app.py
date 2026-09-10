@@ -2541,8 +2541,34 @@ if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 
 if not st.session_state.autenticado:
-    st.title("🔐 Gestão Comercial")
-    st.caption("Acesso ao sistema")
+    st.markdown("""
+    <style>
+    [data-testid="stAppViewContainer"]{background:#f3f5f8;}
+    .block-container{max-width:500px;padding-top:10vh;}
+    div[data-testid="stForm"]{
+        background:#ffffff;border:1px solid #e5e7eb;border-radius:20px;
+        padding:1.15rem 1.25rem 1rem 1.25rem;
+        box-shadow:0 12px 34px rgba(15,23,42,.10);
+    }
+    div[data-testid="stTextInput"] input{
+        min-height:42px;border-radius:10px;
+        border:1px solid #d8dee8;background:#f8fafc;
+    }
+    div[data-testid="stFormSubmitButton"] button{
+        min-height:44px;border-radius:10px!important;
+        background:#2563eb!important;color:#fff!important;
+        border-color:#2563eb!important;font-weight:800;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown(
+        "<div style='text-align:center;margin-bottom:1rem'>"
+        "<div style='font-size:2.1rem;font-weight:800;color:#1f2937'>🔐 Gestão Comercial</div>"
+        "<div style='color:#6b7280;margin-top:.2rem'>Acesso ao sistema</div>"
+        "</div>",
+        unsafe_allow_html=True
+    )
 
     with st.form("login"):
         usuario = st.text_input("Usuário").strip().lower()
@@ -2617,13 +2643,106 @@ st.sidebar.markdown("### APOIO")
 _nav_button("🚗 Veículo da empresa", "🚗 Veículo da empresa", "nav_veiculo")
 
 st.sidebar.divider()
-st.sidebar.markdown("### ADMINISTRAÇÃO")
-_nav_button("➕ Importar contatos", "➕ Adicionar contatos em lote", "nav_importar")
-_nav_button("🏢 Clientes / Editar", "🏢 Consulta / Editar Clientes", "nav_clientes")
-_nav_button("➕ Nova empresa", "➕ Nova Empresa", "nav_nova")
-_nav_button("📈 Relatórios", "📈 Relatórios", "nav_relatorios")
+with st.sidebar.expander("⚙️ ADMINISTRAÇÃO", expanded=False):
+    if st.button("➕ Importar contatos", key="nav_importar", use_container_width=True):
+        st.session_state["menu_selected"] = "➕ Adicionar contatos em lote"; st.rerun()
+    if st.button("🏢 Clientes / Editar", key="nav_clientes", use_container_width=True):
+        st.session_state["menu_selected"] = "🏢 Consulta / Editar Clientes"; st.rerun()
+    if st.button("➕ Nova empresa", key="nav_nova", use_container_width=True):
+        st.session_state["menu_selected"] = "➕ Nova Empresa"; st.rerun()
+    if st.button("📈 Relatórios", key="nav_relatorios", use_container_width=True):
+        st.session_state["menu_selected"] = "📈 Relatórios"; st.rerun()
 
 menu = st.session_state["menu_selected"]
+
+
+def _dt_proxima_24h():
+    return datetime.now() + timedelta(hours=24)
+
+def _badge_24h(valor):
+    dt = pd.to_datetime(valor, errors="coerce")
+    if pd.isna(dt):
+        return "SEM PRÓXIMA AÇÃO", "badge-gray"
+    agora = pd.Timestamp.now()
+    diff = dt - agora
+    if diff.total_seconds() < 0:
+        horas = max(1, int(abs(diff.total_seconds()) // 3600))
+        return f"ATRASADO HÁ {horas}H", "badge-red"
+    if diff.total_seconds() <= 86400:
+        horas = max(1, int(diff.total_seconds() // 3600))
+        return f"EM {horas}H", "badge-yellow"
+    return dt.strftime("%d/%m %H:%M"), "badge-blue"
+
+def _salvar_proxima_acao_empresa(empresa_id, texto, quando):
+    dados = carregar_database(forcar_github=True)
+    for emp in dados.get("empresas", []):
+        if int(emp.get("id",0) or 0) == int(empresa_id):
+            emp["proxima_acao"] = str(texto or "").strip()
+            emp["proxima_acao_em"] = quando.isoformat(timespec="minutes")
+            emp["data_agendamento"] = quando.date().isoformat()
+            emp["agendamento_pendente"] = 1
+            break
+    salvar_database(dados)
+
+def _agenda_integrar_cliente(agenda_id, status_agenda, resultado, observacao, proxima_acao, quando_proxima, levar_andamento=True):
+    dados = carregar_database(forcar_github=True)
+    item = next((a for a in dados.get("agenda", []) if int(a.get("id",0) or 0)==int(agenda_id)), None)
+    if not item:
+        raise RuntimeError("Compromisso não encontrado.")
+
+    item["status"] = status_agenda
+    item["resultado"] = str(resultado or "").strip()
+    item["observacao_resultado"] = str(observacao or "").strip()
+    item["proxima_acao"] = str(proxima_acao or "").strip()
+    item["proxima_acao_em"] = quando_proxima.isoformat(timespec="minutes") if quando_proxima else None
+    item["atualizado_em"] = datetime.now().isoformat(timespec="seconds")
+    salvar_database(dados)
+
+    if status_agenda != "REALIZADO" or not levar_andamento:
+        return
+
+    tipo = str(item.get("tipo") or "").upper()
+    canal = "REUNIÃO" if "REUNI" in tipo else "VISITA PRESENCIAL"
+    cliente_nome = str(item.get("cliente_compromisso") or "").strip()
+
+    # Se veio do TICLOG, alimenta o próprio TICLOG e a central geral.
+    if item.get("ticlog_cliente_id"):
+        tid = int(item.get("ticlog_cliente_id"))
+        res_tic = "VISITA PRESENCIAL REALIZADA" if canal == "VISITA PRESENCIAL" else "FALOU COM RESPONSÁVEL"
+        registrar_acao_ticlog(
+            tid,
+            "🚶 Visitar presencialmente" if canal == "VISITA PRESENCIAL" else "📞 Ligar",
+            res_tic,
+            observacao,
+            proxima_acao=proxima_acao or "Cobrar retorno",
+            data_proxima_acao=quando_proxima.date() if quando_proxima else date.today()+timedelta(days=1),
+        )
+        return
+
+    # Cliente geral: localizar por nome e registrar uma nova interação.
+    dados2 = carregar_database(forcar_github=True)
+    alvo = None
+    nome_norm = normalizar_busca_texto(cliente_nome)
+    for emp in dados2.get("empresas", []):
+        if normalizar_busca_texto(emp.get("nome")) == nome_norm:
+            alvo = emp
+            break
+
+    if alvo:
+        registrar_contato(
+            int(alvo["id"]),
+            date.today(),
+            canal,
+            "CLIENTE RESPONDEU",
+            observacao,
+            proxima_acao or "Cobrar retorno",
+            quando_proxima.date() if quando_proxima else date.today()+timedelta(days=1),
+        )
+        _salvar_proxima_acao_empresa(
+            int(alvo["id"]),
+            proxima_acao or "Cobrar retorno",
+            quando_proxima or _dt_proxima_24h(),
+        )
 
 # ---------------- DASHBOARD ----------------
 
@@ -3339,413 +3458,180 @@ elif menu == "📞 Fila de contatos":
 # ---------------- CLIENTES EM ANDAMENTO ----------------
 elif menu == "🔥 Clientes em andamento":
     st.markdown("## 🔥 Clientes em andamento")
-    st.caption("Pendências comerciais em andamento. Os clientes urgentes aparecem primeiro em cards para receber uma nova ação.")
+    st.caption("Central de pendências comerciais. A prioridade padrão é uma nova ação em até 24 horas.")
 
-    flash_and = st.session_state.pop("flash_andamento", None)
-    if flash_and:
-        st.success(flash_and)
+    dados_and = carregar_database(forcar_github=False)
+    empresas_and = pd.DataFrame(dados_and.get("empresas", []) or [])
+    contatos_and = pd.DataFrame(dados_and.get("contatos", []) or [])
+    ticlog_and = pd.DataFrame(dados_and.get("clientes_ticlog", []) or [])
 
-    andamento = empresas[empresas["status"].isin(STATUS_EM_ANDAMENTO)].copy()
+    itens_and = []
 
-    if andamento.empty:
-        st.info("Nenhum cliente da carteira geral em andamento no momento.")
+    if not empresas_and.empty:
+        for c in ["status","proxima_acao","proxima_acao_em","data_agendamento","nome","id"]:
+            if c not in empresas_and.columns: empresas_and[c] = None
+        gerais = empresas_and[empresas_and["status"].isin(STATUS_EM_ANDAMENTO)].copy()
+        for _, r in gerais.iterrows():
+            prox_dt = r.get("proxima_acao_em") or r.get("data_agendamento")
+            itens_and.append({"origem":"GERAL","id":int(r["id"]),"nome":r.get("nome"),"status":r.get("status"),
+                              "proxima":r.get("proxima_acao"),"prox_dt":prox_dt,"row":r})
+
+    if not ticlog_and.empty:
+        for c in ["status","proxima_acao","data_proxima_acao","empresa","id"]:
+            if c not in ticlog_and.columns: ticlog_and[c] = None
+        status_tic = {"EM CONTATO","RETORNAR CONTATO","VISITA AGENDADA","VISITA REALIZADA","INTERESSADO","EM ACOMPANHAMENTO"}
+        tic_ativos = ticlog_and[ticlog_and["status"].isin(status_tic)].copy()
+        for _, r in tic_ativos.iterrows():
+            itens_and.append({"origem":"TICLOG","id":int(r["id"]),"nome":r.get("empresa"),"status":r.get("status"),
+                              "proxima":r.get("proxima_acao"),"prox_dt":r.get("data_proxima_acao"),"row":r})
+
+    agora_and = pd.Timestamp.now()
+    def _ord_and(x):
+        dt = pd.to_datetime(x.get("prox_dt"), errors="coerce")
+        return (1, pd.Timestamp.max) if pd.isna(dt) else (0, dt)
+    itens_and = sorted(itens_and, key=_ord_and)
+
+    atrasados = 0; proximas24 = 0; sem_acao = 0; depois24 = 0
+    for x in itens_and:
+        dt = pd.to_datetime(x.get("prox_dt"), errors="coerce")
+        if pd.isna(dt): sem_acao += 1
+        elif dt < agora_and: atrasados += 1
+        elif (dt-agora_and).total_seconds() <= 86400: proximas24 += 1
+        else: depois24 += 1
+
+    c1,c2,c3,c4 = st.columns(4)
+    c1.metric("🔴 Atrasados", atrasados)
+    c2.metric("🟠 Próximas 24h", proximas24)
+    c3.metric("⚪ Sem próxima ação", sem_acao)
+    c4.metric("🔵 Depois de 24h", depois24)
+
+    st.caption("Clique no próprio card para registrar ou editar a próxima ação. Apenas um card fica aberto por vez.")
+
+    if not itens_and:
+        st.info("Nenhum cliente em andamento.")
     else:
-        hoje = date.today()
-        hoje_ts = pd.Timestamp(hoje).normalize()
+        for item in itens_and:
+            origem = item["origem"]; cid = item["id"]; r = item["row"]
+            chave = f"{origem}_{cid}"
+            aberto = st.session_state.get("andamento_card_aberto") == chave
+            badge, classe = _badge_24h(item.get("prox_dt"))
 
-        andamento["ag_dt"] = pd.to_datetime(
-            andamento["data_agendamento"],
-            errors="coerce"
-        ).dt.normalize()
+            with st.container(border=True):
+                cab1, cab2 = st.columns([5,1])
+                with cab1:
+                    st.markdown(f"### {item['nome']} {'`TICLOG`' if origem=='TICLOG' else ''}")
+                    st.caption(f"Status: {item.get('status') or '-'} • Próxima ação: {item.get('proxima') or 'Definir próxima ação'}")
+                with cab2:
+                    st.markdown(f'<span class="{classe}">{badge}</span>', unsafe_allow_html=True)
 
-        # Prioridade: retorno atrasado -> retorno hoje -> demais oportunidades.
-        def prioridade_andamento(row):
-            ag = row.get("ag_dt")
-            prox = str(row.get("proxima_acao") or "").strip()
-            if pd.notna(ag) and ag < hoje_ts:
-                return 1
-            if pd.notna(ag) and ag == hoje_ts:
-                return 2
-            if not prox:
-                return 3
-            return 4
-
-        andamento["_p"] = andamento.apply(prioridade_andamento, axis=1)
-        andamento = andamento.sort_values(
-            ["_p", "ag_dt", "nome"],
-            na_position="last"
-        ).reset_index(drop=True)
-
-        total_and = len(andamento)
-
-        atrasados_qtd = int((andamento["_p"] == 1).sum())
-        hoje_qtd = int((andamento["_p"] == 2).sum())
-        sem_acao_qtd = int((andamento["_p"] == 3).sum())
-        proximos_qtd = int((andamento["_p"] == 4).sum())
-        st.markdown("### Pendências comerciais")
-        p1,p2,p3,p4 = st.columns(4)
-        p1.metric("🔴 Atrasados", atrasados_qtd); p2.metric("🟠 Para hoje", hoje_qtd)
-        p3.metric("⚪ Sem próxima ação", sem_acao_qtd); p4.metric("🔵 Próximos", proximos_qtd)
-        st.caption("Os clientes mais urgentes aparecem primeiro. Cada nova interação registrada aqui entra no Dashboard geral.")
-        with st.expander(f"📌 Ver os {total_and} clientes em cards", expanded=True):
-            for idx_card, rcard in andamento.iterrows():
-                pri = int(rcard.get("_p") or 4)
-                badge, classe = (("ATRASADO","badge-red") if pri==1 else ("PARA HOJE","badge-yellow") if pri==2 else ("SEM PRÓXIMA AÇÃO","badge-gray") if pri==3 else ("PROGRAMADO","badge-blue"))
-                prox = str(rcard.get("proxima_acao") or "").strip() or "Definir próxima ação"
-                ag_txt = data_br(rcard.get("data_agendamento")) if rcard.get("data_agendamento") else ""
-                ultima = str(rcard.get("observacao_atual") or "").strip()
-                html = f'<div class="pro-card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div class="pro-card-title">{rcard.get("nome") or "-"}</div><span class="{classe}">{badge}</span></div><div class="pro-card-meta"><b>Status:</b> {rcard.get("status") or "-"}<br><b>Próxima ação:</b> {prox}{(" • "+ag_txt) if ag_txt else ""}{("<br><b>Última observação:</b> "+ultima) if ultima else ""}</div></div>'
-                st.markdown(html, unsafe_allow_html=True)
-                if st.button("Abrir e registrar nova ação", key=f"and_card_open_{int(rcard['id'])}", use_container_width=True):
-                    st.session_state["andamento_pos"] = int(idx_card)
+                if st.button("✏️ Registrar / editar ação" if not aberto else "✖️ Fechar card",
+                             key=f"and_open_{chave}", use_container_width=True):
+                    st.session_state["andamento_card_aberto"] = None if aberto else chave
                     st.rerun()
 
-        # Navegação local, sem alterar banco ao apenas avançar/voltar.
-        if "andamento_pos" not in st.session_state:
-            st.session_state["andamento_pos"] = 0
+                if aberto:
+                    if origem == "GERAL":
+                        tels = [str(r.get(k) or "").strip() for k in ["telefone1","telefone2","telefone3"] if str(r.get(k) or "").strip()]
+                        st.info("📞 " + (" • ".join(tels) if tels else "Sem telefone cadastrado"))
 
-        pos = int(st.session_state.get("andamento_pos", 0) or 0)
-        pos = max(0, min(pos, total_and - 1))
-        st.session_state["andamento_pos"] = pos
+                        h1,h2 = st.columns(2)
+                        with h1:
+                            with st.expander("🕘 Histórico", expanded=False):
+                                historico_cliente(contatos, cid)
+                        with h2:
+                            painel_edicao_empresa(r, prefixo=f"and_inline_{cid}")
 
-        # Procurar outro cliente, sem tabela grande.
-        with st.expander("🔎 Procurar outro cliente em andamento", expanded=False):
-            opcoes = {
-                f"{r['nome']} — {r.get('status','')}": idx
-                for idx, r in andamento.iterrows()
-            }
-            busca = st.selectbox(
-                "Cliente",
-                list(opcoes.keys()),
-                index=pos if pos < len(opcoes) else 0,
-                key="andamento_busca_cliente"
-            )
-            if st.button("Abrir cliente", use_container_width=True, key="andamento_abrir_cliente"):
-                st.session_state["andamento_pos"] = int(opcoes[busca])
-                st.rerun()
+                        canal = st.pills("Canal utilizado",
+                            ["LIGAÇÃO","WHATSAPP","E-MAIL","REUNIÃO","VISITA PRESENCIAL","OUTRO"],
+                            selection_mode="single", key=f"and_canal_{cid}")
+                        etapa = st.selectbox("Resultado / novo status", [
+                            "EM ANDAMENTO","AGUARDANDO CONTATO DO RESPONSÁVEL","RETORNO AGENDADO",
+                            "REUNIÃO AGENDADA","COTAÇÃO SOLICITADA","COTAÇÃO ENVIADA",
+                            "PROPOSTA ENVIADA","EM NEGOCIAÇÃO","FECHADO","SEM INTERESSE"
+                        ], key=f"and_status_{cid}")
+                        obs = st.text_area("Observação", key=f"and_obs_{cid}", height=80)
+                        prox = st.text_input("Próxima ação", value="Cobrar retorno / novo contato", key=f"and_prox_{cid}")
 
-        atual_and = andamento.iloc[pos]
-        eid = int(atual_and["id"])
-        prefixo = f"andamento_simple_{eid}"
+                        padrao = _dt_proxima_24h()
+                        p1,p2 = st.columns(2)
+                        dprox = p1.date_input("Data da próxima ação", value=padrao.date(), format="DD/MM/YYYY", key=f"and_data_{cid}")
+                        hprox = p2.time_input("Horário", value=padrao.time().replace(second=0,microsecond=0), key=f"and_hora_{cid}")
 
-        # Cabeçalho compacto
-        st.markdown(
-            f"""
-            <div style="padding:.2rem 0 .35rem 0;">
-                <div style="display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;">
-                    <span style="font-size:1.5rem;font-weight:800;color:#20263a;">
-                        {atual_and['nome']}
-                    </span>
-                    <span style="font-size:.82rem;padding:.18rem .5rem;border-radius:.6rem;
-                                 background:#fff0e8;color:#9a3e00;">
-                        🔥 EM ANDAMENTO
-                    </span>
-                </div>
-                <div style="margin-top:.35rem;color:#586174;font-size:.9rem;">
-                    <b>CPF/CNPJ:</b> {atual_and.get('documento') or '-'}
-                    &nbsp;&nbsp;•&nbsp;&nbsp;
-                    <b>Status:</b> {atual_and.get('status') or '-'}
-                    &nbsp;&nbsp;•&nbsp;&nbsp;
-                    <b>Cliente:</b> {pos + 1} de {total_and}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                        if st.button("💾 Salvar ação", type="primary", use_container_width=True, key=f"and_save_{cid}"):
+                            if not canal:
+                                st.warning("Selecione o canal utilizado.")
+                            else:
+                                mapa = {
+                                    "EM ANDAMENTO":"CLIENTE RESPONDEU",
+                                    "AGUARDANDO CONTATO DO RESPONSÁVEL":"AGUARDANDO CONTATO DO RESPONSÁVEL",
+                                    "RETORNO AGENDADO":"RETORNAR EM OUTRA DATA",
+                                    "REUNIÃO AGENDADA":"REUNIÃO AGENDADA",
+                                    "COTAÇÃO SOLICITADA":"SOLICITOU COTAÇÃO",
+                                    "COTAÇÃO ENVIADA":"COTAÇÃO ENVIADA",
+                                    "PROPOSTA ENVIADA":"PROPOSTA ENVIADA",
+                                    "EM NEGOCIAÇÃO":"EM NEGOCIAÇÃO",
+                                    "FECHADO":"FECHADO",
+                                    "SEM INTERESSE":"SEM INTERESSE",
+                                }
+                                quando = datetime.combine(dprox, hprox)
+                                registrar_contato(cid, date.today(), canal, mapa[etapa], obs, prox, dprox)
+                                if etapa not in {"FECHADO","SEM INTERESSE"}:
+                                    _salvar_proxima_acao_empresa(cid, prox, quando)
+                                st.session_state["andamento_card_aberto"] = None
+                                st.success("Ação salva.")
+                                st.rerun()
+                    else:
+                        dados_t2 = carregar_database(forcar_github=False)
+                        hist = [h for h in dados_t2.get("historico_ticlog", []) if int(h.get("cliente_id",0) or 0)==cid]
+                        h1,h2 = st.columns(2)
+                        with h1:
+                            with st.expander("🕘 Histórico", expanded=False):
+                                if hist:
+                                    st.dataframe(pd.DataFrame(hist)[::-1], use_container_width=True, hide_index=True)
+                                else:
+                                    st.caption("Sem histórico.")
+                        with h2:
+                            with st.expander("✏️ Editar cadastro", expanded=False):
+                                en = st.text_input("Empresa", value=str(r.get("empresa") or ""), key=f"ati_n_{cid}")
+                                ee = st.text_input("Endereço", value=str(r.get("endereco") or ""), key=f"ati_e_{cid}")
+                                et = st.text_input("Telefone", value=str(r.get("telefone") or ""), key=f"ati_t_{cid}")
+                                es = st.text_input("Site", value=str(r.get("site") or ""), key=f"ati_s_{cid}")
+                                if st.button("Salvar cadastro", key=f"ati_save_{cid}", use_container_width=True):
+                                    atualizar_cliente_ticlog_cadastro(cid,en,ee,et,es); st.rerun()
 
-        tels = [
-            str(t).strip()
-            for t in [
-                atual_and.get("telefone1"),
-                atual_and.get("telefone2"),
-                atual_and.get("telefone3")
-            ]
-            if str(t or "").strip()
-            and str(t or "").strip().upper() not in {"NAN","NONE","NÃO TEM","NAO TEM","-"}
-        ]
-        contato_txt = " • ".join(tels) if tels else "Sem telefone válido cadastrado"
-        email_txt = str(atual_and.get("email") or "").strip()
+                        acao = st.pills("Ação", TICLOG_ACOES, selection_mode="single", key=f"ati_acao_{cid}")
+                        resultado = st.pills("Resultado", TICLOG_RESULTADOS, selection_mode="single", key=f"ati_res_{cid}")
+                        obs = st.text_area("Observação", key=f"ati_obs_{cid}", height=80)
+                        prox = st.text_input("Próxima ação", value="Cobrar retorno / novo contato", key=f"ati_prox_{cid}")
+                        padrao = _dt_proxima_24h()
+                        p1,p2 = st.columns(2)
+                        dp = p1.date_input("Data da próxima ação", value=padrao.date(), format="DD/MM/YYYY", key=f"ati_dp_{cid}")
+                        hp = p2.time_input("Horário", value=padrao.time().replace(second=0,microsecond=0), key=f"ati_hp_{cid}")
+                        if st.button("💾 Salvar ação TICLOG", type="primary", use_container_width=True, key=f"ati_save_action_{cid}"):
+                            if not acao or not resultado:
+                                st.warning("Informe ação e resultado.")
+                            else:
+                                registrar_acao_ticlog(cid, acao, resultado, obs, proxima_acao=prox, data_proxima_acao=dp)
+                                st.session_state["andamento_card_aberto"] = None
+                                st.success("Ação TICLOG salva.")
+                                st.rerun()
 
-        linha_contato = f"📞 {contato_txt}"
-        if email_txt:
-            linha_contato += f" &nbsp;&nbsp;|&nbsp;&nbsp; ✉️ {email_txt}"
-
-        st.markdown(
-            f"""
-            <div style="background:#f6f8fb;border:1px solid #e6e9ef;border-radius:10px;
-                        padding:.65rem .8rem;margin:.25rem 0 .35rem 0;font-size:.95rem;">
-                {linha_contato}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-        ultima_obs = str(atual_and.get("observacao_atual") or "").strip()
-        prox_acao = str(atual_and.get("proxima_acao") or "").strip()
-        data_ag = atual_and.get("data_agendamento")
-
-        if ultima_obs:
-            st.caption(f"📝 Última observação: {ultima_obs}")
-        if prox_acao:
-            texto_prox = f"➡️ Próxima ação: {prox_acao}"
-            if pd.notna(data_ag) and str(data_ag).strip() not in {"", "None", "nan"}:
-                texto_prox += f" • {data_br(data_ag)}"
-            st.caption(texto_prox)
-
-        # Histórico e edição, sem ocupar a tela principal.
-        hist_and = contatos[
-            contatos["empresa_id"] == eid
-        ].copy() if not contatos.empty else pd.DataFrame()
-
-        c_hist, c_edit = st.columns(2)
-        with c_hist:
-            if not hist_and.empty:
-                with st.expander("🕘 Histórico", expanded=False):
-                    historico_cliente(contatos, eid)
-        with c_edit:
-            with st.expander("✏️ Editar cadastro", expanded=False):
-                painel_edicao_empresa(atual_and, prefixo="andamento_cadastro")
-
-        st.divider()
-
-        st.markdown("### O que aconteceu agora?")
-
-        etapa = st.pills(
-            "Nova etapa",
-            [
-                "👔 Aguardando responsável",
-                "📅 Retorno agendado",
-                "🔥 Em andamento",
-                "🤝 Reunião agendada",
-                "🧾 Cotação solicitada",
-                "📤 Cotação enviada",
-                "📄 Proposta enviada",
-                "💚 Em negociação",
-                "🏆 Fechado / ganho",
-                "🚫 Sem interesse",
-            ],
-            selection_mode="single",
-            key=f"{prefixo}_etapa"
-        )
-
-        data_nova = None
-
-        canal_and = st.pills(
-            "Canal utilizado nesta interação",
-            ["LIGAÇÃO", "WHATSAPP", "E-MAIL", "REUNIÃO", "VISITA PRESENCIAL", "OUTRO"],
-            selection_mode="single",
-            key=f"{prefixo}_canal"
-        )
-        proxima_acao_and = st.text_input(
-            "➡️ Próxima ação",
-            placeholder="Ex.: ligar novamente, enviar proposta, cobrar retorno...",
-            key=f"{prefixo}_proxima_acao"
-        )
-        usar_data = st.checkbox(
-            "📅 Definir data da próxima ação",
-            value=etapa in {"📅 Retorno agendado", "🤝 Reunião agendada"} if etapa else False,
-            key=f"{prefixo}_usar_data"
-        )
-        if usar_data:
-            data_nova = st.date_input(
-                "Data da próxima ação",
-                value=hoje + timedelta(days=1),
-                min_value=hoje,
-                format="DD/MM/YYYY",
-                key=f"{prefixo}_data"
-            )
-        obs_a = st.text_area(
-            "📝 Observação (opcional)",
-            placeholder="Ex.: cliente pediu proposta revisada; retornar amanhã.",
-            key=f"{prefixo}_obs",
-            height=85
-        )
-
-        st.divider()
-
-        b1, b2, b3 = st.columns([1, 1, 1.8])
-
-        with b1:
-            anterior_bt = st.button(
-                "⬅️ Anterior",
-                use_container_width=True,
-                key=f"{prefixo}_anterior"
-            )
-        with b2:
-            pular_bt = st.button(
-                "⏭️ Pular",
-                use_container_width=True,
-                key=f"{prefixo}_pular"
-            )
-        with b3:
-            salvar_bt = st.button(
-                "💾 Salvar e próximo",
-                type="primary",
-                use_container_width=True,
-                key=f"{prefixo}_salvar"
-            )
-
-        if anterior_bt:
-            st.session_state["andamento_pos"] = (pos - 1) % total_and
-            st.rerun()
-
-        if pular_bt:
-            # Navega sem registrar contato, sem alterar status e sem gravar no banco.
-            st.session_state["andamento_pos"] = (pos + 1) % total_and
-            st.rerun()
-
-        if salvar_bt:
-            if not canal_and:
-                st.warning("Selecione o canal utilizado nesta interação.")
-            elif not etapa:
-                st.warning("Selecione a nova etapa.")
-            else:
-                mapa_result = {
-                    "👔 Aguardando responsável": "AGUARDANDO CONTATO DO RESPONSÁVEL",
-                    "📅 Retorno agendado": "RETORNAR EM OUTRA DATA",
-                    "🔥 Em andamento": "CLIENTE RESPONDEU",
-                    "🤝 Reunião agendada": "REUNIÃO AGENDADA",
-                    "🧾 Cotação solicitada": "SOLICITOU COTAÇÃO",
-                    "📤 Cotação enviada": "COTAÇÃO ENVIADA",
-                    "📄 Proposta enviada": "PROPOSTA ENVIADA",
-                    "💚 Em negociação": "EM NEGOCIAÇÃO",
-                    "🏆 Fechado / ganho": "FECHADO",
-                    "🚫 Sem interesse": "SEM INTERESSE",
-                }
-
-                finaliza = etapa in {"🏆 Fechado / ganho", "🚫 Sem interesse"}
-
-                with st.spinner("Salvando andamento..."):
-                    registrar_contato(
-                        eid,
-                        hoje,
-                        canal_and,
-                        mapa_result[etapa],
-                        obs_a,
-                        proxima_acao_and or etapa,
-                        data_nova
-                    )
-
-                # Se saiu do menu, o próximo ocupou a mesma posição.
-                # Se permaneceu, avança uma posição.
-                if finaliza:
-                    st.session_state["andamento_pos"] = min(pos, max(total_and - 2, 0))
-                else:
-                    st.session_state["andamento_pos"] = (pos + 1) % total_and
-
-                st.session_state["flash_andamento"] = f"✅ {atual_and['nome']}: andamento salvo."
-                st.rerun()
-
-
-    # Clientes TICLOG são gerenciados exclusivamente no menu Clientes TICLOG.
-
-    # Inclusão direta de oportunidade que não veio da fila de prospecção.
     st.divider()
     with st.expander("➕ Incluir cliente direto em andamento", expanded=False):
-        st.caption(
-            "Use para clientes que já estão em negociação/acompanhamento e não precisam passar pela Fila de contatos."
-        )
-
-        with st.form("form_cliente_direto_andamento", clear_on_submit=True):
-            nome_direto = st.text_input(
-                "Nome / Empresa *",
-                placeholder="Nome da empresa ou cliente"
-            )
-
-            c1, c2 = st.columns(2)
-            documento_direto = c1.text_input(
-                "CPF/CNPJ",
-                placeholder="Opcional"
-            )
-            telefone_direto = c2.text_input(
-                "Telefone",
-                placeholder="(00) 00000-0000"
-            )
-
-            c3, c4 = st.columns([1.2, 1])
-            email_direto = c3.text_input(
-                "E-mail",
-                placeholder="Opcional"
-            )
-            status_direto_ui = c4.selectbox(
-                "Status inicial *",
-                [
-                    "👔 Aguardando responsável",
-                    "📅 Retorno agendado",
-                    "🔥 Em andamento",
-                    "🤝 Reunião agendada",
-                    "🧾 Cotação solicitada",
-                    "📤 Cotação enviada",
-                    "📄 Proposta enviada",
-                    "💚 Em negociação",
-                ]
-            )
-
-            salvar_direto = st.form_submit_button(
-                "➕ Incluir em Clientes em andamento",
-                type="primary",
-                use_container_width=True
-            )
-
-        if salvar_direto:
-            erros = []
-
-            if not str(nome_direto or "").strip():
-                erros.append("Informe o nome da empresa/cliente.")
-
-            if not tem_identificador_util(
-                documento_direto,
-                [telefone_direto],
-                email_direto
-            ):
-                erros.append("Informe pelo menos CPF/CNPJ, telefone ou e-mail.")
-
-            if documento_direto and not documento_valido(documento_direto):
-                erros.append("O CPF/CNPJ informado é inválido.")
-
-            if telefone_direto and len(somente_digitos(telefone_direto)) not in (10, 11):
-                erros.append("O telefone deve ter DDD e 10 ou 11 dígitos.")
-
-            if email_direto and not email_valido(email_direto):
-                erros.append("O e-mail informado é inválido.")
-
-            if eh_duplicado(
-                documento_direto,
-                [telefone_direto],
-                empresas,
-                email_direto
-            ):
-                erros.append("Já existe cliente com este CPF/CNPJ, telefone ou e-mail.")
-
-            mapa_status_direto = {
-                "👔 Aguardando responsável": "AGUARDANDO CONTATO DO RESPONSÁVEL",
-                "📅 Retorno agendado": "RETORNO AGENDADO",
-                "🔥 Em andamento": "EM ANDAMENTO",
-                "🤝 Reunião agendada": "REUNIÃO AGENDADA",
-                "🧾 Cotação solicitada": "COTAÇÃO SOLICITADA",
-                "📤 Cotação enviada": "COTAÇÃO ENVIADA",
-                "📄 Proposta enviada": "PROPOSTA ENVIADA",
-                "💚 Em negociação": "EM NEGOCIAÇÃO",
-            }
-
-            if erros:
-                for erro in erros:
-                    st.error(erro)
+        st.caption("Use para clientes que já estão em negociação e não precisam passar pela fila.")
+        with st.form("form_cliente_direto_v16", clear_on_submit=True):
+            nome = st.text_input("Nome / Empresa *")
+            a,b = st.columns(2)
+            doc = a.text_input("CPF/CNPJ")
+            tel = b.text_input("Telefone")
+            email = st.text_input("E-mail")
+            salvar = st.form_submit_button("➕ Incluir", type="primary", use_container_width=True)
+        if salvar:
+            if not str(nome or "").strip():
+                st.error("Informe o nome.")
             else:
-                with st.spinner("Incluindo cliente em andamento..."):
-                    salvar_empresa(
-                        documento_direto,
-                        nome_direto,
-                        [telefone_direto, "", ""],
-                        mapa_status_direto[status_direto_ui],
-                        "",
-                        "INCLUSÃO DIRETA EM ANDAMENTO",
-                        email_direto
-                    )
-
-                st.session_state["flash_andamento"] = (
-                    f"✅ {str(nome_direto).strip().upper()} incluído diretamente em Clientes em andamento."
-                )
+                salvar_empresa(doc,nome,[tel,"",""],"EM ANDAMENTO","","Cobrar retorno em 24h",email)
+                st.success("Cliente incluído.")
                 st.rerun()
 
 
@@ -3779,14 +3665,18 @@ elif menu == "🏢 Clientes TICLOG":
 
         total = len(df_t)
         ativos_qtd = len(ativos_t)
-        visitas_qtd = int((ativos_t["status"] == "VISITA AGENDADA").sum()) if not ativos_t.empty else 0
-        sem_contato_qtd = int((ativos_t["status"] == "SEM CONTATO").sum()) if not ativos_t.empty else 0
+        visitas_status = int((df_t["status"] == "VISITA REALIZADA").sum()) if not df_t.empty else 0
+        visitas_hist = sum(1 for h in historico_t if str(h.get("resultado") or "").upper() == "VISITA PRESENCIAL REALIZADA")
+        visitas_qtd = max(visitas_status, visitas_hist)
+        contatos_realizados_t = len(historico_t)
+        avancos_t = {"EM CONTATO","RETORNAR CONTATO","VISITA REALIZADA","INTERESSADO","EM ACOMPANHAMENTO"}
+        qtd_avanco_t = int(df_t["status"].isin(avancos_t).sum()) if not df_t.empty else 0
 
         q1,q2,q3,q4 = st.columns(4)
         q1.metric("Carteira TICLOG", total)
-        q2.metric("Ativos", ativos_qtd)
-        q3.metric("Sem contato", sem_contato_qtd)
-        q4.metric("Visitas realizadas", visitas_qtd)
+        q2.metric("Contatos realizados", contatos_realizados_t)
+        q3.metric("Visitas realizadas", visitas_qtd)
+        q4.metric("Clientes com avanço", qtd_avanco_t)
 
         status_tic_andamento = {"EM CONTATO","RETORNAR CONTATO","VISITA AGENDADA","VISITA REALIZADA","INTERESSADO","EM ACOMPANHAMENTO"}
         tic_em_andamento = ativos_t[ativos_t["status"].isin(status_tic_andamento)].copy() if not ativos_t.empty else pd.DataFrame()
@@ -3796,10 +3686,60 @@ elif menu == "🏢 Clientes TICLOG":
             tic_em_andamento["prox_dt"] = pd.to_datetime(tic_em_andamento["data_proxima_acao"], errors="coerce")
             tic_em_andamento = tic_em_andamento.sort_values(["prox_dt","empresa"], na_position="first")
             for _, tc in tic_em_andamento.iterrows():
+                tid_card = int(tc["id"])
                 prox_txt = str(tc.get("proxima_acao") or "").strip() or "Definir próxima ação"
-                prox_data = data_br(tc.get("data_proxima_acao")) if tc.get("data_proxima_acao") else ""
-                html = f'<div class="pro-card"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div class="pro-card-title">{tc.get("empresa") or "-"}</div><span class="badge-green">{tc.get("status") or "-"}</span></div><div class="pro-card-meta"><b>Última ação:</b> {tc.get("ultima_acao") or "-"}<br><b>Próxima ação:</b> {prox_txt}{(" • "+prox_data) if prox_data else ""}<br>📞 {tc.get("telefone") or "Sem telefone"} • 📍 {tc.get("endereco") or "-"}</div></div>'
-                st.markdown(html, unsafe_allow_html=True)
+                badge_t, classe_t = _badge_24h(tc.get("data_proxima_acao"))
+                aberto_t = st.session_state.get("tic_card_aberto") == tid_card
+
+                with st.container(border=True):
+                    c1,c2 = st.columns([5,1])
+                    with c1:
+                        st.markdown(f"### {tc.get('empresa') or '-'}")
+                        st.caption(f"Última ação: {tc.get('ultima_acao') or '-'} • Próxima ação: {prox_txt}")
+                        st.caption(f"📞 {tc.get('telefone') or 'Sem telefone'} • 📍 {tc.get('endereco') or '-'}")
+                    with c2:
+                        st.markdown(f'<span class="{classe_t}">{badge_t}</span>', unsafe_allow_html=True)
+
+                    if st.button("✏️ Registrar / editar ação" if not aberto_t else "✖️ Fechar card",
+                                 key=f"tic_card_btn_{tid_card}", use_container_width=True):
+                        st.session_state["tic_card_aberto"] = None if aberto_t else tid_card
+                        st.rerun()
+
+                    if aberto_t:
+                        hist_card = [h for h in historico_t if int(h.get("cliente_id",0) or 0)==tid_card]
+                        h1,h2 = st.columns(2)
+                        with h1:
+                            with st.expander("🕘 Histórico", expanded=False):
+                                if hist_card:
+                                    st.dataframe(pd.DataFrame(hist_card)[::-1], use_container_width=True, hide_index=True)
+                                else:
+                                    st.caption("Sem histórico.")
+                        with h2:
+                            with st.expander("✏️ Editar cadastro", expanded=False):
+                                en = st.text_input("Empresa", value=str(tc.get("empresa") or ""), key=f"ticc_n_{tid_card}")
+                                ee = st.text_input("Endereço", value=str(tc.get("endereco") or ""), key=f"ticc_e_{tid_card}")
+                                et = st.text_input("Telefone", value=str(tc.get("telefone") or ""), key=f"ticc_t_{tid_card}")
+                                es = st.text_input("Site", value=str(tc.get("site") or ""), key=f"ticc_s_{tid_card}")
+                                if st.button("Salvar cadastro", key=f"ticc_save_{tid_card}", use_container_width=True):
+                                    atualizar_cliente_ticlog_cadastro(tid_card,en,ee,et,es); st.rerun()
+
+                        acao_c = st.pills("Ação", TICLOG_ACOES, selection_mode="single", key=f"ticc_a_{tid_card}")
+                        res_c = st.pills("Resultado", TICLOG_RESULTADOS, selection_mode="single", key=f"ticc_r_{tid_card}")
+                        obs_c = st.text_area("Observação", key=f"ticc_o_{tid_card}", height=80)
+                        prox_c = st.text_input("Próxima ação", value="Cobrar retorno / novo contato", key=f"ticc_p_{tid_card}")
+                        pad = _dt_proxima_24h()
+                        d1,d2 = st.columns(2)
+                        dp_c = d1.date_input("Data da próxima ação", value=pad.date(), format="DD/MM/YYYY", key=f"ticc_d_{tid_card}")
+                        hp_c = d2.time_input("Horário", value=pad.time().replace(second=0,microsecond=0), key=f"ticc_h_{tid_card}")
+
+                        if st.button("💾 Salvar ação", type="primary", use_container_width=True, key=f"ticc_savea_{tid_card}"):
+                            if not acao_c or not res_c:
+                                st.warning("Informe ação e resultado.")
+                            else:
+                                registrar_acao_ticlog(tid_card, acao_c, res_c, obs_c, proxima_acao=prox_c, data_proxima_acao=dp_c)
+                                st.session_state["tic_card_aberto"] = None
+                                st.success("Ação salva.")
+                                st.rerun()
 
         # Prioridade: visita mais próxima -> sem contato -> demais ativos.
         if not ativos_t.empty:
@@ -4033,410 +3973,122 @@ elif menu == "🏢 Clientes TICLOG":
 
 elif menu == "📅 Agenda":
     st.markdown("## 📅 Agenda")
-    st.caption("Visitas, reuniões e compromissos comerciais em uma visão simples.")
+    st.caption("Próximos compromissos e histórico já aberto. O resultado de visitas/reuniões alimenta o acompanhamento comercial.")
 
     dados_ag = carregar_database(forcar_github=False)
     agenda = dados_ag.get("agenda", []) or []
     hoje_ag = date.today()
-
     agenda_df = pd.DataFrame(agenda)
+
     if not agenda_df.empty:
+        for c in ["id","data","horario","tipo","cliente_compromisso","local","status","observacao"]:
+            if c not in agenda_df.columns: agenda_df[c] = None
         agenda_df["data_dt"] = pd.to_datetime(agenda_df["data"], errors="coerce").dt.date
         agenda_df["horario_ord"] = agenda_df["horario"].fillna("")
-        agenda_ativos = agenda_df[~agenda_df["status"].isin(["CANCELADO"])].copy()
     else:
-        agenda_ativos = pd.DataFrame()
+        agenda_df = pd.DataFrame(columns=["id","data","horario","tipo","cliente_compromisso","local","status","observacao","data_dt","horario_ord"])
 
-    cores_agenda = {
-        "VISITA": "#e8f1ff",
-        "VISITA TICLOG": "#dff7e8",
-        "REUNIÃO": "#f3e8ff",
-        "EVENTO": "#fff3d6",
-        "RETORNO": "#e8fff2",
-        "OUTRO": "#f2f4f7",
-    }
+    futuros = agenda_df[(agenda_df["data_dt"] >= hoje_ag) & (~agenda_df["status"].isin(["CANCELADO"]))].copy()
+    passados = agenda_df[agenda_df["data_dt"] < hoje_ag].copy()
 
-    # Cards rápidos
-    qtd_hoje = 0
-    qtd_amanha = 0
-    qtd_7d = 0
-    if not agenda_ativos.empty:
-        qtd_hoje = int((agenda_ativos["data_dt"] == hoje_ag).sum())
-        qtd_amanha = int((agenda_ativos["data_dt"] == hoje_ag + timedelta(days=1)).sum())
-        qtd_7d = int((
-            (agenda_ativos["data_dt"] >= hoje_ag) &
-            (agenda_ativos["data_dt"] <= hoje_ag + timedelta(days=6))
-        ).sum())
+    qtd_hoje = int((futuros["data_dt"] == hoje_ag).sum()) if not futuros.empty else 0
+    qtd_amanha = int((futuros["data_dt"] == hoje_ag+timedelta(days=1)).sum()) if not futuros.empty else 0
+    qtd_7 = int(((futuros["data_dt"] >= hoje_ag) & (futuros["data_dt"] <= hoje_ag+timedelta(days=6))).sum()) if not futuros.empty else 0
 
-    a1,a2,a3 = st.columns(3)
-    a1.metric("📍 Hoje", qtd_hoje)
-    a2.metric("🌤️ Amanhã", qtd_amanha)
-    a3.metric("📆 Próximos 7 dias", qtd_7d)
-
-    # Próximos compromissos em cards, mesmo que estejam a semanas/meses de distância.
-    if not agenda_ativos.empty:
-        proximos_cards = agenda_ativos[
-            agenda_ativos["data_dt"] >= hoje_ag
-        ].sort_values(["data_dt","horario_ord","id"]).head(4)
-    else:
-        proximos_cards = pd.DataFrame()
+    c1,c2,c3 = st.columns(3)
+    c1.metric("📍 Hoje", qtd_hoje)
+    c2.metric("🌤️ Amanhã", qtd_amanha)
+    c3.metric("📆 Próximos 7 dias", qtd_7)
 
     st.markdown("### Próximos compromissos")
-    if proximos_cards.empty:
-        st.caption("Nenhum compromisso futuro programado.")
+    if futuros.empty:
+        st.info("Nenhum compromisso futuro programado.")
     else:
-        colunas_cards = st.columns(min(4, len(proximos_cards)))
-        for idx, (_, item) in enumerate(proximos_cards.iterrows()):
-            data_card = item.get("data_dt")
-            data_txt = data_card.strftime("%d/%m/%Y") if pd.notna(data_card) else "-"
-            hora_txt = str(item.get("horario") or "--:--")
-            tipo_txt = str(item.get("tipo") or "OUTRO").upper()
-            titulo_txt = str(item.get("cliente_compromisso") or "Compromisso")
-            local_txt = str(item.get("local") or "Local não informado")
-            fundo = cores_agenda.get(tipo_txt, "#f2f4f7")
-            with colunas_cards[idx]:
-                st.markdown(
-                    f"""
-                    <div style="background:{fundo};border:1px solid #e3e7ee;border-radius:14px;
-                                padding:.9rem;min-height:150px;">
-                        <div style="font-size:.78rem;color:#667085;font-weight:700;">
-                            {data_txt} • {hora_txt}
-                        </div>
-                        <div style="font-size:1rem;font-weight:800;margin-top:.35rem;">
-                            {titulo_txt}
-                        </div>
-                        <div style="font-size:.82rem;color:#5f6878;margin-top:.35rem;">
-                            {tipo_txt}
-                        </div>
-                        <div style="font-size:.82rem;color:#5f6878;margin-top:.15rem;">
-                            📍 {local_txt}
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+        futuros = futuros.sort_values(["data_dt","horario_ord","id"])
+        for _, item in futuros.iterrows():
+            with st.container(border=True):
+                d = item["data_dt"].strftime("%d/%m/%Y") if item.get("data_dt") else "-"
+                st.markdown(f"**{d} • {item.get('horario') or '--:--'} — {item.get('cliente_compromisso') or 'Compromisso'}**")
+                st.caption(f"{item.get('tipo') or 'OUTRO'} • 📍 {item.get('local') or '-'} • {item.get('status') or 'PROGRAMADO'}")
+                if str(item.get("observacao") or "").strip():
+                    st.caption(f"📝 {item.get('observacao')}")
 
-                eid_card = int(item["id"])
-                cb1, cb2 = st.columns(2)
-                with cb1:
-                    if st.button("✏️ Editar", key=f"agenda_card_edit_{eid_card}", use_container_width=True):
-                        st.session_state["agenda_editar_id"] = eid_card
-                        st.session_state.pop("agenda_excluir_id", None)
-                        st.rerun()
-                with cb2:
-                    if st.button("🗑️ Excluir", key=f"agenda_card_del_{eid_card}", use_container_width=True):
-                        st.session_state["agenda_excluir_id"] = eid_card
-                        st.session_state.pop("agenda_editar_id", None)
-                        st.rerun()
+                ec1,ec2 = st.columns(2)
+                if ec1.button("✏️ Editar", key=f"ag_fut_edit_{int(item['id'])}", use_container_width=True):
+                    st.session_state["agenda_editar_id"] = int(item["id"]); st.rerun()
+                if ec2.button("🗑️ Excluir", key=f"ag_fut_del_{int(item['id'])}", use_container_width=True):
+                    excluir_compromisso_agenda(int(item["id"])); st.rerun()
 
-    # Confirmação de exclusão
-    excluir_id = st.session_state.get("agenda_excluir_id")
-    if excluir_id:
-        item_exc = next(
-            (a for a in agenda if int(a.get("id", 0) or 0) == int(excluir_id)),
-            None
-        )
-        if item_exc:
-            st.warning(
-                f"Excluir o compromisso **{item_exc.get('cliente_compromisso') or 'Compromisso'}** "
-                f"de {pd.to_datetime(item_exc.get('data'), errors='coerce').strftime('%d/%m/%Y') if pd.notna(pd.to_datetime(item_exc.get('data'), errors='coerce')) else item_exc.get('data')}?"
-            )
-            ex1, ex2 = st.columns(2)
-            with ex1:
-                if st.button("✅ Sim, excluir", type="primary", key="agenda_confirmar_exclusao", use_container_width=True):
-                    excluir_compromisso_agenda(int(excluir_id))
-                    st.session_state.pop("agenda_excluir_id", None)
-                    st.success("Compromisso excluído.")
-                    st.rerun()
-            with ex2:
-                if st.button("Cancelar", key="agenda_cancelar_exclusao", use_container_width=True):
-                    st.session_state.pop("agenda_excluir_id", None)
-                    st.rerun()
-
-    # Edição do compromisso selecionado
-    editar_id = st.session_state.get("agenda_editar_id")
-    if editar_id:
-        item_ed = next(
-            (a for a in agenda if int(a.get("id", 0) or 0) == int(editar_id)),
-            None
-        )
-        if item_ed:
-            st.markdown("### ✏️ Editar compromisso")
-            data_ed_atual = pd.to_datetime(item_ed.get("data"), errors="coerce")
-            data_ed_default = data_ed_atual.date() if pd.notna(data_ed_atual) else hoje_ag
-
-            hora_txt_atual = str(item_ed.get("horario") or "09:00")
-            try:
-                hora_ed_default = datetime.strptime(hora_txt_atual, "%H:%M").time()
-            except Exception:
-                hora_ed_default = datetime.now().replace(second=0, microsecond=0).time()
-
-            tipos_agenda = ["VISITA","VISITA TICLOG","REUNIÃO","EVENTO","RETORNO","OUTRO"]
-            tipo_atual = str(item_ed.get("tipo") or "OUTRO").upper()
-            if tipo_atual not in tipos_agenda:
-                tipos_agenda.append(tipo_atual)
-
-            status_agenda = ["PROGRAMADO","REALIZADO","CANCELADO"]
-            status_atual = str(item_ed.get("status") or "PROGRAMADO").upper()
-            if status_atual not in status_agenda:
-                status_agenda.append(status_atual)
-
-            with st.form(f"form_editar_agenda_{editar_id}"):
-                e1,e2,e3 = st.columns([1,1,1.2])
-                ed_data = e1.date_input("Data *", value=data_ed_default, format="DD/MM/YYYY")
-                ed_hora = e2.time_input("Horário *", value=hora_ed_default)
-                ed_tipo = e3.selectbox(
-                    "Tipo *",
-                    tipos_agenda,
-                    index=tipos_agenda.index(tipo_atual)
-                )
-                ed_cliente = st.text_input(
-                    "Cliente / Compromisso *",
-                    value=str(item_ed.get("cliente_compromisso") or "")
-                )
-                e4,e5 = st.columns([1.2,1])
-                ed_local = e4.text_input("Cidade / Local", value=str(item_ed.get("local") or ""))
-                ed_status = e5.selectbox(
-                    "Status",
-                    status_agenda,
-                    index=status_agenda.index(status_atual)
-                )
-                ed_obs = st.text_input("Observação", value=str(item_ed.get("observacao") or ""))
-
-                ec1, ec2 = st.columns(2)
-                salvar_ed = ec1.form_submit_button("💾 Salvar alterações", type="primary", use_container_width=True)
-                cancelar_ed = ec2.form_submit_button("Cancelar edição", use_container_width=True)
-
-            if salvar_ed:
-                if not ed_cliente.strip():
-                    st.error("Informe o cliente ou compromisso.")
-                else:
-                    atualizar_compromisso_agenda(
-                        int(editar_id),
-                        ed_data,
-                        ed_hora,
-                        ed_tipo,
-                        ed_cliente,
-                        ed_local,
-                        ed_obs,
-                        ed_status
-                    )
-                    st.session_state.pop("agenda_editar_id", None)
-                    st.success("Compromisso atualizado.")
-                    st.rerun()
-
-            if cancelar_ed:
-                st.session_state.pop("agenda_editar_id", None)
-                st.rerun()
-
-    st.markdown("### Compromissos de hoje")
-    if agenda_ativos.empty:
-        agenda_hoje = pd.DataFrame()
-    else:
-        agenda_hoje = agenda_ativos[
-            agenda_ativos["data_dt"] == hoje_ag
-        ].sort_values(["horario_ord","id"])
-
-    if agenda_hoje.empty:
-        st.info("Nenhum compromisso programado para hoje.")
-    else:
-        for _, item in agenda_hoje.iterrows():
-            tipo_item = str(item.get("tipo") or "OUTRO").upper()
-            fundo = cores_agenda.get(tipo_item, "#f2f4f7")
-            horario = str(item.get("horario") or "--:--")
-            titulo = str(item.get("cliente_compromisso") or "Compromisso")
-            local = str(item.get("local") or "Local não informado")
-            status_item = str(item.get("status") or "PROGRAMADO")
-            st.markdown(
-                f"""
-                <div style="background:{fundo};border:1px solid #e3e7ee;border-radius:14px;
-                            padding:.8rem 1rem;margin:.35rem 0;">
-                    <div style="font-size:1.05rem;font-weight:800;">{horario} • {titulo}</div>
-                    <div style="font-size:.86rem;color:#5f6878;margin-top:.2rem;">
-                        {tipo_item} • {local} • {status_item}
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            if str(item.get("observacao") or "").strip():
-                st.caption(f"📝 {item.get('observacao')}")
-
-            c1,c2,c3 = st.columns(3)
-            with c1:
-                if status_item != "REALIZADO":
-                    if st.button("✅ Realizado", key=f"agenda_realizado_{int(item['id'])}", use_container_width=True):
-                        atualizar_status_agenda(int(item["id"]), "REALIZADO")
-                        st.rerun()
-            with c2:
-                if st.button("✏️ Editar", key=f"agenda_hoje_edit_{int(item['id'])}", use_container_width=True):
-                    st.session_state["agenda_editar_id"] = int(item["id"])
-                    st.session_state.pop("agenda_excluir_id", None)
-                    st.rerun()
-            with c3:
-                if st.button("🗑️ Excluir", key=f"agenda_hoje_del_{int(item['id'])}", use_container_width=True):
-                    st.session_state["agenda_excluir_id"] = int(item["id"])
-                    st.session_state.pop("agenda_editar_id", None)
-                    st.rerun()
-
-    with st.expander("➕ Novo compromisso", expanded=(qtd_hoje == 0 and len(agenda) == 0)):
-        with st.form("novo_compromisso_agenda", clear_on_submit=True):
-            c1,c2,c3 = st.columns([1,1,1.2])
-            data_comp = c1.date_input("Data *", value=hoje_ag, format="DD/MM/YYYY")
-            hora_comp = c2.time_input(
-                "Horário *",
-                value=datetime.now().replace(second=0, microsecond=0).time()
-            )
-            tipo_comp = c3.selectbox(
-                "Tipo *",
-                ["VISITA","REUNIÃO","EVENTO","RETORNO","OUTRO"]
-            )
-            cliente_comp = st.text_input(
-                "Cliente / Compromisso *",
-                placeholder="Ex.: Visita Della Via"
-            )
-            c4,c5 = st.columns([1.2,1])
-            local_comp = c4.text_input("Cidade / Local", placeholder="Ex.: Campinas")
-            obs_comp = c5.text_input("Observação", placeholder="Opcional")
-
-            salvar_agenda = st.form_submit_button(
-                "💾 Salvar compromisso",
-                type="primary",
-                use_container_width=True
-            )
-
-        if salvar_agenda:
+    with st.expander("➕ Novo compromisso", expanded=False):
+        with st.form("novo_compromisso_agenda_v16", clear_on_submit=True):
+            a,b,c = st.columns([1,1,1.2])
+            data_comp = a.date_input("Data *", value=hoje_ag, format="DD/MM/YYYY")
+            hora_comp = b.time_input("Horário *", value=datetime.now().replace(second=0,microsecond=0).time())
+            tipo_comp = c.selectbox("Tipo *", ["VISITA","REUNIÃO","EVENTO","RETORNO","OUTRO"])
+            cliente_comp = st.text_input("Cliente / Compromisso *")
+            l1,l2 = st.columns([1.2,1])
+            local_comp = l1.text_input("Cidade / Local")
+            obs_comp = l2.text_input("Observação")
+            save = st.form_submit_button("💾 Salvar compromisso", type="primary", use_container_width=True)
+        if save:
             if not str(cliente_comp or "").strip():
                 st.error("Informe o cliente ou compromisso.")
             else:
-                salvar_compromisso_agenda(
-                    data_comp,
-                    hora_comp.strftime("%H:%M"),
-                    tipo_comp,
-                    cliente_comp,
-                    local_comp,
-                    obs_comp
-                )
-                st.success("Compromisso salvo na agenda.")
-                st.rerun()
+                salvar_compromisso_agenda(data_comp,hora_comp.strftime("%H:%M"),tipo_comp,cliente_comp,local_comp,obs_comp)
+                st.success("Compromisso salvo."); st.rerun()
 
-    with st.expander("📋 Próximos compromissos", expanded=False):
-        if agenda_ativos.empty:
-            st.info("Agenda vazia.")
-        else:
-            futuros = agenda_ativos[
-                agenda_ativos["data_dt"] >= hoje_ag
-            ].sort_values(["data_dt","horario_ord"])
-            cols = ["data","horario","tipo","cliente_compromisso","local","status","observacao"]
-            vis = futuros[cols].copy()
-            vis["data"] = pd.to_datetime(vis["data"], errors="coerce").dt.strftime("%d/%m/%Y")
-            vis.columns = ["Data","Horário","Tipo","Cliente / Compromisso","Local","Status","Observação"]
-            st.dataframe(vis, use_container_width=True, hide_index=True)
-            st.download_button(
-                "⬇️ Exportar agenda",
-                data=excel_bytes_dataframe(vis, "Agenda"),
-                file_name=f"agenda_comercial_{date.today().strftime('%d-%m-%Y')}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                use_container_width=True
-            )
+    st.markdown("### 📚 Agendas anteriores")
+    st.caption("Tudo que já passou fica visível aqui. Atualize o resultado para alimentar o histórico e Clientes em andamento.")
 
-    # Histórico permanente: compromissos passados nunca somem da consulta.
-    with st.expander("📚 Agendas anteriores", expanded=False):
-        if agenda_df.empty:
-            st.info("Nenhum compromisso histórico.")
-        else:
-            passados = agenda_df[
-                agenda_df["data_dt"] < hoje_ag
-            ].copy()
+    if passados.empty:
+        st.info("Ainda não há compromissos anteriores.")
+    else:
+        passados = passados.sort_values(["data_dt","horario_ord"], ascending=[False,False])
+        for _, item in passados.iterrows():
+            aid = int(item["id"])
+            aberto = st.session_state.get("agenda_passado_aberto") == aid
+            with st.container(border=True):
+                d = item["data_dt"].strftime("%d/%m/%Y") if item.get("data_dt") else "-"
+                c1,c2 = st.columns([5,1])
+                with c1:
+                    st.markdown(f"**{d} • {item.get('horario') or '--:--'} — {item.get('cliente_compromisso') or 'Compromisso'}**")
+                    st.caption(f"{item.get('tipo') or 'OUTRO'} • 📍 {item.get('local') or '-'} • Status: {item.get('status') or 'PROGRAMADO'}")
+                with c2:
+                    if st.button("Editar" if not aberto else "Fechar", key=f"ag_pass_open_{aid}", use_container_width=True):
+                        st.session_state["agenda_passado_aberto"] = None if aberto else aid
+                        st.rerun()
 
-            if passados.empty:
-                st.caption("Ainda não há compromissos passados.")
-            else:
-                min_hist = passados["data_dt"].dropna().min()
-                max_hist = passados["data_dt"].dropna().max()
+                if aberto:
+                    status = st.selectbox("Status", ["REALIZADO","NÃO REALIZADO","CANCELADO","REMARCAR"],
+                                          index=0 if str(item.get("status") or "")=="REALIZADO" else 1,
+                                          key=f"ag_status_{aid}")
+                    resultado = st.text_input("Como foi / resultado", value=str(item.get("resultado") or ""), key=f"ag_res_{aid}")
+                    obsr = st.text_area("Observação", value=str(item.get("observacao_resultado") or item.get("observacao") or ""), key=f"ag_obsr_{aid}", height=80)
+                    levar = st.checkbox("Levar / manter em Clientes em andamento", value=status=="REALIZADO", key=f"ag_levar_{aid}")
 
-                h1,h2,h3 = st.columns(3)
-                hist_de = h1.date_input(
-                    "De",
-                    value=min_hist,
-                    max_value=hoje_ag,
-                    format="DD/MM/YYYY",
-                    key="agenda_hist_de"
-                )
-                hist_ate = h2.date_input(
-                    "Até",
-                    value=max_hist,
-                    max_value=hoje_ag,
-                    format="DD/MM/YYYY",
-                    key="agenda_hist_ate"
-                )
-                tipos_hist = sorted(passados["tipo"].dropna().astype(str).unique().tolist())
-                tipo_hist = h3.selectbox(
-                    "Tipo",
-                    ["TODOS"] + tipos_hist,
-                    key="agenda_hist_tipo"
-                )
+                    pad = _dt_proxima_24h()
+                    prox = st.text_input("Próxima ação", value=str(item.get("proxima_acao") or "Cobrar retorno / novo contato"), key=f"ag_prox_{aid}")
+                    p1,p2 = st.columns(2)
+                    dp = p1.date_input("Data da próxima ação", value=pad.date(), format="DD/MM/YYYY", key=f"ag_dp_{aid}")
+                    hp = p2.time_input("Horário", value=pad.time().replace(second=0,microsecond=0), key=f"ag_hp_{aid}")
 
-                hist_f = passados[
-                    (passados["data_dt"] >= hist_de) &
-                    (passados["data_dt"] <= hist_ate)
-                ].copy()
-                if tipo_hist != "TODOS":
-                    hist_f = hist_f[hist_f["tipo"] == tipo_hist].copy()
+                    if st.button("💾 Salvar resultado", type="primary", use_container_width=True, key=f"ag_save_{aid}"):
+                        quando = datetime.combine(dp,hp)
+                        _agenda_integrar_cliente(aid,status,resultado,obsr,prox,quando,levar)
+                        st.session_state["agenda_passado_aberto"] = None
+                        st.success("Agenda atualizada e integração aplicada.")
+                        st.rerun()
 
-                busca_hist = st.text_input(
-                    "Pesquisar cliente/compromisso ou local",
-                    key="agenda_hist_busca"
-                ).strip().lower()
-                if busca_hist:
-                    hist_f = hist_f[
-                        hist_f["cliente_compromisso"].fillna("").astype(str).str.lower().str.contains(busca_hist, regex=False)
-                        | hist_f["local"].fillna("").astype(str).str.lower().str.contains(busca_hist, regex=False)
-                    ]
+    if not agenda_df.empty:
+        vis_ag = agenda_df[["data","horario","tipo","cliente_compromisso","local","status","observacao"]].copy()
+        vis_ag["data"] = pd.to_datetime(vis_ag["data"], errors="coerce").dt.strftime("%d/%m/%Y")
+        vis_ag.columns = ["Data","Horário","Tipo","Cliente / Compromisso","Local","Status","Observação"]
+        st.download_button("⬇️ Exportar agenda completa",
+            excel_bytes_dataframe(vis_ag,"Agenda"),
+            file_name=f"agenda_comercial_{date.today().strftime('%d-%m-%Y')}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True)
 
-                hist_f = hist_f.sort_values(["data_dt","horario_ord"], ascending=[False,False])
-
-                vis_hist = hist_f[
-                    ["id","data","horario","tipo","cliente_compromisso","local","status","observacao"]
-                ].copy()
-                vis_hist["data"] = pd.to_datetime(vis_hist["data"], errors="coerce").dt.strftime("%d/%m/%Y")
-                vis_hist.columns = [
-                    "ID","Data","Horário","Tipo","Cliente / Compromisso",
-                    "Local","Status","Observação"
-                ]
-                st.dataframe(vis_hist, use_container_width=True, hide_index=True)
-
-                if not hist_f.empty:
-                    mapa_hist = {
-                        f"{pd.to_datetime(r['data'], errors='coerce').strftime('%d/%m/%Y')} • "
-                        f"{r.get('horario') or '--:--'} • {r.get('cliente_compromisso') or 'Compromisso'} "
-                        f"[ID {int(r['id'])}]": int(r["id"])
-                        for _, r in hist_f.iterrows()
-                    }
-                    selecionado_hist = st.selectbox(
-                        "Selecionar compromisso histórico",
-                        list(mapa_hist.keys()),
-                        key="agenda_hist_selecao"
-                    )
-                    hc1,hc2 = st.columns(2)
-                    with hc1:
-                        if st.button("✏️ Editar histórico", key="agenda_hist_editar", use_container_width=True):
-                            st.session_state["agenda_editar_id"] = mapa_hist[selecionado_hist]
-                            st.session_state.pop("agenda_excluir_id", None)
-                            st.rerun()
-                    with hc2:
-                        if st.button("🗑️ Excluir histórico", key="agenda_hist_excluir", use_container_width=True):
-                            st.session_state["agenda_excluir_id"] = mapa_hist[selecionado_hist]
-                            st.session_state.pop("agenda_editar_id", None)
-                            st.rerun()
-
-                st.download_button(
-                    "⬇️ Exportar histórico da agenda",
-                    data=excel_bytes_dataframe(vis_hist.drop(columns=["ID"], errors="ignore"), "Histórico Agenda"),
-                    file_name=f"historico_agenda_ate_{date.today().strftime('%d-%m-%Y')}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    use_container_width=True
-                )
 
 # ---------------- VEÍCULO DA EMPRESA ----------------
 elif menu == "🚗 Veículo da empresa":
@@ -5291,47 +4943,92 @@ elif menu == "➕ Nova Empresa":
 # ---------------- RELATÓRIOS ----------------
 elif menu == "📈 Relatórios":
     st.subheader("📈 Relatórios")
-    st.caption("Visão por período e exportação completa da base.")
+    st.caption("Mesma lógica do Dashboard: Fila, Clientes em andamento, TICLOG e compromissos comerciais consolidados.")
 
     c1,c2 = st.columns(2)
-    inicio = c1.date_input(
-        "De",
-        value=date.today()-timedelta(days=30),
-        format="DD/MM/YYYY"
-    )
-    fim = c2.date_input(
-        "Até",
-        value=date.today(),
-        format="DD/MM/YYYY"
-    )
+    inicio = c1.date_input("De", value=date.today()-timedelta(days=30), format="DD/MM/YYYY")
+    fim = c2.date_input("Até", value=date.today(), format="DD/MM/YYYY")
 
     if inicio > fim:
         st.error("A data inicial não pode ser maior que a data final.")
     else:
-        rel = contatos.copy()
-        if not rel.empty:
-            rel["data_dt"] = pd.to_datetime(rel["data_contato"], errors="coerce").dt.date
-            rel = rel[(rel["data_dt"] >= inicio) & (rel["data_dt"] <= fim)]
+        dados_rel = carregar_database(forcar_github=False)
+        cont_rel = pd.DataFrame(dados_rel.get("contatos", []) or [])
+        tic_rel = pd.DataFrame(dados_rel.get("historico_ticlog", []) or [])
+
+        registros = []
+
+        if not cont_rel.empty:
+            for _, r in cont_rel.iterrows():
+                dt = normalizar_data_historico(r.get("data_contato"))
+                if pd.isna(dt): continue
+                d = dt.date()
+                if inicio <= d <= fim:
+                    registros.append({
+                        "data":d,"origem":"CARTEIRA GERAL","empresa":r.get("empresa_nome") or r.get("empresa_id"),
+                        "canal":str(r.get("tipo_contato") or "").upper(),
+                        "resultado":str(r.get("resultado") or "").upper(),
+                    })
+
+        if not tic_rel.empty:
+            for _, r in tic_rel.iterrows():
+                dt = normalizar_data_historico(r.get("data"))
+                if pd.isna(dt): continue
+                d = dt.date()
+                if inicio <= d <= fim:
+                    acao = str(r.get("acao") or "").upper()
+                    canal = ("VISITA PRESENCIAL" if "VISIT" in acao else
+                             "WHATSAPP" if "WHATS" in acao else
+                             "E-MAIL" if "E-MAIL" in acao or "EMAIL" in acao else
+                             "LIGAÇÃO" if "LIG" in acao else acao)
+                    registros.append({
+                        "data":d,"origem":"TICLOG","empresa":r.get("empresa") or r.get("cliente_id"),
+                        "canal":canal,"resultado":str(r.get("resultado") or "").upper(),
+                    })
+
+        rel_u = pd.DataFrame(registros)
+
+        total_i = len(rel_u)
+        emp_i = rel_u["empresa"].astype(str).nunique() if not rel_u.empty else 0
+        visitas_i = int(rel_u["canal"].astype(str).str.contains("VISITA", na=False).sum()) if not rel_u.empty else 0
+        reunioes_i = int(rel_u["canal"].astype(str).str.contains("REUNI", na=False).sum()) if not rel_u.empty else 0
+        avancos_i = int(rel_u["resultado"].isin([
+            "CLIENTE RESPONDEU","FALOU COM RESPONSÁVEL","RETORNAR CONTATO",
+            "VISITA PRESENCIAL REALIZADA","INTERESSADO","EM NEGOCIAÇÃO",
+            "PROPOSTA ENVIADA","COTAÇÃO ENVIADA","FECHADO"
+        ]).sum()) if not rel_u.empty else 0
+        fech_i = int(rel_u["resultado"].astype(str).str.contains("FECHADO", na=False).sum()) if not rel_u.empty else 0
 
         a,b,c,d = st.columns(4)
-        a.metric("Contatos", len(rel))
-        b.metric("Empresas diferentes", rel["empresa_id"].nunique() if not rel.empty else 0)
-        c.metric("Reuniões", int((rel["resultado"]=="REUNIÃO AGENDADA").sum()) if not rel.empty else 0)
-        d.metric("Fechamentos", int((rel["resultado"]=="FECHADO").sum()) if not rel.empty else 0)
+        a.metric("Interações realizadas", total_i)
+        b.metric("Empresas trabalhadas", emp_i)
+        c.metric("Visitas realizadas", visitas_i)
+        d.metric("Reuniões realizadas", reunioes_i)
 
-        st.subheader("Produtividade diária")
-        grafico_contatos_dia(rel)
+        e,f = st.columns(2)
+        e.metric("Clientes / ações com avanço", avancos_i)
+        f.metric("Fechamentos", fech_i)
 
-        if not rel.empty:
-            st.subheader("Detalhamento editável")
-            editor_contatos(rel, key_prefix="relatorio_contatos")
+        if rel_u.empty:
+            st.info("Nenhuma interação encontrada no período.")
+        else:
+            st.markdown("### Canais utilizados")
+            canais = rel_u.groupby("canal").size().sort_values(ascending=False).reset_index(name="Quantidade")
+            st.dataframe(canais, use_container_width=True, hide_index=True)
+
+            st.markdown("### Origem das interações")
+            orig = rel_u.groupby("origem").size().sort_values(ascending=False).reset_index(name="Quantidade")
+            st.dataframe(orig, use_container_width=True, hide_index=True)
+
+            st.markdown("### Produtividade diária")
+            prod = rel_u.groupby("data").size().reset_index(name="Interações")
+            st.line_chart(prod.set_index("data"))
+
+            st.markdown("### Detalhamento")
+            st.dataframe(rel_u.sort_values("data", ascending=False), use_container_width=True, hide_index=True)
 
         st.divider()
         st.subheader("Exportação completa")
-        st.write(
-            "O arquivo contém **Carteira atual**, **Histórico de contatos**, "
-            "**Pendências e retornos** e **Resumo**."
-        )
         excel = gerar_excel_completo(empresas, contatos)
         st.download_button(
             "⬇️ Baixar relatório completo em Excel",
@@ -5359,5 +5056,5 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • V15 • CRM Integrado")
+st.sidebar.caption("Gestão Comercial • V16 • CRM Integrado")
 
