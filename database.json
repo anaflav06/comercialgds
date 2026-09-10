@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-10T13:28:29",
+    "ultima_atualizacao": "2026-09-10T13:29:04",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -74840,11 +74840,11 @@
       "endereco": "ARMANDO DE CAMPOS, 111",
       "telefone": "(19) 94773-1450",
       "site": "",
-      "status": "TENTAR NOVAMENTE / VISITAR",
-      "ultima_acao": "💬 WhatsApp",
-      "ultima_observacao": "",
-      "total_tentativas": 1,
-      "data_ultima_acao": "2026-09-01",
+      "status": "RETORNAR CONTATO",
+      "ultima_acao": "🚶 Visitar presencialmente",
+      "ultima_observacao": "Eles estavam em fechamento e pediram para que remarcasse para ir às essa empresa\nna semana que vem quando estaria mais tranquilo.",
+      "total_tentativas": 2,
+      "data_ultima_acao": "2026-09-10",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -76163,6 +76163,21 @@
       "hora_visita": null,
       "usuario": "celso",
       "criado_em": "2026-09-10T13:28:29"
+    },
+    {
+      "id": 35,
+      "cliente_id": 19,
+      "empresa": "DISPLAN ENCOMENDAS URGENTES",
+      "data": "2026-09-10",
+      "hora": "13:29",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "RETORNAR CONTATO",
+      "status_novo": "RETORNAR CONTATO",
+      "observacao": "Eles estavam em fechamento e pediram para que remarcasse para ir às essa empresa\nna semana que vem quando estaria mais tranquilo.",
+      "data_visita": null,
+      "hora_visita": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-10T13:29:04"
     }
   ]
 }
