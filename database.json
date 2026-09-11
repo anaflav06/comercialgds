@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T16:21:27",
+    "ultima_atualizacao": "2026-09-11T16:21:39",
     "ultimo_usuario": "jessica",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -70298,8 +70298,12 @@
       "status": "CANCELADO",
       "criado_em": "2026-08-26T18:33:47",
       "usuario": "jessica",
-      "atualizado_em": "2026-08-26T18:55:51",
-      "atualizado_por": "jessica"
+      "atualizado_em": "2026-09-11T16:21:39",
+      "atualizado_por": "jessica",
+      "resultado": "nan",
+      "observacao_resultado": "nan",
+      "proxima_acao": "nan",
+      "proxima_acao_em": "2026-09-12T16:21"
     },
     {
       "id": 2,
