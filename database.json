@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T19:02:49",
+    "ultima_atualizacao": "2026-09-11T19:03:14",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77512,17 +77512,19 @@
       "endereco": "RUA SARA HELENA MANTELLO, 187",
       "telefone": "(21) 99652-4800",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "💬 WhatsApp",
       "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "atualizado_em": "2026-09-11T19:02:49"
+      "atualizado_em": "2026-09-11T19:02:49",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 53,
@@ -78795,6 +78797,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T18:40:53"
+    },
+    {
+      "id": 65,
+      "cliente_id": 52,
+      "empresa": "TELE CARGA EXPRESS TRANSPORTE",
+      "data": "2026-09-11",
+      "hora": "19:03",
+      "acao": "💬 WhatsApp",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T19:03:14"
     }
   ],
   "veiculo_avisos_cientes": {}
