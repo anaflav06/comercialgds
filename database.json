@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T12:30:09",
+    "ultima_atualizacao": "2026-09-11T12:36:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -76903,16 +76903,18 @@
       "endereco": "ARMANDO DE CAMPOS, 100",
       "telefone": "(19) 3113-4443 / (19) 3113-4440",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "📞 Ligar",
+      "ultima_observacao": "Empresa não trabalha com carga aérea e rodoviário faz com frota própria. conversei com Adrio e a Effi Cargo tem parceria com a TW Transportes",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 22,
@@ -78271,6 +78273,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T12:30:09"
+    },
+    {
+      "id": 40,
+      "cliente_id": 21,
+      "empresa": "EFFI CARGO LOGISTICS",
+      "data": "2026-09-11",
+      "hora": "12:36",
+      "acao": "📞 Ligar",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Empresa não trabalha com carga aérea e rodoviário faz com frota própria. conversei com Adrio e a Effi Cargo tem parceria com a TW Transportes",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T12:36:27"
     }
   ],
   "veiculo_avisos_cientes": {}
