@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T18:14:42",
+    "ultima_atualizacao": "2026-09-11T18:17:25",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77324,16 +77324,18 @@
       "endereco": "AVENIDA JOÃO GALVÃO ANDERSON, 470",
       "telefone": "(19) 3265-5263",
       "site": "www.rodomaxlog.com",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "📞 Ligar",
+      "ultima_observacao": "Falei com Elisangela que me informou que só trabalham com carga rodoviária.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 43,
@@ -78676,6 +78678,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T18:14:42"
+    },
+    {
+      "id": 59,
+      "cliente_id": 42,
+      "empresa": "RODOMAXLOG ARMAZENAGEM E LOGISTICA LTDA",
+      "data": "2026-09-11",
+      "hora": "18:17",
+      "acao": "📞 Ligar",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Falei com Elisangela que me informou que só trabalham com carga rodoviária.",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T18:17:25"
     }
   ],
   "veiculo_avisos_cientes": {}
