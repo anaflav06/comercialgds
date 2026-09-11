@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T16:21:14",
+    "ultima_atualizacao": "2026-09-11T16:21:27",
     "ultimo_usuario": "jessica",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -70321,11 +70321,15 @@
       "cliente_compromisso": "Visitas aos clientes na região de  SAO12",
       "local": "São Paulo",
       "observacao": "",
-      "status": "CANCELADO",
+      "status": "REALIZADO",
       "criado_em": "2026-08-28T18:37:32",
       "usuario": "celso",
-      "atualizado_em": "2026-08-31T10:52:31",
-      "atualizado_por": "celso"
+      "atualizado_em": "2026-09-11T16:21:27",
+      "atualizado_por": "celso",
+      "resultado": "nan",
+      "observacao_resultado": "nan",
+      "proxima_acao": "nan",
+      "proxima_acao_em": "2026-09-12T16:21"
     },
     {
       "id": 4,
