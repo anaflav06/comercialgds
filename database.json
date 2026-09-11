@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T18:26:10",
+    "ultima_atualizacao": "2026-09-11T18:31:06",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77436,16 +77436,18 @@
       "endereco": "ANCILA TONINI GAGO, 61",
       "telefone": "(19) 2218-7988 / (19) 3281-1963",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "Conversei com Tainara e só fazem Transporte de Cargas rodoviário.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 49,
@@ -78735,6 +78737,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T18:26:10"
+    },
+    {
+      "id": 62,
+      "cliente_id": 48,
+      "empresa": "SCHREIBER LOG",
+      "data": "2026-09-11",
+      "hora": "18:31",
+      "acao": "💬 WhatsApp",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Conversei com Tainara e só fazem Transporte de Cargas rodoviário.",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T18:31:06"
     }
   ],
   "veiculo_avisos_cientes": {}
