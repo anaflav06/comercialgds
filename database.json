@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T19:41:27",
+    "ultima_atualizacao": "2026-09-11T20:28:47",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77744,16 +77744,18 @@
       "endereco": "ANTONIO BOSCATTO, 140",
       "telefone": "(19) 3781-5132 / (19) 3781-5157",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "📞 Ligar",
+      "ultima_observacao": "Somente carga Rodoviária",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 65,
@@ -78942,6 +78944,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T19:41:27"
+    },
+    {
+      "id": 72,
+      "cliente_id": 64,
+      "empresa": "VALNI TRANSPORTES RODOV. LTDA",
+      "data": "2026-09-11",
+      "hora": "20:28",
+      "acao": "📞 Ligar",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Somente carga Rodoviária",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T20:28:47"
     }
   ],
   "veiculo_avisos_cientes": {}
