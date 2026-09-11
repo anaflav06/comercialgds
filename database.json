@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T14:13:40",
+    "ultima_atualizacao": "2026-09-11T14:19:31",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77163,16 +77163,18 @@
       "endereco": "ARMANDO DE CAMPOS, 140",
       "telefone": "(19) 3267-9799",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "📞 Ligar",
+      "ultima_observacao": "Conversei com Vanice e só fazem transporte rodoviário com frota própria",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 36,
@@ -78443,6 +78445,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T14:13:40"
+    },
+    {
+      "id": 49,
+      "cliente_id": 35,
+      "empresa": "MARDONIO CARGO EXPRESS TRANSPORTES LTDA",
+      "data": "2026-09-11",
+      "hora": "14:19",
+      "acao": "📞 Ligar",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Conversei com Vanice e só fazem transporte rodoviário com frota própria",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T14:19:31"
     }
   ],
   "veiculo_avisos_cientes": {}
