@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T18:35:40",
+    "ultima_atualizacao": "2026-09-11T18:36:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77419,17 +77419,19 @@
       "endereco": "RUA SARA HELENA MANTELLO, 86",
       "telefone": "(19) 98195-1230",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
+      "status": "RETORNAR CONTATO",
+      "ultima_acao": "💬 WhatsApp",
       "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "atualizado_em": "2026-09-11T18:35:40"
+      "atualizado_em": "2026-09-11T18:35:40",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 48,
@@ -78755,6 +78757,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T18:31:06"
+    },
+    {
+      "id": 63,
+      "cliente_id": 47,
+      "empresa": "SÃO RAFAEL TRANSPORTES",
+      "data": "2026-09-11",
+      "hora": "18:36",
+      "acao": "💬 WhatsApp",
+      "resultado": "RETORNAR CONTATO",
+      "status_novo": "RETORNAR CONTATO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T18:36:48"
     }
   ],
   "veiculo_avisos_cientes": {}
