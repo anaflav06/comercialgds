@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T18:10:26",
+    "ultima_atualizacao": "2026-09-11T18:11:28",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77285,17 +77285,19 @@
       "endereco": "LÁZARO BIBIANO DA SILVA, 67",
       "telefone": "(19) 97126-8101",
       "site": "www.rngtransportes.com.br",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "TENTAR NOVAMENTE / VISITAR",
+      "ultima_acao": "📞 Ligar",
+      "ultima_observacao": "Ligação cai direto na caixa postal e no site tem o contato whatsapp mas não funciona",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "atualizado_em": "2026-09-11T18:10:26"
+      "atualizado_em": "2026-09-11T18:10:26",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 41,
@@ -78638,6 +78640,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T18:01:26"
+    },
+    {
+      "id": 57,
+      "cliente_id": 40,
+      "empresa": "RNG TRANSPORTES",
+      "data": "2026-09-11",
+      "hora": "18:11",
+      "acao": "📞 Ligar",
+      "resultado": "NÃO ATENDEU / SEM RESPOSTA",
+      "status_novo": "TENTAR NOVAMENTE / VISITAR",
+      "observacao": "Ligação cai direto na caixa postal e no site tem o contato whatsapp mas não funciona",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T18:11:28"
     }
   ],
   "veiculo_avisos_cientes": {}
