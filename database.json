@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T17:06:52",
+    "ultima_atualizacao": "2026-09-11T17:38:15",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77745,16 +77745,18 @@
       "endereco": "AVENIDA PIERRE SIMON DE LAPLACE, 1081",
       "telefone": "(19) 97409-5705",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "EM CONTATO",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "Enviei mensagem via Whatsapp estou aguardando retorno.",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-11",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-09-11T17:06:52",
-      "origem": "CADASTRO APP"
+      "origem": "CADASTRO APP",
+      "proxima_acao": "Marcar Visita",
+      "data_proxima_acao": null
     }
   ],
   "historico_ticlog": [
@@ -78582,6 +78584,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-11T17:04:14"
+    },
+    {
+      "id": 54,
+      "cliente_id": 67,
+      "empresa": "ON TIME LOGISTICA",
+      "data": "2026-09-11",
+      "hora": "17:38",
+      "acao": "💬 WhatsApp",
+      "resultado": "FALOU COM RESPONSÁVEL",
+      "status_novo": "EM CONTATO",
+      "observacao": "Enviei mensagem via Whatsapp estou aguardando retorno.",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Marcar Visita",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-11T17:38:15"
     }
   ],
   "veiculo_avisos_cientes": {}
