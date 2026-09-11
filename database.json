@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T19:03:14",
+    "ultima_atualizacao": "2026-09-11T19:05:30",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77769,7 +77769,7 @@
       "id": 67,
       "empresa": "ON TIME LOGISTICA",
       "endereco": "AVENIDA PIERRE SIMON DE LAPLACE, 1081",
-      "telefone": "(19) 97409-5705",
+      "telefone": "(19) 97409-5705 / (19) 97409-8299",
       "site": "",
       "status": "EM CONTATO",
       "ultima_acao": "💬 WhatsApp",
@@ -77782,7 +77782,8 @@
       "criado_em": "2026-09-11T17:06:52",
       "origem": "CADASTRO APP",
       "proxima_acao": "Marcar Visita",
-      "data_proxima_acao": null
+      "data_proxima_acao": null,
+      "atualizado_em": "2026-09-11T19:05:30"
     }
   ],
   "historico_ticlog": [
