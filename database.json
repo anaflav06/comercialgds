@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-11T20:28:47",
+    "ultima_atualizacao": "2026-09-14T19:12:47",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -39973,6 +39973,24 @@
       "agendamento_pendente": 0,
       "proxima_acao": "AGUARDANDO RESPOSTA",
       "numero_cotacao": "91885942"
+    },
+    {
+      "id": 2336,
+      "documento": "",
+      "nome": "SERRALGODAO EXPO CENTER NORTE - INTRA LOG",
+      "email": "",
+      "telefone1": "",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-09-14T19:12:47",
+      "origem": "Cobrar retorno em 24h",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
