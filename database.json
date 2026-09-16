@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-16T17:44:56",
+    "ultima_atualizacao": "2026-09-16T17:45:15",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40141,10 +40141,10 @@
       "documento": "",
       "nome": "BLICKLE - EXPO CENTER NORTE - INTRA LOG",
       "email": "",
-      "telefone1": "",
+      "telefone1": "(11) 99343-9853",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "EM ANDAMENTO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-16",
       "criado_em": "2026-09-14T19:20:21",
@@ -40152,7 +40152,8 @@
       "retorno_apos_seq": 1063,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2346,
