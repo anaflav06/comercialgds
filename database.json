@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-16T14:06:48",
+    "ultima_atualizacao": "2026-09-16T17:23:20",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -39730,7 +39730,7 @@
     {
       "id": 2323,
       "documento": "",
-      "nome": "GF MEDICAL COM E REPRRENATA",
+      "nome": "GF MEDICAL COM E REPR RENATA",
       "email": "",
       "telefone1": "(65) 9999-4348",
       "telefone2": "",
