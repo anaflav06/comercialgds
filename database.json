@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-16T19:02:00",
+    "ultima_atualizacao": "2026-09-16T19:04:16",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40471,15 +40471,15 @@
       "telefone1": "(19) 99625-2073 / (11) 3272-1768",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-16",
       "criado_em": "2026-09-16T13:50:38",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 1066,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2364,
@@ -71159,6 +71159,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-16T19:02:00",
       "seq_global": 865,
+      "usuario": "celso"
+    },
+    {
+      "id": 2286,
+      "empresa_id": 2363,
+      "data_contato": "2026-09-16",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-16T19:04:16",
+      "seq_global": 866,
       "usuario": "celso"
     }
   ],
