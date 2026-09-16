@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-16T13:02:24",
+    "ultima_atualizacao": "2026-09-16T13:02:47",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40265,7 +40265,7 @@
     {
       "id": 2352,
       "documento": "61.081.170/0001-32",
-      "nome": "SERRALGODAO",
+      "nome": "SERRALGODAO INTRA LOG",
       "email": "",
       "telefone1": "(11) 97228-4507 / (11) 97476-8778 / (11) 5060-5600",
       "telefone2": "",
@@ -40278,7 +40278,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2353,
