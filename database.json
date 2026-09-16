@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-16T17:45:15",
+    "ultima_atualizacao": "2026-09-16T17:46:10",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40579,15 +40579,15 @@
       "telefone1": "(19) 3871-9111 / (19) 99902-8220",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-16",
       "criado_em": "2026-09-16T14:06:48",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 1064,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     }
   ],
   "contatos": [
@@ -71131,6 +71131,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-16T17:44:56",
       "seq_global": 863,
+      "usuario": "celso"
+    },
+    {
+      "id": 2284,
+      "empresa_id": 2369,
+      "data_contato": "2026-09-16",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-16T17:46:10",
+      "seq_global": 864,
       "usuario": "celso"
     }
   ],
