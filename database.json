@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-16T17:35:02",
+    "ultima_atualizacao": "2026-09-16T17:36:41",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40416,15 +40416,15 @@
       "telefone1": "(11) 97549-0207 / (11) 2085-2508",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-16",
       "criado_em": "2026-09-16T13:44:50",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 1061,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2361,
@@ -71088,6 +71088,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-16T17:35:02",
       "seq_global": 860,
+      "usuario": "celso"
+    },
+    {
+      "id": 2281,
+      "empresa_id": 2360,
+      "data_contato": "2026-09-16",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-16T17:36:41",
+      "seq_global": 861,
       "usuario": "celso"
     }
   ],
