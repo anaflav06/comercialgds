@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-16T19:21:13",
+    "ultima_atualizacao": "2026-09-16T19:22:14",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40435,15 +40435,15 @@
       "telefone1": "(11) 99350-0530 / (11) 2145-8500",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-16",
       "criado_em": "2026-09-16T13:47:07",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 1072,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2362,
@@ -71243,6 +71243,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-16T19:21:13",
       "seq_global": 871,
+      "usuario": "celso"
+    },
+    {
+      "id": 2292,
+      "empresa_id": 2361,
+      "data_contato": "2026-09-16",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-16T19:22:14",
+      "seq_global": 872,
       "usuario": "celso"
     }
   ],
