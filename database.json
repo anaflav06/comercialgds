@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-17T17:30:35",
+    "ultima_atualizacao": "2026-09-17T17:35:06",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -78780,16 +78780,18 @@
       "endereco": "ANCILA TONINI GAGO, 111",
       "telefone": "(19) 99168-9800",
       "site": "",
-      "status": "VISITA REALIZADA",
-      "ultima_acao": "🚶 Visitar presencialmente",
-      "ultima_observacao": "Trabalha apenas com transporte rodoviário mas caso surgir algo pro aéreo, alguma\nurgência salvou meu contato.",
-      "total_tentativas": 2,
-      "data_ultima_acao": "2026-09-10",
+      "status": "SEM INTERESSE",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "Não possui mais carga aérea, somente rodoviário com frota própria",
+      "total_tentativas": 3,
+      "data_ultima_acao": "2026-09-17",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-18"
     },
     {
       "id": 9,
@@ -81056,6 +81058,23 @@
       "data_proxima_acao": "2026-09-18",
       "usuario": "celso",
       "criado_em": "2026-09-17T17:30:35"
+    },
+    {
+      "id": 75,
+      "cliente_id": 8,
+      "empresa": "ARGIUS",
+      "data": "2026-09-17",
+      "hora": "17:35",
+      "acao": "💬 WhatsApp",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Não possui mais carga aérea, somente rodoviário com frota própria",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-18",
+      "usuario": "celso",
+      "criado_em": "2026-09-17T17:35:06"
     }
   ],
   "veiculo_avisos_cientes": {}
