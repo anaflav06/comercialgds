@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-17T17:21:52",
+    "ultima_atualizacao": "2026-09-17T17:30:35",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -78659,16 +78659,18 @@
       "endereco": "RUA ARMANDO DE CAMPOS, 420",
       "telefone": "(19) 99168-9800",
       "site": "",
-      "status": "VISITA REALIZADA",
-      "ultima_acao": "🚶 Visitar presencialmente",
-      "ultima_observacao": "Possui esporadicamente carga aérea e quando tem leva direto em VCP para emissão, mas \nsalvou meu contato e vai fazer as cotações quando surgir com a gente.\nGeralmente suas cargas são consolidadas, mas ficou de marcar outra reunião com\no gerente Adail.",
-      "total_tentativas": 2,
-      "data_ultima_acao": "2026-09-10",
+      "status": "SEM INTERESSE",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "Conversei com cliente na tentativa de marcar uma reunião com o responsável, e fui informado que agora farão apenas rodoviário com frota própria",
+      "total_tentativas": 3,
+      "data_ultima_acao": "2026-09-17",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": "2026-09-18"
     },
     {
       "id": 2,
@@ -81037,6 +81039,23 @@
       "data_proxima_acao": "2026-09-21",
       "usuario": "celso",
       "criado_em": "2026-09-14T20:03:45"
+    },
+    {
+      "id": 74,
+      "cliente_id": 1,
+      "empresa": "ABBA LOGISTICA",
+      "data": "2026-09-17",
+      "hora": "17:30",
+      "acao": "💬 WhatsApp",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Conversei com cliente na tentativa de marcar uma reunião com o responsável, e fui informado que agora farão apenas rodoviário com frota própria",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": "2026-09-18",
+      "usuario": "celso",
+      "criado_em": "2026-09-17T17:30:35"
     }
   ],
   "veiculo_avisos_cientes": {}
