@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-17T17:35:06",
+    "ultima_atualizacao": "2026-09-17T17:45:58",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -78799,17 +78799,19 @@
       "endereco": "RICARDO DIAS ALVES, 87, 311 E 381",
       "telefone": "(19) 98857-2817",
       "site": "",
-      "status": "RETORNAR CONTATO",
-      "ultima_acao": "📞 Ligar",
-      "ultima_observacao": "Fui atendido pelo comercial que me encaminhou o contato do responsável (Rodnei) e já enviei mensagem para marcar visita mas ainda sem resposta",
-      "total_tentativas": 1,
-      "data_ultima_acao": "2026-09-01",
+      "status": "EM CONTATO",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "Conversei com Rodnei e ele ficou de marcar uma data e horário para me atender",
+      "total_tentativas": 2,
+      "data_ultima_acao": "2026-09-17",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "atualizado_em": "2026-09-01T14:41:54"
+      "atualizado_em": "2026-09-01T14:41:54",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-18"
     },
     {
       "id": 10,
@@ -81075,6 +81077,23 @@
       "data_proxima_acao": "2026-09-18",
       "usuario": "celso",
       "criado_em": "2026-09-17T17:35:06"
+    },
+    {
+      "id": 76,
+      "cliente_id": 9,
+      "empresa": "BRASPRESS TRANSPORTES",
+      "data": "2026-09-17",
+      "hora": "17:45",
+      "acao": "💬 WhatsApp",
+      "resultado": "FALOU COM RESPONSÁVEL",
+      "status_novo": "EM CONTATO",
+      "observacao": "Conversei com Rodnei e ele ficou de marcar uma data e horário para me atender",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-18",
+      "usuario": "celso",
+      "criado_em": "2026-09-17T17:45:58"
     }
   ],
   "veiculo_avisos_cientes": {}
