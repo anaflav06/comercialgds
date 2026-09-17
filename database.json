@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-17T17:10:12",
+    "ultima_atualizacao": "2026-09-17T17:11:24",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -25011,15 +25011,15 @@
       "telefone1": "(81) 3453-5163",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM CONTATO",
+      "status": "NÃO UTILIZA TRANSPORTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-17",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 1470,
@@ -71945,6 +71945,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-17T17:10:12",
       "seq_global": 921,
+      "usuario": "celso"
+    },
+    {
+      "id": 2342,
+      "empresa_id": 1469,
+      "data_contato": "2026-09-17",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO UTILIZA TRANSPORTE",
+      "status_novo": "NÃO UTILIZA TRANSPORTE",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-17T17:11:24",
+      "seq_global": 922,
       "usuario": "celso"
     }
   ],
