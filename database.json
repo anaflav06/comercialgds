@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-18T18:12:51",
+    "ultima_atualizacao": "2026-09-18T18:16:08",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40590,6 +40590,24 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "AGUARDANDO RESPOSTA"
+    },
+    {
+      "id": 2370,
+      "documento": "",
+      "nome": "BLUE HEALTH",
+      "email": "",
+      "telefone1": "(19) 99792-6086",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-09-18T18:16:08",
+      "origem": "Cobrar retorno em 24h",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
