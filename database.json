@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-21T18:17:00",
+    "ultima_atualizacao": "2026-09-21T18:23:15",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40366,7 +40366,7 @@
       "nome": "PACK DUQUE INTRA LOG (PACKING GROUP)",
       "email": "",
       "telefone1": "(19) 3881-1374 / (19) 3881-7400",
-      "telefone2": "",
+      "telefone2": "(19) 98924-2546",
       "telefone3": "",
       "status": "EM ANDAMENTO",
       "observacao_atual": "",
@@ -40376,7 +40376,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2358,
