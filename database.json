@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-21T13:00:53",
+    "ultima_atualizacao": "2026-09-21T13:03:40",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40471,7 +40471,7 @@
       "id": 2363,
       "documento": "",
       "nome": "COLATIO ETIQUETAS E RÓTULOS  INTRA LOG",
-      "email": "",
+      "email": "admo01@colatio.com.br",
       "telefone1": "(19) 99625-2073 / (11) 3272-1768",
       "telefone2": "",
       "telefone3": "",
@@ -40483,7 +40483,8 @@
       "retorno_apos_seq": 1066,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2364,
