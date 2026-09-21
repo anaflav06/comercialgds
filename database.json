@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-21T12:49:02",
+    "ultima_atualizacao": "2026-09-21T12:51:45",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40126,10 +40126,10 @@
       "documento": "",
       "nome": "BIC ETIQUETAS - EXPO CENTER NORTE - INTRA LOG",
       "email": "",
-      "telefone1": "",
+      "telefone1": "(11) 99233-5351",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-16",
       "criado_em": "2026-09-14T19:19:41",
@@ -40137,7 +40137,8 @@
       "retorno_apos_seq": 1062,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2345,
