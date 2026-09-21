@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-21T13:19:16",
+    "ultima_atualizacao": "2026-09-21T13:22:26",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40458,15 +40458,15 @@
       "telefone1": "(19) 99872-4471 / (11) 3515-7161",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-21",
       "criado_em": "2026-09-16T13:48:30",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 1199,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 2363,
@@ -73045,6 +73045,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-21T13:19:16",
       "seq_global": 998,
+      "usuario": "celso"
+    },
+    {
+      "id": 2419,
+      "empresa_id": 2362,
+      "data_contato": "2026-09-21",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-21T13:22:26",
+      "seq_global": 999,
       "usuario": "celso"
     }
   ],
