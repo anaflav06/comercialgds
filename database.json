@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-21T17:34:14",
+    "ultima_atualizacao": "2026-09-21T18:14:39",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40403,7 +40403,7 @@
       "nome": "ISOFLEX INTRA LOG",
       "email": "",
       "telefone1": "(41) 3677-4700",
-      "telefone2": "",
+      "telefone2": "(41) 9628-4631",
       "telefone3": "",
       "status": "EM ANDAMENTO",
       "observacao_atual": "",
@@ -40413,7 +40413,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2360,
