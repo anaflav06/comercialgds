@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-21T13:26:20",
+    "ultima_atualizacao": "2026-09-21T13:29:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40384,9 +40384,9 @@
       "nome": "EUROPACK INTRA LOG ( PACKING GROUP)",
       "email": "",
       "telefone1": "(19) 3869-4454 / 3871-5989",
-      "telefone2": "",
+      "telefone2": "(19) 99477-4747",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
       "data_primeiro_contato": null,
       "criado_em": "2026-09-16T13:40:30",
@@ -40394,7 +40394,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2359,
