@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-21T13:29:37",
+    "ultima_atualizacao": "2026-09-21T13:30:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40388,13 +40388,13 @@
       "telefone3": "",
       "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-09-21",
       "criado_em": "2026-09-16T13:40:30",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 1205,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
       "numero_cotacao": "nan"
     },
     {
@@ -73130,6 +73130,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-21T13:26:20",
       "seq_global": 1004,
+      "usuario": "celso"
+    },
+    {
+      "id": 2425,
+      "empresa_id": 2358,
+      "data_contato": "2026-09-21",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-21T13:30:27",
+      "seq_global": 1005,
       "usuario": "celso"
     }
   ],
