@@ -4,14 +4,14 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-22T13:13:38",
+    "ultima_atualizacao": "2026-09-22T13:13:44",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
     "veiculo_planilha_importada_v1_data": "2026-08-26T18:32:53",
     "clientes_ticlog_importados_v1": true,
     "clientes_ticlog_importados_v1_qtd": 65,
-    "clientes_ticlog_importados_v1_data": "2026-08-27T14:41:51"
+    "clientes_ticlog_importados_v1_data": "2026-09-22T13:13:44"
   },
   "empresas": [
     {
@@ -81421,6 +81421,23 @@
       "proxima_acao": "Cobrar retorno / novo contato",
       "data_proxima_acao": "2026-09-21",
       "atualizado_em": "2026-09-11T19:05:30"
+    },
+    {
+      "id": 68,
+      "empresa": "HSE TRANSPORTES",
+      "endereco": "RUA ANCILLA TONINI GAGO, 565",
+      "telefone": "(19) 3281-6555 / (19) 98728-2827",
+      "site": "",
+      "status": "SEM CONTATO",
+      "ultima_acao": "",
+      "ultima_observacao": "",
+      "total_tentativas": 0,
+      "data_ultima_acao": null,
+      "visita_agendada": 0,
+      "data_visita": null,
+      "hora_visita": null,
+      "criado_em": "2026-09-22T13:13:44",
+      "origem": "LISTA TICLOG INICIAL"
     }
   ],
   "historico_ticlog": [
