@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-22T13:57:57",
+    "ultima_atualizacao": "2026-09-22T14:00:06",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -39091,15 +39091,15 @@
       "telefone1": "(31) 8026-8573",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "COTAÇÃO ENVIADA",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-10",
       "criado_em": "2026-09-10T17:56:05",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 1225,
+      "retorno_apos_seq": 1229,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO",
       "numero_cotacao": "92075631"
     },
     {
@@ -73487,6 +73487,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-22T13:57:57",
       "seq_global": 1028,
+      "usuario": "celso"
+    },
+    {
+      "id": 2449,
+      "empresa_id": 2289,
+      "data_contato": "2026-09-22",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "COTAÇÃO ENVIADA",
+      "status_novo": "COTAÇÃO ENVIADA",
+      "observacao": "",
+      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-22T14:00:06",
+      "seq_global": 1029,
       "usuario": "celso"
     }
   ],
