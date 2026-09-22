@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-22T15:56:18",
+    "ultima_atualizacao": "2026-09-22T18:26:02",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35188,8 +35188,8 @@
       "documento": "68.400.647/0001-44",
       "nome": "UNITHAL TECNOLOGIA E SERVICOS LTDA",
       "telefone1": "(19) 99931-6477",
-      "telefone2": "(44) 99126-0241",
-      "telefone3": "(44) 3047-1799",
+      "telefone2": "",
+      "telefone3": "",
       "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-14",
@@ -35198,7 +35198,9 @@
       "retorno_apos_seq": 1049,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2066,
