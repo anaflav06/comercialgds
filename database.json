@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-22T14:00:06",
+    "ultima_atualizacao": "2026-09-22T14:04:26",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40634,6 +40634,24 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO"
+    },
+    {
+      "id": 2372,
+      "documento": "",
+      "nome": "CAPITÃO PEIXE - GABRIEL",
+      "email": "",
+      "telefone1": "(21) 98873-1417",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-09-22T14:04:26",
+      "origem": "Cobrar retorno em 24h",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
