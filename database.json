@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-22T19:02:56",
+    "ultima_atualizacao": "2026-09-22T19:03:54",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35738,14 +35738,14 @@
       "telefone2": "",
       "telefone3": "",
       "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "Foi feita uma tentativa de contato sem retorno em 19/03/26, depois em 29/05 e  esta é a terceira tentativa",
+      "observacao_atual": "",
       "data_primeiro_contato": "2026-08-19",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 343,
+      "retorno_apos_seq": 1254,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "ENVIAR WHATSAPP",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
       "numero_cotacao": "72968571"
     },
     {
@@ -73857,6 +73857,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-22T19:02:56",
       "seq_global": 1053,
+      "usuario": "celso"
+    },
+    {
+      "id": 2474,
+      "empresa_id": 2097,
+      "data_contato": "2026-09-22",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-22T19:03:54",
+      "seq_global": 1054,
       "usuario": "celso"
     }
   ],
