@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T18:07:03",
+    "ultima_atualizacao": "2026-09-23T18:09:46",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -81561,17 +81561,19 @@
       "endereco": "ARMANDO DE CAMPOS, 111",
       "telefone": "(19) 99745-4656",
       "site": "",
-      "status": "RETORNAR CONTATO",
-      "ultima_acao": "🚶 Visitar presencialmente",
-      "ultima_observacao": "Eles estavam em fechamento e pediram para que remarcasse para ir às essa empresa\nna semana que vem quando estaria mais tranquilo.",
-      "total_tentativas": 2,
-      "data_ultima_acao": "2026-09-10",
+      "status": "EM CONTATO",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "Estou tentando marcar uma reunião com eles, pois quando fui a responsável Luana não pôde me atender.",
+      "total_tentativas": 3,
+      "data_ultima_acao": "2026-09-23",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "atualizado_em": "2026-09-23T18:07:03"
+      "atualizado_em": "2026-09-23T18:07:03",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-28"
     },
     {
       "id": 20,
@@ -83821,6 +83823,23 @@
       "data_proxima_acao": "2026-09-28",
       "usuario": "celso",
       "criado_em": "2026-09-23T17:53:27"
+    },
+    {
+      "id": 83,
+      "cliente_id": 19,
+      "empresa": "DISPLAN ENCOMENDAS URGENTES",
+      "data": "2026-09-23",
+      "hora": "18:09",
+      "acao": "💬 WhatsApp",
+      "resultado": "FALOU COM RESPONSÁVEL",
+      "status_novo": "EM CONTATO",
+      "observacao": "Estou tentando marcar uma reunião com eles, pois quando fui a responsável Luana não pôde me atender.",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-28",
+      "usuario": "celso",
+      "criado_em": "2026-09-23T18:09:46"
     }
   ],
   "veiculo_avisos_cientes": {}
