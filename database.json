@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T18:14:27",
+    "ultima_atualizacao": "2026-09-23T18:16:08",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -81760,17 +81760,19 @@
       "endereco": "LÁZARO BIBIANO DA SILVA, 67",
       "telefone": "(19) 99369-8830",
       "site": "",
-      "status": "VISITA REALIZADA",
-      "ultima_acao": "🚶 Visitar presencialmente",
-      "ultima_observacao": "Cliente utiliza a loja de Paulínia para emitir no aéreo, porém sabendo que estamos no TIC \npretende emitir conosco e abrir conta corrente. Possui encomendas pro Brasil todo e pensa\nassim que sair carga nos contatar. \nNão comentou de negociação com a loja de Paulínia.",
-      "total_tentativas": 2,
-      "data_ultima_acao": "2026-09-10",
+      "status": "INTERESSADO",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "",
+      "total_tentativas": 3,
+      "data_ultima_acao": "2026-09-23",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "atualizado_em": "2026-09-22T14:12:34"
+      "atualizado_em": "2026-09-22T14:12:34",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-24"
     },
     {
       "id": 30,
@@ -83933,6 +83935,23 @@
       "data_proxima_acao": "2026-09-24",
       "usuario": "celso",
       "criado_em": "2026-09-23T18:14:27"
+    },
+    {
+      "id": 89,
+      "cliente_id": 29,
+      "empresa": "HOLD TRANSPORTES / EXPRESSO PERPETO",
+      "data": "2026-09-23",
+      "hora": "18:16",
+      "acao": "💬 WhatsApp",
+      "resultado": "INTERESSADO",
+      "status_novo": "INTERESSADO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-24",
+      "usuario": "celso",
+      "criado_em": "2026-09-23T18:16:08"
     }
   ],
   "veiculo_avisos_cientes": {}
