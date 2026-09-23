@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T17:50:42",
+    "ultima_atualizacao": "2026-09-23T17:53:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -81339,9 +81339,9 @@
       "site": "",
       "status": "EM CONTATO",
       "ultima_acao": "💬 WhatsApp",
-      "ultima_observacao": "Conversei com Rodnei e ele ficou de marcar uma data e horário para me atender",
-      "total_tentativas": 2,
-      "data_ultima_acao": "2026-09-17",
+      "ultima_observacao": "Falei com Rodnei que ia alinhar uma possível visita minha com o gerente da filial, mas ainda não obtive resposta e estou cobrando",
+      "total_tentativas": 3,
+      "data_ultima_acao": "2026-09-23",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -81349,7 +81349,7 @@
       "origem": "LISTA TICLOG INICIAL",
       "atualizado_em": "2026-09-01T14:41:54",
       "proxima_acao": "Cobrar retorno / novo contato",
-      "data_proxima_acao": "2026-09-18"
+      "data_proxima_acao": "2026-09-28"
     },
     {
       "id": 10,
@@ -83757,6 +83757,23 @@
       "data_proxima_acao": "2026-09-24",
       "usuario": "celso",
       "criado_em": "2026-09-23T17:50:42"
+    },
+    {
+      "id": 82,
+      "cliente_id": 9,
+      "empresa": "BRASPRESS TRANSPORTES",
+      "data": "2026-09-23",
+      "hora": "17:53",
+      "acao": "💬 WhatsApp",
+      "resultado": "FALOU COM RESPONSÁVEL",
+      "status_novo": "EM CONTATO",
+      "observacao": "Falei com Rodnei que ia alinhar uma possível visita minha com o gerente da filial, mas ainda não obtive resposta e estou cobrando",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-28",
+      "usuario": "celso",
+      "criado_em": "2026-09-23T17:53:27"
     }
   ],
   "veiculo_avisos_cientes": {}
