@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T17:59:20",
+    "ultima_atualizacao": "2026-09-23T18:01:49",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -32930,15 +32930,15 @@
       "telefone1": "(27) 99891-3800",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
-      "observacao_atual": "Cliente fez uma cotação há um tempo, porém não fechou devido valor, estou retomando o assunto. Cliente usa muito rodoviário, ofereci o e-commerce.",
+      "status": "RETORNO AGENDADO",
+      "observacao_atual": "",
       "data_primeiro_contato": "2026-08-25",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": 519,
-      "data_agendamento": null,
-      "agendamento_pendente": 0,
-      "proxima_acao": "CLIENTE EM ANDAMENTO"
+      "retorno_apos_seq": null,
+      "data_agendamento": "2026-09-24",
+      "agendamento_pendente": 1,
+      "proxima_acao": "Cobrar retorno / novo contato"
     },
     {
       "id": 1934,
@@ -74379,6 +74379,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-23T13:45:53",
       "seq_global": 1090,
+      "usuario": "celso"
+    },
+    {
+      "id": 2511,
+      "empresa_id": 1933,
+      "data_contato": "2026-09-23",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+      "status_novo": "RETORNO AGENDADO",
+      "observacao": "",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-24",
+      "criado_em": "2026-09-23T18:01:49",
+      "seq_global": 1091,
       "usuario": "celso"
     }
   ],
