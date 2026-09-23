@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T18:04:32",
+    "ultima_atualizacao": "2026-09-23T18:07:03",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -81559,7 +81559,7 @@
       "id": 19,
       "empresa": "DISPLAN ENCOMENDAS URGENTES",
       "endereco": "ARMANDO DE CAMPOS, 111",
-      "telefone": "(19) 94773-1450",
+      "telefone": "(19) 99745-4656",
       "site": "",
       "status": "RETORNAR CONTATO",
       "ultima_acao": "🚶 Visitar presencialmente",
@@ -81571,7 +81571,7 @@
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "atualizado_em": "2026-09-01T15:01:11"
+      "atualizado_em": "2026-09-23T18:07:03"
     },
     {
       "id": 20,
