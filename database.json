@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T18:14:00",
+    "ultima_atualizacao": "2026-09-23T18:14:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -81297,16 +81297,18 @@
       "endereco": "ALFREDO VIEIRA ALVES, 261",
       "telefone": "",
       "site": "",
-      "status": "VISITA REALIZADA",
-      "ultima_acao": "🚶 Visitar presencialmente",
-      "ultima_observacao": "Fui pessoalmente sem marcar visita e fui atendido pela Sandra e fui\norientado à enviar um e-mail pra Matriz de São Paulo solicitando\nautorização para visitar a empresa, até o momento sem retorno.",
-      "total_tentativas": 2,
-      "data_ultima_acao": "2026-09-10",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "📞 Ligar",
+      "ultima_observacao": "",
+      "total_tentativas": 3,
+      "data_ultima_acao": "2026-09-23",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-24"
     },
     {
       "id": 5,
@@ -83914,6 +83916,23 @@
       "data_proxima_acao": "2026-09-24",
       "usuario": "celso",
       "criado_em": "2026-09-23T18:14:00"
+    },
+    {
+      "id": 88,
+      "cliente_id": 4,
+      "empresa": "ATIVA LOGISTICA",
+      "data": "2026-09-23",
+      "hora": "18:14",
+      "acao": "📞 Ligar",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-24",
+      "usuario": "celso",
+      "criado_em": "2026-09-23T18:14:27"
     }
   ],
   "veiculo_avisos_cientes": {}
