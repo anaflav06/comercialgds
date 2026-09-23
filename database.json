@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T18:11:05",
+    "ultima_atualizacao": "2026-09-23T18:11:39",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -81509,16 +81509,18 @@
       "endereco": "ANCILLA TONINI GAGO, 31",
       "telefone": "(19) 3256-0516 / (19) 3113-8001",
       "site": "",
-      "status": "VISITA REALIZADA",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
       "ultima_acao": "🚶 Visitar presencialmente",
-      "ultima_observacao": "Não utiliza o transporte aéreo, mas salvou o contato caso surja, empresa contratada \npara transporte da VIVO Telefonia para transporte de Cabos, e materiais pesados",
-      "total_tentativas": 2,
-      "data_ultima_acao": "2026-09-10",
+      "ultima_observacao": "",
+      "total_tentativas": 3,
+      "data_ultima_acao": "2026-09-23",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-24"
     },
     {
       "id": 17,
@@ -83859,6 +83861,23 @@
       "data_proxima_acao": "2026-09-24",
       "usuario": "celso",
       "criado_em": "2026-09-23T18:11:05"
+    },
+    {
+      "id": 85,
+      "cliente_id": 16,
+      "empresa": "CAROBA TRANSPORTES E COMERCIO LTDA",
+      "data": "2026-09-23",
+      "hora": "18:11",
+      "acao": "🚶 Visitar presencialmente",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-24",
+      "usuario": "celso",
+      "criado_em": "2026-09-23T18:11:39"
     }
   ],
   "veiculo_avisos_cientes": {}
