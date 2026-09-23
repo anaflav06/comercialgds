@@ -1685,12 +1685,16 @@ def painel_edicao_empresa(empresa, prefixo="editar"):
                     valor_data = pd.to_datetime(empresa.get("data_agendamento")).date()
                 except Exception:
                     pass
-            data_ag = st.date_input(
-                "Data de retorno",
-                value=valor_data,
-                format="DD/MM/YYYY",
-                key=f"{prefixo}_{empresa_id}_data"
-            )
+            _data_retorno_raw = row.get("data_agendamento")
+        _data_retorno_dt = pd.to_datetime(_data_retorno_raw, errors="coerce", dayfirst=True)
+        _data_retorno_value = None if pd.isna(_data_retorno_dt) else _data_retorno_dt.date()
+
+        data_ag = st.date_input(
+            "Data de retorno",
+            value=_data_retorno_value,
+            format="DD/MM/YYYY",
+            key=f"{prefixo}_{empresa_id}_data"
+        )
 
         if st.button(
             "💾 Salvar edição",
