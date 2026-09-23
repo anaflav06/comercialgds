@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T17:47:32",
+    "ultima_atualizacao": "2026-09-23T17:50:42",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -81443,18 +81443,18 @@
       "endereco": "AV. JOÃO GALVÃO ANDERSON, 337",
       "telefone": "(19) 3281-0067",
       "site": "",
-      "status": "RETORNAR CONTATO",
-      "ultima_acao": "💬 WhatsApp",
-      "ultima_observacao": "Conversei com Fabiane, e ainda não surgiu aéreo, o foco maior é rodoviário mas se surgir entrará em contato",
-      "total_tentativas": 3,
-      "data_ultima_acao": "2026-09-17",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "📞 Ligar",
+      "ultima_observacao": "Segundo a Fabiane da empresa, não utilizam transporte Aéreo e o rodoviário faz com sua frota",
+      "total_tentativas": 4,
+      "data_ultima_acao": "2026-09-23",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "proxima_acao": "Cobrar retorno / novo contato",
-      "data_proxima_acao": "2026-09-18"
+      "proxima_acao": "",
+      "data_proxima_acao": "2026-09-24"
     },
     {
       "id": 16,
@@ -83740,6 +83740,23 @@
       "data_proxima_acao": "2026-09-28",
       "usuario": "celso",
       "criado_em": "2026-09-23T17:47:32"
+    },
+    {
+      "id": 81,
+      "cliente_id": 15,
+      "empresa": "CARGO HANDLING TRANSPORTES EXPRESS LTDA.",
+      "data": "2026-09-23",
+      "hora": "17:50",
+      "acao": "📞 Ligar",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "Segundo a Fabiane da empresa, não utilizam transporte Aéreo e o rodoviário faz com sua frota",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": "2026-09-24",
+      "usuario": "celso",
+      "criado_em": "2026-09-23T17:50:42"
     }
   ],
   "veiculo_avisos_cientes": {}
