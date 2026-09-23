@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-23T13:45:53",
+    "ultima_atualizacao": "2026-09-23T17:32:11",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -81017,7 +81017,7 @@
       "cliente": "",
       "endereco": "",
       "cidade_regiao": "SALTO",
-      "observacoes": "Precisei levar meu filho Caio Ringis de Marques no Pronto Socorro, enviado atestado de comparecimento",
+      "observacoes": "",
       "abasteceu": "NÃO",
       "valor_abastecido": null,
       "litros_abastecidos": null,
@@ -81032,7 +81032,9 @@
       "origem": "APP",
       "criado_em": "2026-09-17T18:40:39",
       "usuario": "celso",
-      "id_importacao": null
+      "id_importacao": null,
+      "atualizado_em": "2026-09-23T17:32:11",
+      "atualizado_por": "celso"
     }
   ],
   "veiculo_tipos": {
