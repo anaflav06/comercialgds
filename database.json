@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T18:57:01",
+    "ultima_atualizacao": "2026-09-24T18:58:54",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35968,7 +35968,7 @@
     {
       "id": 2110,
       "documento": "",
-      "nome": "CESINHA",
+      "nome": "NUTRIBIO IND COM RAÇÕESCESINHA",
       "telefone1": "(66) 9925-6022",
       "telefone2": "",
       "telefone3": "",
@@ -35980,7 +35980,9 @@
       "retorno_apos_seq": 1315,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "CLIENTE EM ANDAMENTO"
+      "proxima_acao": "CLIENTE EM ANDAMENTO",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2111,
