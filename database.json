@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T17:56:17",
+    "ultima_atualizacao": "2026-09-24T18:02:33",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35973,7 +35973,7 @@
       "data_primeiro_contato": "2026-08-21",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 1314,
+      "retorno_apos_seq": 1315,
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "CLIENTE EM ANDAMENTO"
@@ -74717,6 +74717,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-24T17:56:17",
       "seq_global": 1114,
+      "usuario": "celso"
+    },
+    {
+      "id": 2535,
+      "empresa_id": 2110,
+      "data_contato": "2026-09-24",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "EM ANDAMENTO",
+      "observacao": "Cliente falou que tem conta corrente inativa e mandei para Vanessa Verificar o motivo da inatividade.",
+      "proxima_acao": "CLIENTE EM ANDAMENTO",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-24T18:02:33",
+      "seq_global": 1115,
       "usuario": "celso"
     }
   ],
