@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T19:32:40",
+    "ultima_atualizacao": "2026-09-24T19:33:04",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40257,7 +40257,7 @@
       "telefone1": "",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "CONTATO INVÁLIDO",
       "observacao_atual": "",
       "data_primeiro_contato": null,
       "criado_em": "2026-09-14T19:22:14",
@@ -40265,7 +40265,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2350,
