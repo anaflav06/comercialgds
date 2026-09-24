@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T19:43:22",
+    "ultima_atualizacao": "2026-09-24T19:45:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -83144,16 +83144,18 @@
       "endereco": "SARA HELENA MANTELLO, 188",
       "telefone": "",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "💬 WhatsApp",
       "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-24",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 60,
@@ -84894,6 +84896,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-24T19:43:22"
+    },
+    {
+      "id": 97,
+      "cliente_id": 59,
+      "empresa": "TRANSUNI TRANSPORTES",
+      "data": "2026-09-24",
+      "hora": "19:45",
+      "acao": "💬 WhatsApp",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-24T19:45:27"
     }
   ],
   "veiculo_avisos_cientes": {}
