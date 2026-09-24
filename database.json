@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T17:54:54",
+    "ultima_atualizacao": "2026-09-24T17:56:17",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35968,15 +35968,15 @@
       "telefone1": "(66) 9925-6022",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "",
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "Cliente falou que tem conta corrente inativa e mandei para Vanessa Verificar o motivo da inatividade.",
       "data_primeiro_contato": "2026-08-21",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 1294,
+      "retorno_apos_seq": 1314,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "CLIENTE EM ANDAMENTO"
     },
     {
       "id": 2111,
@@ -74703,6 +74703,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-24T17:54:54",
       "seq_global": 1113,
+      "usuario": "celso"
+    },
+    {
+      "id": 2534,
+      "empresa_id": 2110,
+      "data_contato": "2026-09-24",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "EM ANDAMENTO",
+      "observacao": "Cliente falou que tem conta corrente inativa e mandei para Vanessa Verificar o motivo da inatividade.",
+      "proxima_acao": "CLIENTE EM ANDAMENTO",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-24T17:56:17",
+      "seq_global": 1114,
       "usuario": "celso"
     }
   ],
