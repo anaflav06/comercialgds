@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T19:20:44",
+    "ultima_atualizacao": "2026-09-24T19:21:23",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38708,7 +38708,7 @@
       "retorno_apos_seq": null,
       "data_agendamento": "2026-09-25",
       "agendamento_pendente": 1,
-      "proxima_acao": "Aguardando aprovação de cotação 55274844",
+      "proxima_acao": "Cobrar retorno / novo contato",
       "numero_cotacao": "91878146",
       "proxima_acao_em": "2026-09-25T19:19"
     },
@@ -75028,6 +75028,20 @@
       "data_proxima_acao": "2026-09-25",
       "criado_em": "2026-09-24T19:20:39",
       "seq_global": 1135,
+      "usuario": "celso"
+    },
+    {
+      "id": 2556,
+      "empresa_id": 2267,
+      "data_contato": "2026-09-24",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "RETORNO AGENDADO",
+      "observacao": "",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-25",
+      "criado_em": "2026-09-24T19:21:23",
+      "seq_global": 1136,
       "usuario": "celso"
     }
   ],
