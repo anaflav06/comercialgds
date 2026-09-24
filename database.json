@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T19:54:29",
+    "ultima_atualizacao": "2026-09-24T20:20:39",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -83163,16 +83163,18 @@
       "endereco": "SARA HELENA MANTELO, 20",
       "telefone": "(19) 3282-1124 / (19) 3281-0432",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "ultima_acao": "💬 WhatsApp",
       "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-24",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 61,
@@ -85000,6 +85002,23 @@
       "data_proxima_acao": "2026-09-25",
       "usuario": "celso",
       "criado_em": "2026-09-24T19:54:29"
+    },
+    {
+      "id": 103,
+      "cliente_id": 60,
+      "empresa": "TRLOG TRANSPORTES E LOGÍSTICA EIRELI",
+      "data": "2026-09-24",
+      "hora": "20:20",
+      "acao": "💬 WhatsApp",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-24T20:20:39"
     }
   ],
   "veiculo_avisos_cientes": {}
