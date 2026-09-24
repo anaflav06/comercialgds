@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T19:33:53",
+    "ultima_atualizacao": "2026-09-24T19:34:53",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40295,7 +40295,7 @@
       "telefone1": "(11) 95583-5880",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "Cliente entrou em contato para solicitar coleta e encaminhei para SAO12",
       "data_primeiro_contato": "2026-09-14",
       "criado_em": "2026-09-14T20:04:48",
@@ -40303,7 +40303,8 @@
       "retorno_apos_seq": 1036,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "CLIENTE EM ANDAMENTO"
+      "proxima_acao": "CLIENTE EM ANDAMENTO",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2352,
