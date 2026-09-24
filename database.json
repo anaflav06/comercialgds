@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T19:39:30",
+    "ultima_atualizacao": "2026-09-24T19:40:47",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -83320,16 +83320,18 @@
       "endereco": "LÁZARO BIBIANO DA SILVA, 67",
       "telefone": "(19) 99369-8830",
       "site": "",
-      "status": "SEM CONTATO",
-      "ultima_acao": "",
-      "ultima_observacao": "",
-      "total_tentativas": 0,
-      "data_ultima_acao": null,
+      "status": "EM CONTATO",
+      "ultima_acao": "💬 WhatsApp",
+      "ultima_observacao": "Aguardando Cliente",
+      "total_tentativas": 1,
+      "data_ultima_acao": "2026-09-24",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-09-22T14:12:38",
-      "origem": "LISTA TICLOG INICIAL"
+      "origem": "LISTA TICLOG INICIAL",
+      "proxima_acao": "",
+      "data_proxima_acao": "2026-09-28"
     }
   ],
   "historico_ticlog": [
@@ -84837,6 +84839,23 @@
       "data_proxima_acao": "2026-09-28",
       "usuario": "celso",
       "criado_em": "2026-09-23T18:23:57"
+    },
+    {
+      "id": 94,
+      "cliente_id": 69,
+      "empresa": "HOLD TRANSPORTES",
+      "data": "2026-09-24",
+      "hora": "19:40",
+      "acao": "💬 WhatsApp",
+      "resultado": "FALOU COM RESPONSÁVEL",
+      "status_novo": "EM CONTATO",
+      "observacao": "Aguardando Cliente",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": "2026-09-28",
+      "usuario": "celso",
+      "criado_em": "2026-09-24T19:40:47"
     }
   ],
   "veiculo_avisos_cientes": {}
