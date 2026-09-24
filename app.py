@@ -1685,7 +1685,7 @@ def painel_edicao_empresa(empresa, prefixo="editar"):
                     valor_data = pd.to_datetime(empresa.get("data_agendamento")).date()
                 except Exception:
                     pass
-            _data_retorno_raw = row.get("data_agendamento")
+            _data_retorno_raw = empresa.get("data_agendamento")
         _data_retorno_dt = pd.to_datetime(_data_retorno_raw, errors="coerce", dayfirst=True)
         _data_retorno_value = None if pd.isna(_data_retorno_dt) else _data_retorno_dt.date()
 
