@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T19:37:51",
+    "ultima_atualizacao": "2026-09-24T19:39:26",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40664,15 +40664,15 @@
       "telefone1": "(11) 99236-8050",
       "telefone2": "",
       "telefone3": "",
-      "status": "COTAÇÃO SOLICITADA",
+      "status": "RETORNO AGENDADO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-22",
       "criado_em": "2026-09-22T12:56:25",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": 1227,
-      "data_agendamento": null,
-      "agendamento_pendente": 0,
-      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO"
+      "retorno_apos_seq": null,
+      "data_agendamento": "2026-09-25",
+      "agendamento_pendente": 1,
+      "proxima_acao": "Aguardando aprovação da cotação 21648465"
     },
     {
       "id": 2372,
@@ -75224,6 +75224,20 @@
       "data_proxima_acao": "2026-09-28",
       "criado_em": "2026-09-24T19:37:45",
       "seq_global": 1148,
+      "usuario": "celso"
+    },
+    {
+      "id": 2569,
+      "empresa_id": 2371,
+      "data_contato": "2026-09-24",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "RETORNO AGENDADO",
+      "observacao": "",
+      "proxima_acao": "Aguardando aprovação da cotação 21648465",
+      "data_proxima_acao": "2026-09-25",
+      "criado_em": "2026-09-24T19:39:26",
+      "seq_global": 1149,
       "usuario": "celso"
     }
   ],
