@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T17:38:29",
+    "ultima_atualizacao": "2026-09-24T17:39:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35088,8 +35088,8 @@
       "id": 2059,
       "documento": "67.731.091/0001-06",
       "nome": "CORR PLASTIK INDUSTRIAL LIMITADA",
-      "telefone1": "(11) 94163-7876",
-      "telefone2": "(11) 95540-8441",
+      "telefone1": "",
+      "telefone2": "",
       "telefone3": "(82) 98216-9189",
       "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
@@ -35100,7 +35100,8 @@
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "AGUARDANDO RESPOSTA",
-      "email": ""
+      "email": "rogerio.siqueira@corr.com.br",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2060,
