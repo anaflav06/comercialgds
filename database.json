@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T19:23:53",
+    "ultima_atualizacao": "2026-09-24T19:24:31",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38778,15 +38778,15 @@
       "telefone1": "(13) 99765-0958",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "RETORNO AGENDADO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-09",
       "criado_em": "2026-09-09T14:21:44",
       "origem": "APP",
-      "retorno_apos_seq": 952,
-      "data_agendamento": null,
-      "agendamento_pendente": 0,
-      "proxima_acao": "CLIENTE EM ANDAMENTO"
+      "retorno_apos_seq": null,
+      "data_agendamento": "2026-09-25",
+      "agendamento_pendente": 1,
+      "proxima_acao": "Cobrar retorno / novo contato"
     },
     {
       "id": 2272,
@@ -75072,6 +75072,20 @@
       "data_proxima_acao": "2026-09-28",
       "criado_em": "2026-09-24T19:23:49",
       "seq_global": 1138,
+      "usuario": "celso"
+    },
+    {
+      "id": 2559,
+      "empresa_id": 2271,
+      "data_contato": "2026-09-24",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "RETORNO AGENDADO",
+      "observacao": "",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-25",
+      "criado_em": "2026-09-24T19:24:31",
+      "seq_global": 1139,
       "usuario": "celso"
     }
   ],
