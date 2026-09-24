@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-24T14:31:07",
+    "ultima_atualizacao": "2026-09-24T14:33:23",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35989,10 +35989,10 @@
       "data_primeiro_contato": "2026-09-09",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 950,
+      "retorno_apos_seq": 1296,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "",
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS",
       "email": "",
       "numero_cotacao": "54595170"
     },
@@ -74450,6 +74450,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-09-24T14:31:07",
       "seq_global": 1095,
+      "usuario": "celso"
+    },
+    {
+      "id": 2516,
+      "empresa_id": 2111,
+      "data_contato": "2026-09-24",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "2ª TENTATIVA SEM RETORNO",
+      "observacao": "",
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS",
+      "data_proxima_acao": null,
+      "criado_em": "2026-09-24T14:33:23",
+      "seq_global": 1096,
       "usuario": "celso"
     }
   ],
