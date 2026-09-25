@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-25T18:11:54",
+    "ultima_atualizacao": "2026-09-25T18:13:49",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -82479,10 +82479,10 @@
       "endereco": "ALFREDO VIEIRA ALVES, 69",
       "telefone": "(19) 3212-1430 / (19) 3245-1113",
       "site": "",
-      "status": "RETORNAR CONTATO",
-      "ultima_acao": "📞 Ligar",
-      "ultima_observacao": "Pediu para que mandasse e-mail e assim foi feito",
-      "total_tentativas": 3,
+      "status": "EM CONTATO",
+      "ultima_acao": "✉️ E-mail",
+      "ultima_observacao": "Estou em contato com o responsável para marcar uma visita",
+      "total_tentativas": 4,
       "data_ultima_acao": "2026-09-25",
       "visita_agendada": 0,
       "data_visita": null,
@@ -82490,7 +82490,7 @@
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
       "proxima_acao": "Cobrar retorno / novo contato",
-      "data_proxima_acao": "2026-09-26"
+      "data_proxima_acao": "2026-09-28"
     },
     {
       "id": 4,
@@ -85492,6 +85492,23 @@
       "data_proxima_acao": "2026-09-26",
       "usuario": "celso",
       "criado_em": "2026-09-25T13:23:44"
+    },
+    {
+      "id": 109,
+      "cliente_id": 3,
+      "empresa": "ALPHA CARGO TRANSPORTES LTDA",
+      "data": "2026-09-25",
+      "hora": "18:13",
+      "acao": "✉️ E-mail",
+      "resultado": "FALOU COM RESPONSÁVEL",
+      "status_novo": "EM CONTATO",
+      "observacao": "Estou em contato com o responsável para marcar uma visita",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-28",
+      "usuario": "celso",
+      "criado_em": "2026-09-25T18:13:49"
     }
   ],
   "veiculo_avisos_cientes": {}
