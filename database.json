@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-25T13:05:27",
+    "ultima_atualizacao": "2026-09-25T13:05:30",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37874,7 +37874,7 @@
       "agendamento_pendente": 1,
       "proxima_acao": "Aguardando Nota Fiscal para programar coleta",
       "numero_cotacao": "71156853",
-      "proxima_acao_em": "2026-09-25T18:24"
+      "proxima_acao_em": "2026-09-25T15:00"
     },
     {
       "id": 2221,
