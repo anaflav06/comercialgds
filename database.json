@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-25T14:40:33",
+    "ultima_atualizacao": "2026-09-25T18:11:54",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37864,7 +37864,7 @@
       "telefone1": "(31) 7180-0051",
       "telefone2": "",
       "telefone3": "",
-      "status": "RETORNO AGENDADO",
+      "status": "FECHADO / GANHO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-31",
       "criado_em": "2026-08-14T20:21:10",
@@ -37874,7 +37874,8 @@
       "agendamento_pendente": 1,
       "proxima_acao": "Aguardando Nota Fiscal para programar coleta",
       "numero_cotacao": "71156853",
-      "proxima_acao_em": "2026-09-25T15:00"
+      "proxima_acao_em": "2026-09-25T15:00",
+      "email": ""
     },
     {
       "id": 2221,
