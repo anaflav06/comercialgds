@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-25T18:41:11",
+    "ultima_atualizacao": "2026-09-25T19:54:00",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40633,10 +40633,10 @@
       "data_primeiro_contato": "2026-09-16",
       "criado_em": "2026-09-16T14:06:48",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": 1188,
+      "retorno_apos_seq": 1410,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "PULADO POR ENQUANTO"
     },
     {
       "id": 2370,
