@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-25T12:56:17",
+    "ultima_atualizacao": "2026-09-25T12:56:21",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40673,7 +40673,7 @@
       "data_agendamento": "2026-09-26",
       "agendamento_pendente": 1,
       "proxima_acao": "Cobrar retorno / novo contato",
-      "proxima_acao_em": "2026-09-25T10:00"
+      "proxima_acao_em": "2026-09-26T12:55"
     },
     {
       "id": 2372,
