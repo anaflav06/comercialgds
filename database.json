@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-28T14:28:37",
+    "ultima_atualizacao": "2026-09-28T14:29:08",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -84596,18 +84596,18 @@
       "endereco": "RUA ANCILLA TONINI GAGO, 565",
       "telefone": "(19) 3281-6555 / (19) 98728-2827",
       "site": "",
-      "status": "EM CONTATO",
+      "status": "EMPRESA NÃO EXISTE / ENCERRADA",
       "ultima_acao": "💬 WhatsApp",
       "ultima_observacao": "",
-      "total_tentativas": 2,
-      "data_ultima_acao": "2026-09-24",
+      "total_tentativas": 3,
+      "data_ultima_acao": "2026-09-28",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-09-22T13:13:44",
       "origem": "LISTA TICLOG INICIAL",
       "proxima_acao": "Cobrar retorno / novo contato",
-      "data_proxima_acao": "2026-09-28"
+      "data_proxima_acao": "2026-09-29"
     },
     {
       "id": 69,
@@ -86440,6 +86440,23 @@
       "data_proxima_acao": "2026-09-29",
       "usuario": "celso",
       "criado_em": "2026-09-28T14:28:37"
+    },
+    {
+      "id": 112,
+      "cliente_id": 68,
+      "empresa": "HSE TRANSPORTES",
+      "data": "2026-09-28",
+      "hora": "14:29",
+      "acao": "💬 WhatsApp",
+      "resultado": "EMPRESA NÃO EXISTE / ENCERRADA",
+      "status_novo": "EMPRESA NÃO EXISTE / ENCERRADA",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-29",
+      "usuario": "celso",
+      "criado_em": "2026-09-28T14:29:08"
     }
   ],
   "veiculo_avisos_cientes": {}
