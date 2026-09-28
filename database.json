@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-28T14:26:05",
+    "ultima_atualizacao": "2026-09-28T14:28:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -83667,11 +83667,11 @@
       "endereco": "ARMANDO DE CAMPOS, 111",
       "telefone": "(19) 99745-4656",
       "site": "",
-      "status": "EM CONTATO",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
       "ultima_acao": "💬 WhatsApp",
-      "ultima_observacao": "Estou tentando marcar uma reunião com eles, pois quando fui a responsável Luana não pôde me atender.",
-      "total_tentativas": 3,
-      "data_ultima_acao": "2026-09-23",
+      "ultima_observacao": "",
+      "total_tentativas": 4,
+      "data_ultima_acao": "2026-09-28",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -83679,7 +83679,7 @@
       "origem": "LISTA TICLOG INICIAL",
       "atualizado_em": "2026-09-23T18:07:03",
       "proxima_acao": "Cobrar retorno / novo contato",
-      "data_proxima_acao": "2026-09-28"
+      "data_proxima_acao": "2026-09-29"
     },
     {
       "id": 20,
@@ -86423,6 +86423,23 @@
       "data_proxima_acao": "2026-09-29",
       "usuario": "celso",
       "criado_em": "2026-09-28T14:26:05"
+    },
+    {
+      "id": 111,
+      "cliente_id": 19,
+      "empresa": "DISPLAN ENCOMENDAS URGENTES",
+      "data": "2026-09-28",
+      "hora": "14:28",
+      "acao": "💬 WhatsApp",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-29",
+      "usuario": "celso",
+      "criado_em": "2026-09-28T14:28:37"
     }
   ],
   "veiculo_avisos_cientes": {}
