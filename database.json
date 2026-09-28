@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-28T20:08:50",
+    "ultima_atualizacao": "2026-09-28T20:09:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37588,7 +37588,7 @@
       "telefone1": "(82) 9900-5630",
       "telefone2": "",
       "telefone3": "",
-      "status": "RETORNO AGENDADO",
+      "status": "JÁ UTILIZA AZUL",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-28",
       "criado_em": "2026-08-14T20:21:10",
@@ -37598,7 +37598,8 @@
       "agendamento_pendente": 1,
       "proxima_acao": "Cobrar retorno / novo contato",
       "email": "",
-      "proxima_acao_em": "2026-09-29T13:10"
+      "proxima_acao_em": "2026-09-29T13:10",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2205,
