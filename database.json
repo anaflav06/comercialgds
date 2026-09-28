@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-28T20:00:54",
+    "ultima_atualizacao": "2026-09-28T20:01:41",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -84721,8 +84721,8 @@
       "status": "TENTAR NOVAMENTE / VISITAR",
       "ultima_acao": "📞 Ligar",
       "ultima_observacao": "",
-      "total_tentativas": 1,
-      "data_ultima_acao": "2026-09-11",
+      "total_tentativas": 2,
+      "data_ultima_acao": "2026-09-28",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
@@ -87014,6 +87014,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-28T20:00:54"
+    },
+    {
+      "id": 133,
+      "cliente_id": 63,
+      "empresa": "TRANSMAC",
+      "data": "2026-09-28",
+      "hora": "20:01",
+      "acao": "📞 Ligar",
+      "resultado": "NÃO ATENDEU / SEM RESPOSTA",
+      "status_novo": "TENTAR NOVAMENTE / VISITAR",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-28T20:01:41"
     }
   ],
   "veiculo_avisos_cientes": {}
