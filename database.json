@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-28T14:42:25",
+    "ultima_atualizacao": "2026-09-28T14:43:13",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35978,9 +35978,9 @@
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
       "retorno_apos_seq": null,
-      "data_agendamento": "2026-09-28",
+      "data_agendamento": "2026-09-29",
       "agendamento_pendente": 1,
-      "proxima_acao": "aguardando parecer do Comercial referente sua conta corrente",
+      "proxima_acao": "Cobrar retorno / novo contato",
       "email": "",
       "numero_cotacao": "nan",
       "proxima_acao_em": "2026-09-28T09:00"
@@ -76501,6 +76501,20 @@
       "data_proxima_acao": "2026-09-29",
       "criado_em": "2026-09-28T14:42:20",
       "seq_global": 1239,
+      "usuario": "celso"
+    },
+    {
+      "id": 2660,
+      "empresa_id": 2110,
+      "data_contato": "2026-09-28",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+      "status_novo": "RETORNO AGENDADO",
+      "observacao": "",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-09-29",
+      "criado_em": "2026-09-28T14:43:13",
+      "seq_global": 1240,
       "usuario": "celso"
     }
   ],
