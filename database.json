@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-28T18:09:30",
+    "ultima_atualizacao": "2026-09-28T18:10:50",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -83706,17 +83706,19 @@
       "endereco": "SARA HELENA MANTELLO, 397",
       "telefone": "(11)99995-6666",
       "site": "",
-      "status": "TENTAR NOVAMENTE / VISITAR",
+      "status": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
       "ultima_acao": "💬 WhatsApp",
       "ultima_observacao": "",
-      "total_tentativas": 1,
-      "data_ultima_acao": "2026-09-01",
+      "total_tentativas": 2,
+      "data_ultima_acao": "2026-09-28",
       "visita_agendada": 0,
       "data_visita": null,
       "hora_visita": null,
       "criado_em": "2026-08-27T14:41:51",
       "origem": "LISTA TICLOG INICIAL",
-      "atualizado_em": "2026-09-01T14:04:06"
+      "atualizado_em": "2026-09-01T14:04:06",
+      "proxima_acao": "",
+      "data_proxima_acao": null
     },
     {
       "id": 11,
@@ -86798,6 +86800,23 @@
       "data_proxima_acao": null,
       "usuario": "celso",
       "criado_em": "2026-09-28T18:09:30"
+    },
+    {
+      "id": 121,
+      "cliente_id": 10,
+      "empresa": "BR7 TRANSPORTES",
+      "data": "2026-09-28",
+      "hora": "18:10",
+      "acao": "💬 WhatsApp",
+      "resultado": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "status_novo": "OUTRO SETOR / NÃO É PÚBLICO-ALVO",
+      "observacao": "",
+      "data_visita": null,
+      "hora_visita": null,
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "usuario": "celso",
+      "criado_em": "2026-09-28T18:10:50"
     }
   ],
   "veiculo_avisos_cientes": {}
