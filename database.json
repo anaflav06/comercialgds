@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-09-30T12:08:44",
+    "ultima_atualizacao": "2026-09-30T12:10:54",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -77904,6 +77904,18 @@
       "observacao": "ROSE",
       "status": "PROGRAMADO",
       "criado_em": "2026-09-28T17:40:18",
+      "usuario": "celso"
+    },
+    {
+      "id": 10,
+      "data": "2026-10-08",
+      "horario": "12:10",
+      "tipo": "EVENTO",
+      "cliente_compromisso": "FISP FEIRA INTERNACIONAL DE SEGURANÇA E PROTEÇÃO - SP EXPO IMIGRANTES",
+      "local": "SÃO PAULO EXPO",
+      "observacao": "EPI'S , UNIFORMES, EQUIPAMENTOS",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-09-30T12:10:54",
       "usuario": "celso"
     }
   ],
