@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-01T13:38:40",
+    "ultima_atualizacao": "2026-10-01T13:39:08",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -35558,15 +35558,15 @@
       "telefone1": "(11) 96142-0970",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "SEM RETORNO APÓS 3 TENTATIVAS",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-18",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 1401,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS"
     },
     {
       "id": 2087,
@@ -78877,6 +78877,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-01T13:38:40",
       "seq_global": 1407,
+      "usuario": "celso"
+    },
+    {
+      "id": 2828,
+      "empresa_id": 2086,
+      "data_contato": "2026-10-01",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "NÃO CONSEGUI CONTATO",
+      "status_novo": "SEM RETORNO APÓS 3 TENTATIVAS",
+      "observacao": "",
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-01T13:39:08",
+      "seq_global": 1408,
       "usuario": "celso"
     }
   ],
