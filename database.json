@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-01T12:22:39",
+    "ultima_atualizacao": "2026-10-01T12:23:25",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -36375,15 +36375,15 @@
       "telefone1": "(11) 4972-8677",
       "telefone2": "",
       "telefone3": "",
-      "status": "COTAÇÃO ENVIADA",
+      "status": "RETORNO AGENDADO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-24",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 1554,
-      "data_agendamento": null,
-      "agendamento_pendente": 0,
-      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO"
+      "retorno_apos_seq": null,
+      "data_agendamento": "2026-10-05",
+      "agendamento_pendente": 1,
+      "proxima_acao": "Cobrar retorno / novo contato"
     },
     {
       "id": 2134,
@@ -78610,6 +78610,20 @@
       "data_proxima_acao": "2026-10-05",
       "criado_em": "2026-10-01T12:22:35",
       "seq_global": 1388,
+      "usuario": "celso"
+    },
+    {
+      "id": 2809,
+      "empresa_id": 2133,
+      "data_contato": "2026-10-01",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "RETORNO AGENDADO",
+      "observacao": "",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-10-05",
+      "criado_em": "2026-10-01T12:23:25",
+      "seq_global": 1389,
       "usuario": "celso"
     }
   ],
