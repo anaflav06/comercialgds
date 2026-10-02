@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-02T17:52:02",
+    "ultima_atualizacao": "2026-10-02T17:52:22",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40702,7 +40702,7 @@
     {
       "id": 2373,
       "documento": "",
-      "nome": "ON TIME",
+      "nome": "ON TIME / MAIS BRASIL",
       "email": "",
       "telefone1": "(19) 97409-8299",
       "telefone2": "",
