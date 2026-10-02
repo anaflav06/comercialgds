@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-02T17:52:22",
+    "ultima_atualizacao": "2026-10-02T17:54:41",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -18602,15 +18602,15 @@
       "telefone1": "(11) 96882-9127",
       "telefone2": "(11) 96882-2212",
       "telefone3": "(11) 96882-8695",
-      "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "",
+      "status": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+      "observacao_atual": "Aguardando autorização para visita com Sr.Rodnei",
       "data_primeiro_contato": "2026-07-14",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 1618,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "👔 Aguardar responsável"
     },
     {
       "id": 1093,
@@ -79017,6 +79017,20 @@
       "data_proxima_acao": "2026-10-07",
       "criado_em": "2026-10-02T17:50:02",
       "seq_global": 1417,
+      "usuario": "celso"
+    },
+    {
+      "id": 2838,
+      "empresa_id": 1092,
+      "data_contato": "2026-10-02",
+      "tipo_contato": "OUTRO",
+      "resultado": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+      "status_novo": "AGUARDANDO CONTATO DO RESPONSÁVEL",
+      "observacao": "Aguardando autorização para visita com Sr.Rodnei",
+      "proxima_acao": "👔 Aguardar responsável",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-02T17:54:41",
+      "seq_global": 1418,
       "usuario": "celso"
     }
   ],
