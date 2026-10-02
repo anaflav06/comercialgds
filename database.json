@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-02T18:11:43",
+    "ultima_atualizacao": "2026-10-02T18:12:22",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38532,15 +38532,15 @@
       "telefone1": "(91) 9288-1566",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "SEM INTERESSE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-08",
       "criado_em": "2026-09-08T14:57:16",
       "origem": "APP",
-      "retorno_apos_seq": 941,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "proxima_acao": "",
       "numero_cotacao": "70417885"
     },
     {
@@ -79285,6 +79285,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-02T18:11:43",
       "seq_global": 1436,
+      "usuario": "celso"
+    },
+    {
+      "id": 2857,
+      "empresa_id": 2258,
+      "data_contato": "2026-10-02",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-02T18:12:22",
+      "seq_global": 1437,
       "usuario": "celso"
     }
   ],
