@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-05T19:32:04",
+    "ultima_atualizacao": "2026-10-05T19:34:46",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40790,10 +40790,10 @@
       "data_primeiro_contato": null,
       "criado_em": "2026-10-05T17:55:18",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 1679,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "",
+      "proxima_acao": "PULADO POR ENQUANTO",
       "numero_cotacao": ""
     },
     {
