@@ -1557,19 +1557,98 @@ def dataframe_importacao_flexivel(df):
     return pd.DataFrame(saida)
 
 def parsear_importacao_inteligente(texto):
-    bruto=str(texto or "")
-    if not bruto.strip(): return pd.DataFrame()
-    linhas=[l for l in bruto.splitlines() if l.strip()]
-    if linhas and ("NOME DO CLIENTE" in linhas[0].upper() or "COTAÇÃO" in linhas[0].upper() or "COTACAO" in linhas[0].upper()):
-        try:
-            sep="\t" if "\t" in linhas[0] else ";"
-            df=pd.read_csv(io.StringIO(bruto),sep=sep,dtype=str,engine="python")
-            x=dataframe_importacao_flexivel(df)
-            if not x.empty: return x
-        except Exception: pass
-    x=parsear_texto_livre(bruto)
-    if not x.empty and "Número cotação" not in x.columns: x["Número cotação"]=""
-    return x
+    """
+    Importação flexível para texto colado.
+    Regras V16.3:
+    - nunca deixa +55 ou fragmentos de telefone contaminarem o nome;
+    - reconhece telefones brasileiros com/sem +55 e 0800;
+    - remove telefones repetidos dentro da mesma empresa;
+    - mantém os 3 primeiros telefones únicos nos campos principais;
+    - preserva os demais em 'Outros telefones';
+    - aceita também NOME + TELEFONE + NÚMERO COTAÇÃO.
+    """
+    if not str(texto or "").strip():
+        return pd.DataFrame()
+
+    linhas = [ln.strip() for ln in str(texto).replace("\r", "\n").split("\n") if ln.strip()]
+    registros = []
+
+    # +55 DD 8/9 dígitos, DD 8/9 dígitos e 0800.
+    rx_tel = re.compile(
+        r'(?<!\d)(?:\+?55[\s().-]*)?(?:\(?\d{2}\)?[\s.-]*)?(?:9?\d{4}[\s.-]?\d{4})(?!\d)'
+        r'|(?<!\d)0800[\s.-]*\d{3}[\s.-]*\d{4}(?!\d)',
+        re.I
+    )
+
+    def normalizar_tel_import(v):
+        dig = re.sub(r"\D", "", str(v or ""))
+        if dig.startswith("55") and len(dig) in (12, 13):
+            dig = dig[2:]
+        if dig.startswith("0800") and len(dig) == 11:
+            return f"0800 {dig[4:7]} {dig[7:]}"
+        if len(dig) == 11:
+            return f"({dig[:2]}) {dig[2:7]}-{dig[7:]}"
+        if len(dig) == 10:
+            return f"({dig[:2]}) {dig[2:6]}-{dig[6:]}"
+        return str(v or "").strip()
+
+    def chave_tel(v):
+        d = re.sub(r"\D", "", str(v or ""))
+        if d.startswith("55") and len(d) in (12,13):
+            d = d[2:]
+        return d
+
+    for linha in linhas:
+        encontrados = [m.group(0).strip(" ,;\t") for m in rx_tel.finditer(linha)]
+
+        # Remove telefones completos do texto ANTES de extrair o nome.
+        resto = rx_tel.sub(" ", linha)
+        # Remove prefixos +55 órfãos, vírgulas e separadores que sobraram.
+        resto = re.sub(r'(?<!\d)\+?\s*55(?=\s*[,;|\t]|\s*$)', ' ', resto)
+        resto = re.sub(r'(?:\s*[;,|]\s*)+', ' ', resto)
+        resto = re.sub(r'\s+', ' ', resto).strip(" ,;|\t")
+
+        # Número de cotação: 7/8 dígitos isolados no final do conteúdo restante.
+        cotacao = ""
+        mc = re.search(r'(?<!\d)(\d{7,8})(?!\d)\s*$', resto)
+        if mc:
+            cotacao = mc.group(1)
+            resto = resto[:mc.start()].strip(" ,;|\t")
+
+        # CPF/CNPJ se houver.
+        documento = ""
+        md = re.search(r'(?<!\d)(\d{3}\.?\d{3}\.?\d{3}-?\d{2}|\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2})(?!\d)', resto)
+        if md:
+            documento = md.group(1)
+            resto = (resto[:md.start()] + " " + resto[md.end():]).strip()
+
+        nome = re.sub(r'\s+', ' ', resto).strip(" ,;|\t")
+        if not nome:
+            continue
+
+        # Deduplicar telefones preservando a ordem original.
+        tels = []
+        vistos = set()
+        for t in encontrados:
+            fmt = normalizar_tel_import(t)
+            chave = chave_tel(fmt)
+            if chave and chave not in vistos:
+                vistos.add(chave)
+                tels.append(fmt)
+
+        registros.append({
+            "CPF/CNPJ": documento,
+            "Nome": nome,
+            "E-mail": "",
+            "Telefone 1": tels[0] if len(tels) > 0 else "",
+            "Telefone 2": tels[1] if len(tels) > 1 else "",
+            "Telefone 3": tels[2] if len(tels) > 2 else "",
+            "Outros telefones": " | ".join(tels[3:]),
+            "Número cotação": cotacao,
+        })
+
+    return pd.DataFrame(registros)
+
 
 def eh_duplicado(documento, telefones, empresas, email=""):
     doc = somente_digitos(documento)
@@ -4788,6 +4867,10 @@ elif menu == "➕ Adicionar contatos em lote":
                 axis=1
             )
             st.markdown(f"### Prévia — {len(previa)} registro(s) identificado(s)")
+            if "Outros telefones" in previa.columns:
+                qtd_extras = int(previa["Outros telefones"].fillna("").astype(str).str.strip().ne("").sum())
+                if qtd_extras:
+                    st.caption(f"📞 {qtd_extras} registro(s) possuem telefones adicionais preservados em 'Outros telefones'.")
             st.dataframe(previa, use_container_width=True, hide_index=True)
 
             incluir = st.button(
