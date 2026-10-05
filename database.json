@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-05T17:44:16",
+    "ultima_atualizacao": "2026-10-05T17:45:09",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40724,7 +40724,7 @@
     {
       "id": 2374,
       "documento": "00.324.107/0001-95",
-      "nome": "VIVA EQUIPAMENTOS IND E COM",
+      "nome": "VIVA EQUIPAMENTOS IND E COM (LEADS AZUL)",
       "email": "",
       "telefone1": "(19) 3303-1400 / (19 )99649-4012 / (19) 3254-3610",
       "telefone2": "",
@@ -40737,7 +40737,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2375,
