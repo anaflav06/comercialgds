@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-05T13:43:44",
+    "ultima_atualizacao": "2026-10-05T13:43:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -38715,7 +38715,7 @@
       "agendamento_pendente": 1,
       "proxima_acao": "Cobrar retorno / novo contato",
       "numero_cotacao": "91878146",
-      "proxima_acao_em": "2026-10-05T12:21"
+      "proxima_acao_em": "2026-02-13T13:43"
     },
     {
       "id": 2268,
