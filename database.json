@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-06T12:02:48",
+    "ultima_atualizacao": "2026-10-06T13:18:44",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40799,7 +40799,7 @@
     {
       "id": 2378,
       "documento": "",
-      "nome": "FLAPS PRODUTOS AUTOMOTIVOS LTDA +55 , +55 , +55",
+      "nome": "FLAPS PRODUTOS AUTOMOTIVOS LTDA",
       "email": "",
       "telefone1": "(19) 3746-7900",
       "telefone2": "(19) 3746-7903",
