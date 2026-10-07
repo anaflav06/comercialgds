@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-07T13:53:14",
+    "ultima_atualizacao": "2026-10-07T13:55:04",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -88656,7 +88656,7 @@
       "data": "2026-10-05",
       "placa": "FMZ0A92",
       "km_inicial": 248391,
-      "km_final": 248418,
+      "km_final": 248412,
       "tipo_uso": "ALMOÇO",
       "motivo": "ALMOÇO",
       "motivo_original": "ALMOÇO",
@@ -88678,7 +88678,9 @@
       "origem": "APP",
       "criado_em": "2026-10-07T13:53:14",
       "usuario": "celso",
-      "id_importacao": null
+      "id_importacao": null,
+      "atualizado_em": "2026-10-07T13:55:04",
+      "atualizado_por": "celso"
     }
   ],
   "veiculo_tipos": {
