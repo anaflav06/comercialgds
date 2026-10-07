@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-07T19:44:56",
+    "ultima_atualizacao": "2026-10-07T19:46:47",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -36523,19 +36523,21 @@
     {
       "id": 2141,
       "documento": "",
-      "nome": "GIOVANA",
+      "nome": "MUTRAN EXPORTADORAGIOVANA",
       "telefone1": "(91) 8159-4400",
       "telefone2": "",
       "telefone3": "",
       "status": "SEM RETORNO APÓS 3 TENTATIVAS",
-      "observacao_atual": "",
+      "observacao_atual": "Cliente vai retomar envios conosco, trata-se de cliente correntista AZUL baseado em Belém",
       "data_primeiro_contato": "2026-08-25",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2142,
