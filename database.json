@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-07T19:46:47",
+    "ultima_atualizacao": "2026-10-08T13:46:30",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -18602,15 +18602,15 @@
       "telefone1": "(11) 96882-9127",
       "telefone2": "(11) 96882-2212",
       "telefone3": "(11) 96882-8695",
-      "status": "AGUARDANDO CONTATO DO RESPONSÁVEL",
-      "observacao_atual": "Aguardando autorização para visita com Sr.Rodnei",
+      "status": "RETORNO AGENDADO",
+      "observacao_atual": "",
       "data_primeiro_contato": "2026-07-14",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": 1618,
-      "data_agendamento": null,
-      "agendamento_pendente": 0,
-      "proxima_acao": "👔 Aguardar responsável"
+      "retorno_apos_seq": null,
+      "data_agendamento": "2026-10-13",
+      "agendamento_pendente": 1,
+      "proxima_acao": "Cobrar retorno / novo contato"
     },
     {
       "id": 1093,
@@ -82365,6 +82365,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-07T19:44:56",
       "seq_global": 1639,
+      "usuario": "celso"
+    },
+    {
+      "id": 3060,
+      "empresa_id": 1092,
+      "data_contato": "2026-10-08",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "RETORNO AGENDADO",
+      "observacao": "",
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "data_proxima_acao": "2026-10-13",
+      "criado_em": "2026-10-08T13:46:30",
+      "seq_global": 1640,
       "usuario": "celso"
     }
   ],
