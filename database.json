@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-08T20:48:00",
+    "ultima_atualizacao": "2026-10-08T20:49:01",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40795,7 +40795,7 @@
     {
       "id": 2377,
       "documento": "",
-      "nome": "FLUKE INDUSTRIA E COMERCIO DE VEDACOES LTDA +55 , +55 , +55 , 0800 702 4200, 0800 047 4320, +55 , +55",
+      "nome": "FLUKE INDUSTRIA E COMERCIO DE VEDACOES LTDA",
       "email": "",
       "telefone1": "(19) 3273-3999",
       "telefone2": "(19) 3753-4400",
