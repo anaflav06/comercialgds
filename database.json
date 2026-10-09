@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-09T14:19:49",
+    "ultima_atualizacao": "2026-10-09T14:19:54",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40973,15 +40973,16 @@
       "telefone1": "(41) 8859-2578",
       "telefone2": "",
       "telefone3": "",
-      "status": "RETORNO AGENDADO",
-      "observacao_atual": "Aguardando informações sobre o material biológico",
-      "data_primeiro_contato": "2026-10-09",
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
       "criado_em": "2026-10-09T14:17:12",
       "origem": "Cobrar retorno em 24h",
       "retorno_apos_seq": null,
       "data_agendamento": "2026-10-13",
       "agendamento_pendente": 1,
-      "proxima_acao": "Cobrar retorno / novo contato"
+      "proxima_acao": "Cobrar retorno / novo contato",
+      "proxima_acao_em": "2026-10-13T14:19"
     }
   ],
   "contatos": [
@@ -83005,20 +83006,6 @@
       "data_proxima_acao": "2026-10-13",
       "criado_em": "2026-10-09T14:06:56",
       "seq_global": 1683,
-      "usuario": "celso"
-    },
-    {
-      "id": 3104,
-      "empresa_id": 2386,
-      "data_contato": "2026-10-09",
-      "tipo_contato": "WHATSAPP",
-      "resultado": "CLIENTE RESPONDEU",
-      "status_novo": "RETORNO AGENDADO",
-      "observacao": "Aguardando informações sobre o material biológico",
-      "proxima_acao": "Cobrar retorno / novo contato",
-      "data_proxima_acao": "2026-10-13",
-      "criado_em": "2026-10-09T14:19:49",
-      "seq_global": 1684,
       "usuario": "celso"
     }
   ],
