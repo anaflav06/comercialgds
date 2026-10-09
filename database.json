@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-09T18:08:38",
+    "ultima_atualizacao": "2026-10-09T18:56:32",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -83806,6 +83806,18 @@
       "observacao": "ROSE",
       "status": "PROGRAMADO",
       "criado_em": "2026-09-28T17:40:18",
+      "usuario": "celso"
+    },
+    {
+      "id": 10,
+      "data": "2026-10-14",
+      "horario": "18:56",
+      "tipo": "REUNIÃO",
+      "cliente_compromisso": "BIGENS COSMÉTICOS E CUIDADOS PESSOAIS",
+      "local": "SALTO",
+      "observacao": "ON LINE",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-10-09T18:56:32",
       "usuario": "celso"
     }
   ],
