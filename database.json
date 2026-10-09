@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-09T20:18:24",
+    "ultima_atualizacao": "2026-10-09T20:19:34",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40392,7 +40392,7 @@
       "nome": "OURO EMBALAGENS INTRA LOG",
       "email": "",
       "telefone1": "(11) 99407-9882",
-      "telefone2": "",
+      "telefone2": "(35) 8417-0559",
       "telefone3": "",
       "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
@@ -40402,7 +40402,8 @@
       "retorno_apos_seq": 1211,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2356,
