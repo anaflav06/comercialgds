@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-09T17:23:48",
+    "ultima_atualizacao": "2026-10-09T17:25:44",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40897,15 +40897,15 @@
       "telefone1": "(19) 3789-5300",
       "telefone2": "(19) 3789-5301",
       "telefone3": "(19) 3287-0302",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "NÃO UTILIZA TRANSPORTE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-10-05",
       "criado_em": "2026-10-05T17:55:18",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 1679,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "proxima_acao": "",
       "numero_cotacao": ""
     },
     {
@@ -83080,6 +83080,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-09T17:23:20",
       "seq_global": 1687,
+      "usuario": "celso"
+    },
+    {
+      "id": 3108,
+      "empresa_id": 2382,
+      "data_contato": "2026-10-09",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "NÃO UTILIZA TRANSPORTE",
+      "status_novo": "NÃO UTILIZA TRANSPORTE",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-09T17:25:44",
+      "seq_global": 1688,
       "usuario": "celso"
     }
   ],
