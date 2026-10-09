@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-09T17:23:20",
+    "ultima_atualizacao": "2026-10-09T17:23:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40892,7 +40892,7 @@
     {
       "id": 2382,
       "documento": "",
-      "nome": "FUNDACAO CENTRO MEDICO DE CAMPINAS +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55",
+      "nome": "FUNDACAO CENTRO MEDICO DE CAMPINAS",
       "email": "",
       "telefone1": "(19) 3789-5300",
       "telefone2": "(19) 3789-5301",
