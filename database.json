@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-09T17:55:28",
+    "ultima_atualizacao": "2026-10-09T17:56:19",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -36705,15 +36705,15 @@
       "telefone1": "(21) 99382-5075",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "SEM INTERESSE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-26",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 1704,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": ""
     },
     {
       "id": 2152,
@@ -83320,6 +83320,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-09T17:55:28",
       "seq_global": 1704,
+      "usuario": "celso"
+    },
+    {
+      "id": 3125,
+      "empresa_id": 2151,
+      "data_contato": "2026-10-09",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-09T17:56:19",
+      "seq_global": 1705,
       "usuario": "celso"
     }
   ],
