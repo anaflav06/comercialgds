@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-13T13:28:16",
+    "ultima_atualizacao": "2026-10-13T13:29:04",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -36392,7 +36392,7 @@
       "telefone1": "(11) 4972-8677",
       "telefone2": "",
       "telefone3": "",
-      "status": "RETORNO AGENDADO",
+      "status": "SEM INTERESSE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-24",
       "criado_em": "2026-08-14T20:21:10",
@@ -36401,7 +36401,9 @@
       "data_agendamento": "2026-10-13",
       "agendamento_pendente": 1,
       "proxima_acao": "Cobrar retorno / novo contato",
-      "proxima_acao_em": "2026-10-13T13:44"
+      "proxima_acao_em": "2026-10-13T13:44",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2134,
