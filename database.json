@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-14T20:05:22",
+    "ultima_atualizacao": "2026-10-14T20:06:02",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -32192,15 +32192,15 @@
       "telefone1": "(16) 98807-0723",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "SEM INTERESSE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-09-03",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": 873,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": ""
     },
     {
       "id": 1890,
@@ -85652,6 +85652,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-14T20:05:22",
       "seq_global": 1870,
+      "usuario": "celso"
+    },
+    {
+      "id": 3291,
+      "empresa_id": 1889,
+      "data_contato": "2026-10-14",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-14T20:06:02",
+      "seq_global": 1871,
       "usuario": "celso"
     }
   ],
