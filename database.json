@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-14T13:46:46",
+    "ultima_atualizacao": "2026-10-14T13:49:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -27641,15 +27641,15 @@
       "telefone1": "(11) 99822-0182",
       "telefone2": "(11) 99811-2078",
       "telefone3": "(11) 99324-7524",
-      "status": "EM ANDAMENTO",
-      "observacao_atual": "",
+      "status": "RETORNO AGENDADO",
+      "observacao_atual": "Reunião agendada para hoje 14/10/2026",
       "data_primeiro_contato": "2026-08-28",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": 1923,
-      "data_agendamento": null,
-      "agendamento_pendente": 0,
-      "proxima_acao": "🔥 Em andamento"
+      "retorno_apos_seq": null,
+      "data_agendamento": "2026-10-14",
+      "agendamento_pendente": 1,
+      "proxima_acao": "Reuniãlo"
     },
     {
       "id": 1624,
@@ -84807,6 +84807,20 @@
       "data_proxima_acao": "2026-10-19",
       "criado_em": "2026-10-14T13:46:38",
       "seq_global": 1810,
+      "usuario": "celso"
+    },
+    {
+      "id": 3231,
+      "empresa_id": 1623,
+      "data_contato": "2026-10-14",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "CLIENTE RESPONDEU",
+      "status_novo": "RETORNO AGENDADO",
+      "observacao": "Reunião agendada para hoje 14/10/2026",
+      "proxima_acao": "Reuniãlo",
+      "data_proxima_acao": "2026-10-14",
+      "criado_em": "2026-10-14T13:49:48",
+      "seq_global": 1811,
       "usuario": "celso"
     }
   ],
