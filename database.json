@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-14T19:06:52",
+    "ultima_atualizacao": "2026-10-14T19:07:39",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40939,7 +40939,7 @@
     {
       "id": 2384,
       "documento": "",
-      "nome": "QUALITY MACHINES INDUSTRIA E COMERCIO DE MAQUINAS LTDA +55 , +55 , +55 , +55",
+      "nome": "QUALITY MACHINES INDUSTRIA E COMERCIO DE MAQUINAS LTDA",
       "email": "",
       "telefone1": "(19) 3249-0222",
       "telefone2": "(19) 99614-7816",
