@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-14T20:08:24",
+    "ultima_atualizacao": "2026-10-14T20:28:59",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -27638,7 +27638,7 @@
     {
       "id": 1623,
       "documento": "40.584.858/0001-65",
-      "nome": "MLABS COM DISTRIB E INDUST DE NUTRACEUTICOS",
+      "nome": "BIGENS  SUPLEMENTOS  ALIEMENTARES",
       "telefone1": "(11) 99822-0182",
       "telefone2": "(11) 99811-2078",
       "telefone3": "(11) 99324-7524",
