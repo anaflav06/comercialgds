@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-15T19:31:41",
+    "ultima_atualizacao": "2026-10-15T19:32:16",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -31121,15 +31121,15 @@
       "telefone1": "(11) 96608-3484",
       "telefone2": "(11) 97197-1961",
       "telefone3": "(11) 99880-5570",
-      "status": "1ª TENTATIVA SEM RETORNO",
-      "observacao_atual": "",
+      "status": "SEM INTERESSE",
+      "observacao_atual": "Finalizado manualmente na fila.",
       "data_primeiro_contato": "2026-09-04",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": 921,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "RETORNAR APÓS 200 CONTATOS"
+      "proxima_acao": ""
     },
     {
       "id": 1827,
@@ -86620,6 +86620,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-15T19:31:41",
       "seq_global": 1939,
+      "usuario": "celso"
+    },
+    {
+      "id": 3360,
+      "empresa_id": 1826,
+      "data_contato": "2026-10-15",
+      "tipo_contato": "FINALIZAÇÃO RÁPIDA",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Finalizado manualmente na fila.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-15T19:32:16",
+      "seq_global": 1940,
       "usuario": "celso"
     }
   ],
