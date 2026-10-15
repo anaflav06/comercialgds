@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-15T18:21:43",
+    "ultima_atualizacao": "2026-10-15T18:22:58",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40958,7 +40958,7 @@
     {
       "id": 2385,
       "documento": "",
-      "nome": "SCANI BENZ PECAS DIESEL LTDA +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55",
+      "nome": "SCANI BENZ PECAS DIESEL LTDA",
       "email": "",
       "telefone1": "(19) 3741-1166",
       "telefone2": "(19) 3833-1919",
