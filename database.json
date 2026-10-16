@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-16T13:38:49",
+    "ultima_atualizacao": "2026-10-16T13:39:23",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40884,7 +40884,7 @@
     {
       "id": 2381,
       "documento": "",
-      "nome": "TW SISTEMAS DE INJECAO DIESEL LTDA +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55 , +55",
+      "nome": "TW SISTEMAS DE INJECAO DIESEL LTDA",
       "email": "",
       "telefone1": "(19) 3727-5160",
       "telefone2": "(19) 97408-2132",
