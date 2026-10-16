@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-16T17:48:34",
+    "ultima_atualizacao": "2026-10-16T17:49:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -32330,7 +32330,7 @@
       "documento": "58.981.966/0001-37",
       "nome": "WVMULTI LTDA",
       "telefone1": "(51) 98234-3795",
-      "telefone2": "",
+      "telefone2": "(51) 9690-2211",
       "telefone3": "",
       "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
@@ -32340,7 +32340,9 @@
       "retorno_apos_seq": 1111,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 1898,
