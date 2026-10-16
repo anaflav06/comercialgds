@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-16T17:38:02",
+    "ultima_atualizacao": "2026-10-16T17:39:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40865,7 +40865,7 @@
     {
       "id": 2380,
       "documento": "",
-      "nome": "WEFEM INDUSTRIA E COMERCIO DE MAQUINAS E EQUIPAMENTOS LTDA +55 , +55 , +55 , +55",
+      "nome": "WEFEM INDUSTRIA E COMERCIO DE MAQUINAS E EQUIPAMENTOS LTDA",
       "email": "",
       "telefone1": "(19) 3227-2690",
       "telefone2": "(19) 98166-1661",
