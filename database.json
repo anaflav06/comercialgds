@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-19T13:44:01",
+    "ultima_atualizacao": "2026-10-19T13:57:12",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40663,15 +40663,15 @@
       "telefone1": "(19) 3871-9111 / (19) 99902-8220",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "",
+      "status": "NÃO UTILIZA TRANSPORTE",
+      "observacao_atual": "Não utiliza transporte Aéreo.",
       "data_primeiro_contato": "2026-09-16",
       "criado_em": "2026-09-16T14:06:48",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": 2013,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "PULADO POR ENQUANTO"
+      "proxima_acao": ""
     },
     {
       "id": 2370,
@@ -87715,6 +87715,20 @@
       "data_proxima_acao": "2026-10-21",
       "criado_em": "2026-10-19T13:43:57",
       "seq_global": 2017,
+      "usuario": "celso"
+    },
+    {
+      "id": 3438,
+      "empresa_id": 2369,
+      "data_contato": "2026-10-19",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "NÃO UTILIZA TRANSPORTE",
+      "status_novo": "NÃO UTILIZA TRANSPORTE",
+      "observacao": "Não utiliza transporte Aéreo.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-19T13:57:12",
+      "seq_global": 2018,
       "usuario": "celso"
     }
   ],
