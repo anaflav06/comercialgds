@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-20T15:07:03",
+    "ultima_atualizacao": "2026-10-20T15:19:57",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40850,7 +40850,7 @@
     {
       "id": 2379,
       "documento": "",
-      "nome": "WORTEX ROSCAS, CILINDROS E ACESSORIOS LTDA +55 , +55 , +55 , +55 , +55",
+      "nome": "WORTEX ROSCAS, CILINDROS E ACESSORIOS LTDA",
       "email": "",
       "telefone1": "(19) 3797-2555",
       "telefone2": "(19) 97143-3537",
