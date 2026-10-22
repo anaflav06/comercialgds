@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-22T12:14:05",
+    "ultima_atualizacao": "2026-10-22T12:14:33",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40795,7 +40795,7 @@
     {
       "id": 2376,
       "documento": "",
-      "nome": "VIVA EQUIPAMENTOS INDUSTRIA E COMERCIO LTDA +55 , +55 , +55 , +55",
+      "nome": "VIVA EQUIPAMENTOS INDUSTRIA E COMERCIO LTDA",
       "email": "",
       "telefone1": "(62) 99221-2575",
       "telefone2": "(19) 3303-1400",
