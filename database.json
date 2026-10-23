@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-23T19:25:36",
+    "ultima_atualizacao": "2026-10-23T19:30:40",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -5734,7 +5734,7 @@
       "documento": "63.188.386/0001-27",
       "nome": "AXIO DISTRIBUIDORA E LOGISTICA LTDA",
       "telefone1": "(11) 99877-2371",
-      "telefone2": "",
+      "telefone2": "(11) 97188-8757",
       "telefone3": "",
       "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
@@ -5744,7 +5744,9 @@
       "retorno_apos_seq": 2472,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 338,
