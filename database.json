@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-23T18:50:19",
+    "ultima_atualizacao": "2026-10-23T18:51:20",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -24595,7 +24595,7 @@
       "telefone1": "(11) 99654-5139",
       "telefone2": "(13) 98163-0460",
       "telefone3": "(11) 94832-3344",
-      "status": "TENTATIVA DE CONTATO",
+      "status": "NÃO UTILIZA TRANSPORTE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-08-07",
       "criado_em": "2026-08-13T18:21:57",
@@ -24603,7 +24603,7 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 1445,
@@ -91331,6 +91331,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-23T18:50:19",
       "seq_global": 2275,
+      "usuario": "celso"
+    },
+    {
+      "id": 3696,
+      "empresa_id": 1444,
+      "data_contato": "2026-10-23",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "NÃO UTILIZA TRANSPORTE",
+      "status_novo": "NÃO UTILIZA TRANSPORTE",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-23T18:51:20",
+      "seq_global": 2276,
       "usuario": "celso"
     }
   ],
