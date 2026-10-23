@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-23T18:36:44",
+    "ultima_atualizacao": "2026-10-23T18:38:44",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -1077,15 +1077,15 @@
       "telefone1": "(11) 93902-7504",
       "telefone2": "(11) 97461-7054",
       "telefone3": "",
-      "status": "SEM RETORNO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-04-27",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 2468,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     },
     {
       "id": 64,
@@ -91219,6 +91219,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-23T18:36:44",
       "seq_global": 2267,
+      "usuario": "celso"
+    },
+    {
+      "id": 3688,
+      "empresa_id": 63,
+      "data_contato": "2026-10-23",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-23T18:38:44",
+      "seq_global": 2268,
       "usuario": "celso"
     }
   ],
