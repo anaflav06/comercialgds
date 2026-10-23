@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-23T19:22:08",
+    "ultima_atualizacao": "2026-10-23T19:25:36",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -19685,7 +19685,7 @@
       "data_primeiro_contato": "2026-07-16",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
-      "retorno_apos_seq": 2293,
+      "retorno_apos_seq": 2494,
       "data_agendamento": null,
       "agendamento_pendente": 0,
       "proxima_acao": "AGUARDANDO RESPOSTA"
@@ -91583,6 +91583,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-23T19:22:08",
       "seq_global": 2293,
+      "usuario": "celso"
+    },
+    {
+      "id": 3714,
+      "empresa_id": 1155,
+      "data_contato": "2026-10-23",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-23T19:25:36",
+      "seq_global": 2294,
       "usuario": "celso"
     }
   ],
