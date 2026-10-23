@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-23T19:19:24",
+    "ultima_atualizacao": "2026-10-23T19:20:45",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -40971,15 +40971,15 @@
       "telefone1": "(19) 3741-1166",
       "telefone2": "(19) 3833-1919",
       "telefone3": "(19) 3847-4466",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "SEM RETORNO APÓS 3 TENTATIVAS",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-10-05",
       "criado_em": "2026-10-05T17:55:18",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 2290,
+      "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "PULADO POR ENQUANTO",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
       "numero_cotacao": ""
     },
     {
@@ -91541,6 +91541,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-23T19:19:24",
       "seq_global": 2290,
+      "usuario": "celso"
+    },
+    {
+      "id": 3711,
+      "empresa_id": 2385,
+      "data_contato": "2026-10-23",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "SEM RETORNO APÓS 3 TENTATIVAS",
+      "observacao": "",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-23T19:20:45",
+      "seq_global": 2291,
       "usuario": "celso"
     }
   ],
