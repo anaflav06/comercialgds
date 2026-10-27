@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-27T18:48:27",
+    "ultima_atualizacao": "2026-10-27T18:49:22",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -22709,15 +22709,15 @@
       "telefone1": "(13) 99112-2099",
       "telefone2": "(13) 99649-9987",
       "telefone3": "(13) 99165-7669",
-      "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "",
+      "status": "SEM INTERESSE",
+      "observacao_atual": "Finalizado manualmente na fila.",
       "data_primeiro_contato": "2026-07-24",
       "criado_em": "2026-08-13T18:21:57",
       "origem": "PLANILHA INICIAL",
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 1334,
@@ -92595,6 +92595,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-27T18:48:27",
       "seq_global": 2365,
+      "usuario": "celso"
+    },
+    {
+      "id": 3786,
+      "empresa_id": 1333,
+      "data_contato": "2026-10-27",
+      "tipo_contato": "FINALIZAÇÃO RÁPIDA",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Finalizado manualmente na fila.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-27T18:49:22",
+      "seq_global": 2366,
       "usuario": "celso"
     }
   ],
