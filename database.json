@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-27T19:25:08",
+    "ultima_atualizacao": "2026-10-27T19:25:57",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -5617,7 +5617,7 @@
       "telefone1": "(11) 99969-5067",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "CONTATO INVÁLIDO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-05-13",
       "criado_em": "2026-08-13T18:21:57",
@@ -5625,7 +5625,7 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 331,
@@ -92933,6 +92933,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-10-27T19:25:08",
       "seq_global": 2389,
+      "usuario": "celso"
+    },
+    {
+      "id": 3810,
+      "empresa_id": 330,
+      "data_contato": "2026-10-27",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "CONTATO INVÁLIDO",
+      "status_novo": "CONTATO INVÁLIDO",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-27T19:25:57",
+      "seq_global": 2390,
       "usuario": "celso"
     }
   ],
