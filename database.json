@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T17:50:22",
+    "ultima_atualizacao": "2026-10-28T17:50:49",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41163,7 +41163,7 @@
     {
       "id": 2395,
       "documento": "",
-      "nome": "KUEHNE NAGEL SERVICOS LOGISTICOS LTDA",
+      "nome": "KUEHNE NAGEL SERVICOS LOGISTICOS LTDA/TECNOPARK",
       "email": "",
       "telefone1": "(19) 2142-1600",
       "telefone2": "",
@@ -41176,7 +41176,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2396,
