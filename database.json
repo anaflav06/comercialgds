@@ -4,8 +4,8 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T18:16:25",
-    "ultimo_usuario": "jessica",
+    "ultima_atualizacao": "2026-10-28T18:24:38",
+    "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
     "veiculo_planilha_importada_v1_data": "2026-08-26T18:32:53",
@@ -41055,15 +41055,15 @@
       "telefone1": "(19) 3738-9600",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
+      "status": "AGUARDANDO CLIENTE",
       "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "data_primeiro_contato": "2026-10-28",
       "criado_em": "2026-10-28T17:39:43",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 2610,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "⏳ Aguardar cliente"
     },
     {
       "id": 2390,
@@ -96268,6 +96268,20 @@
       "data_proxima_acao": "2026-10-29",
       "criado_em": "2026-10-28T17:36:58",
       "seq_global": 2409,
+      "usuario": "celso"
+    },
+    {
+      "id": 3830,
+      "empresa_id": 2389,
+      "data_contato": "2026-10-28",
+      "tipo_contato": "LIGAÇÃO",
+      "resultado": "AGUARDANDO CLIENTE",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "⏳ Aguardar cliente",
+      "data_proxima_acao": null,
+      "criado_em": "2026-10-28T18:24:38",
+      "seq_global": 2410,
       "usuario": "celso"
     }
   ],
