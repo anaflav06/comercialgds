@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T16:07:14",
+    "ultima_atualizacao": "2026-10-28T16:08:03",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41031,7 +41031,7 @@
       "id": 2388,
       "documento": "",
       "nome": "RESIL EQUIPAMENTOS DE COMBATE A INCENDIOS (FISP)",
-      "email": "",
+      "email": "expedicao@neoresil.com.br",
       "telefone1": "(19) 97150-4552",
       "telefone2": "",
       "telefone3": "",
@@ -41043,7 +41043,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     }
   ],
   "contatos": [
