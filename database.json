@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T17:51:19",
+    "ultima_atualizacao": "2026-10-28T17:51:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41201,7 +41201,7 @@
     {
       "id": 2397,
       "documento": "",
-      "nome": "NALCO BRASIL PRODUTOS QUÍMICOS",
+      "nome": "NALCO BRASIL PRODUTOS QUÍMICOS/TECNOPARK",
       "email": "",
       "telefone1": "(19) 3783-7710",
       "telefone2": "",
@@ -41214,7 +41214,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2398,
