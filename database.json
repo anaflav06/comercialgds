@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T17:44:37",
+    "ultima_atualizacao": "2026-10-28T17:45:13",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41176,7 +41176,7 @@
     {
       "id": 2396,
       "documento": "",
-      "nome": "CONTINERNTAL DO BRASIL FREIOS",
+      "nome": "CONTINENTAL DO BRASIL FREIOS E  LONAS",
       "email": "",
       "telefone1": "(19) 2117-2050",
       "telefone2": "",
@@ -41189,7 +41189,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     }
   ],
   "contatos": [
