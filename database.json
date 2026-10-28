@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T18:47:50",
+    "ultima_atualizacao": "2026-10-28T18:48:55",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -43458,7 +43458,7 @@
     {
       "id": 2516,
       "documento": "",
-      "nome": "CAMILA",
+      "nome": "MULTINORTE AUT INDL CAMILA",
       "email": "",
       "telefone1": "(91) 9140-1855",
       "telefone2": "",
