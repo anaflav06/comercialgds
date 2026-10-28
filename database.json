@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T18:35:14",
+    "ultima_atualizacao": "2026-10-28T18:36:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -42527,7 +42527,7 @@
     {
       "id": 2467,
       "documento": "",
-      "nome": "ANA",
+      "nome": "TOOL FACT COMPONENTES",
       "email": "",
       "telefone1": "(47) 9285-0402",
       "telefone2": "",
