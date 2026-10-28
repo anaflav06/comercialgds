@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T17:55:30",
+    "ultima_atualizacao": "2026-10-28T17:55:55",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41258,7 +41258,7 @@
     {
       "id": 2400,
       "documento": "",
-      "nome": "PADTEC S/A – EQUIPAMENTOS ÓPTICOS E TELECOMUNICAÇÕES",
+      "nome": "PADTEC S/A – EQUIPAMENTOS ÓPTICOS E TELECOMUNICAÇÕES/TECNOPARK",
       "email": "",
       "telefone1": "(19) 2104-9700",
       "telefone2": "",
@@ -41271,7 +41271,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     }
   ],
   "contatos": [
