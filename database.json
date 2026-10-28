@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T17:45:13",
+    "ultima_atualizacao": "2026-10-28T17:46:01",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41191,6 +41191,24 @@
       "agendamento_pendente": 0,
       "proxima_acao": "",
       "numero_cotacao": "nan"
+    },
+    {
+      "id": 2397,
+      "documento": "",
+      "nome": "NALCO BRASIL PRODUTOS QUÍMICOS",
+      "email": "",
+      "telefone1": "(19) 3783-7710",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-10-28T17:46:01",
+      "origem": "Cobrar retorno em 24h",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
