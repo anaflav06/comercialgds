@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T17:52:22",
+    "ultima_atualizacao": "2026-10-28T17:54:52",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41239,7 +41239,7 @@
     {
       "id": 2399,
       "documento": "",
-      "nome": "HUAWEI – TELECOMUNICAÇÕES",
+      "nome": "HUAWEI – TELECOMUNICAÇÕES/ TECNOPARK",
       "email": "",
       "telefone1": "(19) 3283-0163",
       "telefone2": "",
@@ -41252,7 +41252,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     }
   ],
   "contatos": [
