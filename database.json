@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T17:50:49",
+    "ultima_atualizacao": "2026-10-28T17:51:19",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41182,7 +41182,7 @@
     {
       "id": 2396,
       "documento": "",
-      "nome": "CONTINENTAL DO BRASIL FREIOS E  LONAS",
+      "nome": "CONTINENTAL DO BRASIL FREIOS E  LONAS/TECNOPARK",
       "email": "",
       "telefone1": "(19) 2117-2050",
       "telefone2": "",
