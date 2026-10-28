@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-10-28T18:00:03",
+    "ultima_atualizacao": "2026-10-28T18:00:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41346,6 +41346,24 @@
       "agendamento_pendente": 0,
       "proxima_acao": "",
       "numero_cotacao": "nan"
+    },
+    {
+      "id": 2405,
+      "documento": "",
+      "nome": "ALGITECH DO BRASIL – AUTOMAÇÃO INDUSTRIAL/TECNOPARK",
+      "email": "",
+      "telefone1": "(19) 3227-1227",
+      "telefone2": "",
+      "telefone3": "",
+      "status": "EM ANDAMENTO",
+      "observacao_atual": "",
+      "data_primeiro_contato": null,
+      "criado_em": "2026-10-28T18:00:48",
+      "origem": "Cobrar retorno em 24h",
+      "retorno_apos_seq": null,
+      "data_agendamento": null,
+      "agendamento_pendente": 0,
+      "proxima_acao": ""
     }
   ],
   "contatos": [
