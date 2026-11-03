@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-03T14:26:17",
+    "ultima_atualizacao": "2026-11-03T14:26:48",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -109572,6 +109572,10 @@
     },
     "2026-10-25": {
       "ciente_em": "2026-10-26T20:07:03",
+      "usuario": "celso"
+    },
+    "2026-11-02": {
+      "ciente_em": "2026-11-03T14:26:48",
       "usuario": "celso"
     }
   }
