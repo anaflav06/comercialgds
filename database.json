@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-03T18:14:44",
+    "ultima_atualizacao": "2026-11-03T18:17:32",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -15450,7 +15450,7 @@
       "telefone1": "(65) 9229-1454",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "JÁ UTILIZA AZUL",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-07-08",
       "criado_em": "2026-08-13T18:21:57",
@@ -15458,7 +15458,7 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": ""
     },
     {
       "id": 909,
@@ -98486,6 +98486,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-11-03T18:14:44",
       "seq_global": 2566,
+      "usuario": "celso"
+    },
+    {
+      "id": 3987,
+      "empresa_id": 908,
+      "data_contato": "2026-11-03",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "JÁ UTILIZA AZUL",
+      "status_novo": "JÁ UTILIZA AZUL",
+      "observacao": "",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-11-03T18:17:32",
+      "seq_global": 2567,
       "usuario": "celso"
     }
   ],
