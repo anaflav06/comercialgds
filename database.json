@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-03T20:17:00",
+    "ultima_atualizacao": "2026-11-04T11:18:49",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -99346,6 +99346,18 @@
       "observacao": "",
       "status": "PROGRAMADO",
       "criado_em": "2026-10-19T13:25:35",
+      "usuario": "celso"
+    },
+    {
+      "id": 12,
+      "data": "2026-11-04",
+      "horario": "09:00",
+      "tipo": "OUTRO",
+      "cliente_compromisso": "Treinamento Inicial de Procedimentos de Aceitação e Transporte de Animal",
+      "local": "Salto/SP",
+      "observacao": "",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-11-04T11:18:49",
       "usuario": "celso"
     }
   ],
