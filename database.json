@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-10T12:56:05",
+    "ultima_atualizacao": "2026-11-10T13:24:20",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37016,15 +37016,15 @@
       "telefone1": "(11) 97762-1691",
       "telefone2": "",
       "telefone3": "",
-      "status": "SEM INTERESSE",
-      "observacao_atual": "Finalizado manualmente na fila.",
+      "status": "COTAÇÃO ENVIADA",
+      "observacao_atual": "55242526 fechada segundo cliente.",
       "data_primeiro_contato": "2026-08-26",
       "criado_em": "2026-08-14T20:21:10",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 2943,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO"
     },
     {
       "id": 2169,
@@ -100968,6 +100968,20 @@
       "data_proxima_acao": "2026-11-13",
       "criado_em": "2026-11-10T12:55:57",
       "seq_global": 2742,
+      "usuario": "celso"
+    },
+    {
+      "id": 4163,
+      "empresa_id": 2168,
+      "data_contato": "2026-11-10",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "COTAÇÃO ENVIADA",
+      "status_novo": "COTAÇÃO ENVIADA",
+      "observacao": "55242526 fechada segundo cliente.",
+      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO",
+      "data_proxima_acao": null,
+      "criado_em": "2026-11-10T13:24:20",
+      "seq_global": 2743,
       "usuario": "celso"
     }
   ],
