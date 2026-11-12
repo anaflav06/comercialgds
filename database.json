@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-11T20:18:02",
+    "ultima_atualizacao": "2026-11-12T12:30:30",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -103001,6 +103001,18 @@
       "observacao": "",
       "status": "PROGRAMADO",
       "criado_em": "2026-11-10T13:33:10",
+      "usuario": "celso"
+    },
+    {
+      "id": 17,
+      "data": "2026-11-12",
+      "horario": "12:30",
+      "tipo": "OUTRO",
+      "cliente_compromisso": "CURSO DE CGO - Controles e Planejamento EAD 09:00",
+      "local": "SALTO",
+      "observacao": "",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-11-12T12:30:30",
       "usuario": "celso"
     }
   ],
