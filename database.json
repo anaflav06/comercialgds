@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-13T18:46:15",
+    "ultima_atualizacao": "2026-11-13T18:46:41",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -36415,7 +36415,7 @@
     {
       "id": 2133,
       "documento": "",
-      "nome": "MAQUINAS SANTO \\ANDRÉ FERNANDA",
+      "nome": "MAQUINAS SANTO ANDRÉ FERNANDA",
       "telefone1": "(11) 4972-8677",
       "telefone2": "",
       "telefone3": "",
