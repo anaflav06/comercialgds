@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-16T18:56:24",
+    "ultima_atualizacao": "2026-11-16T18:58:24",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -17047,7 +17047,7 @@
     {
       "id": 1000,
       "documento": "nan",
-      "nome": "CLIENTE LIGOU NA LOJA",
+      "nome": "PAMCOLD DO BRASIL",
       "telefone1": "(11) 2215-1148",
       "telefone2": "",
       "telefone3": "",
@@ -17059,7 +17059,9 @@
       "retorno_apos_seq": 2995,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 1001,
