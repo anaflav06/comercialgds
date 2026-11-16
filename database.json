@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-13T20:40:27",
+    "ultima_atualizacao": "2026-11-16T12:50:31",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -104245,6 +104245,18 @@
       "observacao": "",
       "status": "PROGRAMADO",
       "criado_em": "2026-11-12T12:30:30",
+      "usuario": "celso"
+    },
+    {
+      "id": 18,
+      "data": "2026-11-16",
+      "horario": "12:50",
+      "tipo": "OUTRO",
+      "cliente_compromisso": "Curso: CGO - Procedimentos Operacionais e Relatórios",
+      "local": "Salto",
+      "observacao": "",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-11-16T12:50:31",
       "usuario": "celso"
     }
   ],
