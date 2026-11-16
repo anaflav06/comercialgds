@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-16T17:50:35",
+    "ultima_atualizacao": "2026-11-16T17:51:45",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -15429,7 +15429,7 @@
     {
       "id": 907,
       "documento": "nan",
-      "nome": "CLIENTE LIGOU NA LOJA",
+      "nome": "FERROPRONTO AMADEUS",
       "telefone1": "(71) 9694-7185",
       "telefone2": "",
       "telefone3": "",
@@ -15441,7 +15441,9 @@
       "retorno_apos_seq": 2967,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA"
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 908,
