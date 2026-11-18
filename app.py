@@ -5452,6 +5452,34 @@ elif menu == "📈 Relatórios":
         )
 
 elif menu == "📊 Extrair Relatório Executivo":
+    # Proteção exclusiva deste menu. A senha fica nos Secrets do Streamlit,
+    # nunca no repositório nem no banco de dados comercial.
+    import hmac
+    st.markdown("## 🔒 Extrair Relatório Executivo")
+    if not st.session_state.get("relatorio_executivo_autorizado", False):
+        st.caption("Área restrita à gestão. Informe a senha adicional para acessar os relatórios executivos.")
+        try:
+            _senha_relatorio = str(st.secrets.get("RELATORIO_EXECUTIVO_SENHA", "")).strip()
+        except Exception:
+            _senha_relatorio = ""
+        if not _senha_relatorio:
+            st.warning("Configure RELATORIO_EXECUTIVO_SENHA nos Secrets do Streamlit Cloud para liberar esta área.")
+        else:
+            with st.form("form_senha_relatorio_executivo", clear_on_submit=True):
+                _senha_digitada = st.text_input("Senha do relatório executivo", type="password", autocomplete="off")
+                _enviar_senha = st.form_submit_button("🔓 Acessar relatório", use_container_width=True)
+            if _enviar_senha:
+                if hmac.compare_digest(_senha_digitada, _senha_relatorio):
+                    st.session_state["relatorio_executivo_autorizado"] = True
+                    st.rerun()
+                else:
+                    st.error("Senha incorreta. Acesso não autorizado.")
+        st.stop()
+    if st.button("🔒 Bloquear relatório novamente", key="bloquear_relatorio_exec"):
+        st.session_state.pop("relatorio_executivo_autorizado", None)
+        st.session_state.pop("pdf_executivo_v17", None)
+        st.session_state.pop("pdf_executivo_v17_periodo", None)
+        st.rerun()
     st.markdown("## 📊 Extrair Relatório Executivo")
     st.caption("PDF em formato apresentação, com indicadores, gráficos e prioridades para acompanhamento do vendedor.")
     r1,r2 = st.columns(2)
@@ -5513,6 +5541,6 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • V17 • Relatório Executivo")
+st.sidebar.caption("Gestão Comercial • V17.1 • Relatório Protegido")
 
 
