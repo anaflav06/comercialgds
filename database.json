@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-18T18:25:12",
+    "ultima_atualizacao": "2026-11-18T18:30:33",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -19109,11 +19109,11 @@
     {
       "id": 1120,
       "documento": "908779000",
-      "nome": "GSV EXPRESS CARGAS LTDA  ME",
+      "nome": "CAMPVAL EXPRESS",
       "telefone1": "(19) 99730-7890",
       "telefone2": "(19) 99671-8867",
       "telefone3": "(19) 99278-4399",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-07-15",
       "criado_em": "2026-08-13T18:21:57",
@@ -19121,7 +19121,9 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 1121,
