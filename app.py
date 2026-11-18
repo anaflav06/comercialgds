@@ -3011,6 +3011,91 @@ def _exec_analytics(db, inicio, fim, incluir_sp=True, extras=None):
             'km_inconsistentes':len(veiculos)-len(km_validos),'emitido_em':agora}
 
 
+def gerar_mensagem_whatsapp_executiva_v172(a):
+    """Texto gerencial para WhatsApp, baseado no mesmo snapshot do PDF."""
+    from collections import Counter
+    dias=a.get('por_dia', [])
+    eventos=a.get('eventos', [])
+    total=len(eventos)
+    uteis=len(a.get('uteis', []))
+    empresas=len({e.get('empresa') for e in eventos})
+    media=total/uteis if uteis else 0
+    formato=lambda n: f"{n:,.1f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+    periodo=f"{a['inicio']:%d/%m/%Y} a {a['fim']:%d/%m/%Y}"
+    com_atividade=[d for d in dias if d['interacoes']>0]
+    sem_atividade=[d for d in dias if d['interacoes']==0]
+    resultados=a.get('resultados', {})
+    prioridades=a.get('prioridades', {})
+    fila=len(a.get('fila', []))
+    # Uma interação não necessariamente significa um cliente novo retirado da fila.
+    dias_fila= fila/media if media>0 else None
+    veiculos=a.get('veiculos', [])
+    agenda=a.get('agenda', [])
+    tipos=a.get('usos_tipo', {})
+    km=a.get('km_tipo', {})
+    linhas=[
+        f"📊 *ACOMPANHAMENTO COMERCIAL | {periodo}*",
+        "",
+        "Bom dia, pessoal! Tudo bem?",
+        "",
+        "Compartilho o relatório executivo do período para acompanharmos os resultados, reconhecermos os avanços e alinharmos juntos as próximas prioridades.",
+        "",
+        "📈 *1. PRODUTIVIDADE COMERCIAL*",
+        f"• *{total} interações registradas*",
+        f"• *{empresas} empresas diferentes trabalhadas*",
+        f"• *Média de {formato(media)} interações por dia útil* ({uteis} dias úteis)",
+    ]
+    if com_atividade:
+        maior=max(com_atividade,key=lambda d:d['interacoes'])
+        menor=min(com_atividade,key=lambda d:d['interacoes'])
+        linhas.append(f"• Maior produção: *{maior['interacoes']} interações* em {maior['dia']:%d/%m}")
+        linhas.append(f"• Menor produção com atividade: *{menor['interacoes']} interações* em {menor['dia']:%d/%m}")
+    if sem_atividade:
+        datas=', '.join(d['dia'].strftime('%d/%m') for d in sem_atividade)
+        linhas.append(f"• ⚠️ *{len(sem_atividade)} dia(s) útil(eis) sem interação registrada:* {datas}")
+    else:
+        linhas.append('• Nenhum dia útil sem interações registradas.' if uteis else '• Não há dias úteis no período escolhido.')
+    linhas += ["", "🎯 *2. RESULTADOS DO PERÍODO*"]
+    for nome in ('Aguardando cliente','Em andamento / avanço','Sem retorno','Sem interesse','Fechado / ganho','Outros resultados'):
+        qtd=int(resultados.get(nome,0))
+        if qtd: linhas.append(f"• {nome}: *{qtd}*")
+    if not total: linhas.append('• Nenhuma interação registrada no período.')
+    linhas += ["", "*Como estão evoluindo os clientes que aguardam retorno e as oportunidades em andamento?* Vamos priorizar as próximas ações para converter os contatos em reuniões, propostas e negócios.",
+        "", "📞 *3. FILA DE CONTATOS*",
+        f"• Carteira elegível estimada na fila na data da emissão: *{fila} contatos*." ]
+    if dias_fila is not None:
+        import math
+        linhas.append(f"• Referência de capacidade: *aproximadamente {math.ceil(dias_fila)} dias úteis* no ritmo médio atual, caso cada interação fosse dedicada a um contato diferente da fila.")
+        linhas.append('• Essa estimativa não é um prazo real de conclusão, pois a produção também inclui retornos e clientes já trabalhados.')
+    else: linhas.append('• Sem média de interações suficiente para estimar a capacidade de atendimento da fila.')
+    linhas += ['Vamos organizar a reposição de contatos para manter a prospecção ativa.',
+        '', '🔥 *4. CLIENTES EM ANDAMENTO — PRIORIDADES*',
+        f"• Atrasados: *{len(prioridades.get('Atrasados', []))}*",
+        f"• Próximas 24 horas: *{len(prioridades.get('Próximas 24h', []))}*",
+        f"• Sem próxima ação definida: *{len(prioridades.get('Sem próxima ação', []))}*",
+        f"• Depois de 24 horas: *{len(prioridades.get('Depois de 24h', []))}*",
+        'Conto com o apoio do Celso para revisar os clientes sem próxima ação e atualizar as prioridades, especialmente os atrasados e os que vencem nas próximas 24 horas.',
+        '', '📅 *5. AGENDA COMERCIAL*',
+        f"• *{len(agenda)} compromisso(s)* registrado(s) nos dias úteis do período."]
+    if agenda:
+        contagem=Counter(str(x.get('tipo') or 'OUTRO').upper() for x in agenda)
+        linhas.append('• Tipos: '+', '.join(f'{tipo}: {qtd}' for tipo,qtd in contagem.most_common(5)))
+        pendentes=sum(str(x.get('status') or '').upper() in ('PROGRAMADO','AGENDADO','PENDENTE') for x in agenda)
+        if pendentes: linhas.append(f'• *{pendentes} compromisso(s)* ainda constam como programados/pendentes; verificar atualização de realização e resultado.')
+    linhas += ['Vamos ampliar a agenda de reuniões, inclusive online, e visitas presenciais com oportunidades qualificadas.',
+        '', '🚗 *6. USO DO VEÍCULO*',
+        f"• *{len(veiculos)} utilização(ões)* no período, com *{formato(a.get('km_total',0))} km válidos* registrados."]
+    for tipo,qtd in Counter(tipos).most_common():
+        linhas.append(f"• {tipo.title()}: *{qtd} uso(s)* | {formato(km.get(tipo,0))} km")
+    if a.get('km_inconsistentes',0):
+        linhas.append(f"• Atenção: {a['km_inconsistentes']} registro(s) com KM ausente/inconsistente, excluído(s) do total.")
+    linhas += ['', '🤝 *7. PRÓXIMOS PASSOS*',
+        'Nosso foco é manter consistência na produtividade, dar sequência às oportunidades, atualizar as pendências e ampliar reuniões e visitas comerciais.',
+        '', 'Celso, obrigado pelo empenho! Vamos trabalhar juntos nos pontos de melhoria, com acompanhamento e apoio para evoluir os resultados. 🚀',
+        '', '📎 *Segue o relatório executivo completo para análise.*']
+    return '\n'.join(linhas)
+
+
 def gerar_pdf_executivo_v17(analise):
     """Apresentação PDF 16:9 em vetor, sem imagens externas e sem modificar a base."""
     from reportlab.pdfgen import canvas
@@ -5479,6 +5564,7 @@ elif menu == "📊 Extrair Relatório Executivo":
         st.session_state.pop("relatorio_executivo_autorizado", None)
         st.session_state.pop("pdf_executivo_v17", None)
         st.session_state.pop("pdf_executivo_v17_periodo", None)
+        st.session_state.pop("mensagem_executiva_v172", None)
         st.rerun()
     st.markdown("## 📊 Extrair Relatório Executivo")
     st.caption("PDF em formato apresentação, com indicadores, gráficos e prioridades para acompanhamento do vendedor.")
@@ -5512,6 +5598,7 @@ elif menu == "📊 Extrair Relatório Executivo":
                         db_exec=carregar_database(forcar_github=True)
                         analise_exec=_exec_analytics(db_exec,data_inicio,data_fim,feriados_sp,extras)
                         st.session_state["pdf_executivo_v17"]=gerar_pdf_executivo_v17(analise_exec)
+                        st.session_state["mensagem_executiva_v172"]=gerar_mensagem_whatsapp_executiva_v172(analise_exec)
                         st.session_state["pdf_executivo_v17_periodo"]=(data_inicio,data_fim)
                     st.success("PDF gerado com sucesso. A base não foi modificada.")
                 except Exception as exc:
@@ -5521,6 +5608,16 @@ elif menu == "📊 Extrair Relatório Executivo":
                 st.download_button("⬇️ Baixar relatório executivo (PDF)", data=st.session_state["pdf_executivo_v17"],
                     file_name=f"relatorio_executivo_comercial_{pi:%Y%m%d}_{pf:%Y%m%d}.pdf",
                     mime="application/pdf", use_container_width=True)
+                st.markdown("### 💬 Mensagem de acompanhamento para WhatsApp")
+                st.caption("Mensagem preparada com os mesmos dados do PDF, incluindo produtividade, oportunidades, pendências e pontos de melhoria. Revise antes de enviar ao grupo.")
+                texto_msg = st.session_state.get("mensagem_executiva_v172", "")
+                if texto_msg:
+                    st.text_area("Mensagem pronta para enviar", value=texto_msg, height=430, key="preview_mensagem_executiva_v172")
+                    st.caption("📋 Para copiar, use o botão de cópia no bloco abaixo ou selecione o texto da caixa acima.")
+                    with st.expander("📋 Copiar mensagem para WhatsApp", expanded=False):
+                        st.code(texto_msg, language=None)
+                else:
+                    st.info("Gere novamente o PDF para preparar a mensagem automática com os dados desse período.")
 
 
 st.sidebar.divider()
@@ -5541,6 +5638,6 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • V17.1 • Relatório Protegido")
+st.sidebar.caption("Gestão Comercial • V17.2 • Relatório Protegido")
 
 
