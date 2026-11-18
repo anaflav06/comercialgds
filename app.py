@@ -2736,6 +2736,9 @@ with st.sidebar.expander("⚙️ ADMINISTRAÇÃO", expanded=False):
     if st.button("📈 Relatórios", key="nav_relatorios", use_container_width=True):
         st.session_state["menu_selected"] = "📈 Relatórios"; st.rerun()
 
+st.sidebar.divider()
+_nav_button("📊 EXTRAIR RELATÓRIO", "📊 Extrair Relatório Executivo", "nav_relatorio_executivo")
+
 menu = st.session_state["menu_selected"]
 
 
@@ -2846,6 +2849,329 @@ def normalizar_data_historico(valor):
     # Formato brasileiro explícito
     dt = pd.to_datetime(texto, errors="coerce", dayfirst=True)
     return dt
+
+
+# ================================================================
+# V17 - RELATÓRIO EXECUTIVO PDF (somente leitura, sem gravação)
+# ================================================================
+def _exec_date(value):
+    try:
+        if value is None or str(value).strip().lower() in ('','none','nan','nat'):
+            return None
+        dt = pd.to_datetime(value, errors='coerce', dayfirst=False)
+        return None if pd.isna(dt) else dt.date()
+    except Exception:
+        return None
+
+
+def _exec_holidays(ano, incluir_sp=True, extras=None):
+    """Feriados nacionais oficiais, móveis e 09/07 de SP. Municipais podem ser informados."""
+    def pascoa(y):
+        a=y%19; b=y//100; c=y%100; d=b//4; e=b%4; f=(b+8)//25
+        g=(b-f+1)//3; h=(19*a+b-d-g+15)%30; i=c//4; k=c%4
+        l=(32+2*e+2*i-h-k)%7; m=(a+11*h+22*l)//451
+        mes=(h+l-7*m+114)//31; dia=((h+l-7*m+114)%31)+1
+        return date(y,mes,dia)
+    fixos=[(1,1),(4,21),(5,1),(9,7),(10,12),(11,2),(11,15),(11,20),(12,25)]
+    dias={date(ano,m,d) for m,d in fixos}
+    pas=pascoa(ano)
+    dias.add(pas-timedelta(days=48))  # Carnaval (ponto facultativo; remover abaixo)
+    dias.discard(pas-timedelta(days=48))
+    dias.add(pas-timedelta(days=2))  # Sexta-feira Santa
+    dias.add(pas+timedelta(days=60)) # Corpus Christi (ponto facultativo: excluir abaixo)
+    dias.discard(pas+timedelta(days=60))
+    if incluir_sp: dias.add(date(ano,7,9))
+    for v in extras or []:
+        d=_exec_date(v)
+        if d and d.year==ano: dias.add(d)
+    return dias
+
+
+def _exec_uteis(inicio, fim, incluir_sp=True, extras=None):
+    feriados=set()
+    for ano in range(inicio.year,fim.year+1):
+        feriados.update(_exec_holidays(ano,incluir_sp,extras))
+    dias=[]
+    atual=inicio
+    while atual<=fim:
+        if atual.weekday()<5 and atual not in feriados: dias.append(atual)
+        atual+=timedelta(days=1)
+    return dias
+
+
+def _exec_clean(v):
+    return str(v or '').strip().upper()
+
+
+def _exec_analytics(db, inicio, fim, incluir_sp=True, extras=None):
+    """Constrói o relatório exclusivamente a partir da base recebida (snapshot)."""
+    uteis=_exec_uteis(inicio,fim,incluir_sp,extras)
+    conjunto=set(uteis)
+    emp={str(e.get('id')):e for e in db.get('empresas',[]) or []}
+    tic={str(e.get('id')):e for e in db.get('clientes_ticlog',[]) or []}
+    eventos=[]
+    for c in db.get('contatos',[]) or []:
+        d=_exec_date(c.get('data_contato'))
+        if d not in conjunto: continue
+        eid=str(c.get('empresa_id') or '')
+        resultado=_exec_clean(c.get('resultado'))
+        status=_exec_clean(c.get('status_novo') or resultado)
+        canal=_exec_clean(c.get('tipo_contato'))
+        eventos.append({'dia':d,'empresa':'GERAL:'+eid,'nome':emp.get(eid,{}).get('nome') or eid,
+                        'resultado':resultado,'status':status,'canal':canal,'origem':'GERAL'})
+    for c in db.get('historico_ticlog',[]) or []:
+        d=_exec_date(c.get('data') or c.get('criado_em'))
+        if d not in conjunto: continue
+        eid=str(c.get('cliente_id') or '')
+        canal=_exec_clean(c.get('acao'))
+        if 'VISIT' in canal: canal='VISITA PRESENCIAL'
+        elif 'REUNI' in canal: canal='REUNIÃO'
+        elif 'WHATS' in canal: canal='WHATSAPP'
+        elif 'LIG' in canal: canal='LIGAÇÃO'
+        elif 'MAIL' in canal: canal='E-MAIL'
+        eventos.append({'dia':d,'empresa':'TICLOG:'+eid,'nome':tic.get(eid,{}).get('empresa') or c.get('empresa') or eid,
+                        'resultado':_exec_clean(c.get('resultado')),
+                        'status':_exec_clean(c.get('status_novo') or c.get('resultado')),
+                        'canal':canal,'origem':'TICLOG'})
+
+    def classe(e):
+        s=e['status']+' '+e['resultado']
+        if 'SEM INTERESSE' in s: return 'Sem interesse'
+        if 'AGUARDANDO CLIENTE' in s or 'AGUARDANDO RESPOSTA' in s: return 'Aguardando cliente'
+        if 'SEM RETORNO' in s or 'NÃO ATENDEU' in s or 'NÃO CONSEGUI' in s or 'SEM RESPOSTA' in s: return 'Sem retorno'
+        if 'FECHADO' in s or 'GANHO' in s: return 'Fechado / ganho'
+        if any(t in s for t in ('COTAÇÃO','PROPOSTA','NEGOCIAÇÃO','INTERESSADO','EM CONTATO','VISITA REALIZADA','EM ANDAMENTO','RETORNO AGENDADO','REUNIÃO AGENDADA')): return 'Em andamento / avanço'
+        return 'Outros resultados'
+    for e in eventos: e['classe']=classe(e)
+
+    por_dia=[]
+    for d in uteis:
+        ev=[e for e in eventos if e['dia']==d]
+        por_dia.append({'dia':d,'interacoes':len(ev),'empresas':len(set(e['empresa'] for e in ev)),
+                        'sem_retorno':sum(e['classe']=='Sem retorno' for e in ev),
+                        'em_andamento':sum(e['classe']=='Em andamento / avanço' for e in ev)})
+
+    from collections import Counter
+    resultado=Counter(e['classe'] for e in eventos)
+    canais=Counter(e['canal'] for e in eventos)
+    origens=Counter(e['origem'] for e in eventos)
+    status_finais=set(STATUS_ENCERRADOS)
+    fila=[e for e in db.get('empresas',[]) or [] if _exec_clean(e.get('status')) not in status_finais and _exec_clean(e.get('status')) not in STATUS_EM_ANDAMENTO]
+    # A fila operacional real tem filtros adicionais de prioridade e retorno após 200 contatos.
+    # O relatório identifica esta quantidade como estimativa de carteira elegível, sem inventar posição exata.
+    posicao_fila=None
+    if fila:
+        posicao_fila=1
+
+    agora=datetime.now()
+    andamento=[]
+    for e in db.get('empresas',[]) or []:
+        if _exec_clean(e.get('status')) in STATUS_EM_ANDAMENTO:
+            andamento.append({'nome':e.get('nome') or 'Cliente','origem':'GERAL',
+                              'data':e.get('proxima_acao_em') or e.get('data_agendamento'),
+                              'acao':e.get('proxima_acao') or 'Definir próxima ação'})
+    for e in db.get('clientes_ticlog',[]) or []:
+        if _exec_clean(e.get('status')) in {'EM CONTATO','RETORNAR CONTATO','VISITA AGENDADA','VISITA REALIZADA','INTERESSADO','EM ACOMPANHAMENTO'}:
+            andamento.append({'nome':e.get('empresa') or 'TICLOG','origem':'TICLOG',
+                              'data':e.get('data_proxima_acao'), 'acao':e.get('proxima_acao') or 'Definir próxima ação'})
+    prioridades={'Atrasados':[],'Próximas 24h':[],'Sem próxima ação':[],'Depois de 24h':[]}
+    for e in andamento:
+        dt=pd.to_datetime(e['data'],errors='coerce')
+        if pd.isna(dt): categoria='Sem próxima ação'
+        elif dt.to_pydatetime()<agora: categoria='Atrasados'
+        elif dt.to_pydatetime()<=agora+timedelta(hours=24): categoria='Próximas 24h'
+        else: categoria='Depois de 24h'
+        prioridades[categoria].append(e)
+
+    agenda=[]
+    for a in db.get('agenda',[]) or []:
+        d=_exec_date(a.get('data'))
+        if d in conjunto:
+            agenda.append({'dia':d,'nome':a.get('cliente_compromisso') or 'Compromisso',
+                           'tipo':a.get('tipo') or 'OUTRO','status':a.get('status') or 'PROGRAMADO',
+                           'hora':a.get('horario') or ''})
+    agenda.sort(key=lambda x:(x['dia'],x['hora']))
+
+    veiculos=[]
+    for v in db.get('veiculo_registros',[]) or []:
+        d=_exec_date(v.get('data'))
+        if d not in conjunto: continue
+        try:
+            km=float(v.get('km_final'))-float(v.get('km_inicial'))
+            if not (0<=km<=10000): km=None
+        except (TypeError,ValueError): km=None
+        veiculos.append({'dia':d,'tipo':str(v.get('tipo_uso') or 'NÃO CLASSIFICADO').upper(), 'km':km})
+    km_validos=[v['km'] for v in veiculos if v['km'] is not None]
+    usos_tipo=Counter(v['tipo'] for v in veiculos)
+    km_tipo={t:round(sum(v['km'] or 0 for v in veiculos if v['tipo']==t),1) for t in usos_tipo}
+    return {'inicio':inicio,'fim':fim,'uteis':uteis,'eventos':eventos,'por_dia':por_dia,
+            'resultados':resultado,'canais':canais,'origens':origens,'fila':fila,'posicao_fila':posicao_fila,
+            'prioridades':prioridades,'andamento':andamento,'agenda':agenda,'veiculos':veiculos,
+            'usos_tipo':usos_tipo,'km_tipo':km_tipo,'km_total':sum(km_validos),
+            'km_inconsistentes':len(veiculos)-len(km_validos),'emitido_em':agora}
+
+
+def gerar_pdf_executivo_v17(analise):
+    """Apresentação PDF 16:9 em vetor, sem imagens externas e sem modificar a base."""
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.colors import HexColor
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from collections import Counter
+    buf=io.BytesIO()
+    W,H=960,540
+    c=canvas.Canvas(buf,pagesize=(W,H),pageCompression=1)
+    c.setTitle('GDS | Relatório Executivo Comercial')
+    BLACK=HexColor('#171717'); ORANGE=HexColor('#F47721'); GRAY=HexColor('#64748B')
+    LIGHT=HexColor('#F4F5F7'); WHITE=HexColor('#FFFFFF'); BORDER=HexColor('#E2E5EA')
+    font='Helvetica'; bold='Helvetica-Bold'
+    try:
+        regular='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+        strong='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+        if Path(regular).exists():
+            pdfmetrics.registerFont(TTFont('GDSReg',regular)); pdfmetrics.registerFont(TTFont('GDSBold',strong))
+            font='GDSReg'; bold='GDSBold'
+    except Exception: pass
+    page=[0]
+    def fit(text,maxwidth,size=12,face=None):
+        text=str(text or '-'); face=face or font
+        if pdfmetrics.stringWidth(text,face,size)<=maxwidth: return text
+        while text and pdfmetrics.stringWidth(text+'...',face,size)>maxwidth: text=text[:-1]
+        return text+'...'
+    def txt(x,y,text,size=11,color=BLACK,b=False,maxw=None):
+        face=bold if b else font
+        c.setFont(face,size); c.setFillColor(color)
+        c.drawString(x,y,fit(text,maxw,size,face) if maxw else str(text))
+    def rect(x,y,w,h,fill=WHITE,stroke=None,r=12):
+        c.setFillColor(fill); c.setStrokeColor(stroke or fill)
+        c.roundRect(x,y,w,h,r,fill=1,stroke=int(stroke is not None))
+    def slide(titulo,sub):
+        if page[0]: c.showPage()
+        page[0]+=1
+        c.setFillColor(LIGHT); c.rect(0,0,W,H,stroke=0,fill=1)
+        c.setFillColor(BLACK); c.rect(0,H-78,W,78,fill=1,stroke=0)
+        c.setFillColor(ORANGE); c.rect(0,H-82,W,4,fill=1,stroke=0)
+        txt(38,H-42,titulo,21,WHITE,True,maxw=875)
+        txt(38,H-65,sub,9,HexColor('#D3D6DB'),maxw=870)
+        c.setStrokeColor(BORDER); c.line(38,35,922,35)
+        txt(38,20,'GDS  |  GESTÃO COMERCIAL  •  RELATÓRIO GERENCIAL',8,GRAY)
+        txt(838,20,f'PÁGINA {page[0]:02d}',8,GRAY)
+    def kpi(x,y,w,label,value,detail=''):
+        rect(x,y,w,92,WHITE,BORDER)
+        txt(x+16,y+65,label,10,GRAY,maxw=w-25)
+        txt(x+16,y+29,value,26,BLACK,True,maxw=w-28)
+        if detail: txt(x+16,y+12,detail,8,GRAY,maxw=w-28)
+    def bars(items,x,y,w,h,title,limit=9):
+        txt(x,y+h+20,title,14,BLACK,True)
+        data=list(items)[:limit]
+        if not data:
+            txt(x,y+h-20,'Sem dados para o período.',11,GRAY); return
+        vmax=max(1,max(float(v) for _,v in data))
+        gap=h/max(1,len(data))
+        for i,(label,val) in enumerate(data):
+            yy=y+h-(i+1)*gap+5
+            txt(x,yy+7,fit(label,200,9),9,GRAY)
+            bw=max(0,(w-260)*float(val)/vmax)
+            rect(x+207,yy+3,max(2,bw),11,ORANGE,r=3)
+            txt(x+216+bw,yy+5,str(round(val,1) if isinstance(val,float) else val),9,BLACK,True)
+    def table(headers,rows,x,y,width,rowh=26,maxrows=11):
+        cols=len(headers); colw=width/cols
+        rect(x,y-30,width,30,BLACK,r=5)
+        for j,h in enumerate(headers): txt(x+9+j*colw,y-19,h,9,WHITE,True,maxw=colw-16)
+        for i,row in enumerate(rows[:maxrows]):
+            yy=y-30-(i+1)*rowh
+            if i%2==0: rect(x,yy,width,rowh,WHITE,r=0)
+            for j,v in enumerate(row): txt(x+9+j*colw,yy+8,v,8,BLACK,maxw=colw-16)
+    a=analise; inicio=a['inicio']; fim=a['fim']; uteis=a['uteis']; ev=a['eventos']; n=max(1,len(uteis))
+    periodo=f'{inicio:%d/%m/%Y} a {fim:%d/%m/%Y}'
+    # 1 - capa
+    slide('RELATÓRIO EXECUTIVO COMERCIAL',f'Período de análise: {periodo}')
+    rect(38,244,884,180,BLACK,r=16)
+    txt(64,371,'ACOMPANHAMENTO DE PRODUTIVIDADE',21,WHITE,True)
+    txt(64,333,'Interações • Prospecção • Pendências • Agenda • Veículo',13,HexColor('#D6D8DB'))
+    txt(64,291,f'{len(uteis)} dias úteis analisados  |  {len(ev)} interações registradas',15,ORANGE,True)
+    txt(45,202,'Critério: segunda a sexta, exceto feriados nacionais e estaduais selecionados.',11,GRAY)
+    txt(45,178,'Situação da fila e pendências: fotografia atual na emissão do documento.',11,GRAY)
+    txt(45,154,f'Emitido em {a["emitido_em"]:%d/%m/%Y às %H:%M}',10,GRAY)
+    # 2 - dashboard
+    slide('01  |  DASHBOARD COMERCIAL',f'Produção em dias úteis • {periodo}')
+    empresas=len(set(e['empresa'] for e in ev))
+    for x,label,value,detail in [
+        (38,'Interações',len(ev),'Fila geral + TICLOG'),(264,'Empresas trabalhadas',empresas,'Clientes distintos'),
+        (490,'Média por dia útil',f'{len(ev)/n:.1f}','Interações / dia útil'),
+        (716,'Dias sem atividade',sum(r['interacoes']==0 for r in a['por_dia']),'Dias úteis sem registro')]:
+        kpi(x,330,206,label,value,detail)
+    bars([(r['dia'].strftime('%d/%m'),r['interacoes']) for r in a['por_dia']],38,76,884,207,'Interações por dia útil',limit=22)
+    # 3 - detalhe diário
+    slide('02  |  PRODUTIVIDADE DIÁRIA',f'Detalhamento por data • {periodo}')
+    dias=a['por_dia']; per_page=12
+    table(['Dia','Interações','Empresas','Sem retorno','Em andamento'],
+          [(r['dia'].strftime('%d/%m/%Y'),r['interacoes'],r['empresas'],r['sem_retorno'],r['em_andamento']) for r in dias[:per_page]],
+          38,410,884,rowh=26,maxrows=per_page)
+    if len(dias)>per_page:
+        txt(42,67,f'Exibindo {per_page} de {len(dias)} dias úteis. Consulte o gráfico e os indicadores totais.',10,GRAY)
+    # 4 - resultados
+    slide('03  |  RESULTADOS E CANAIS',f'Interações registradas em dias úteis • {periodo}')
+    resultados=a['resultados']; canais=a['canais']
+    bars(resultados.most_common(8),38,125,430,258,'Resultados do período')
+    bars(canais.most_common(8),502,125,420,258,'Canais utilizados')
+    txt(42,77,'Uma nova interação registrada conta como produção, inclusive retornos e atualizações.',9,GRAY)
+    # 5 - fila
+    slide('04  |  FILA DE CONTATOS',f'Fotografia da carteira no momento da emissão • {a["emitido_em"]:%d/%m/%Y %H:%M}')
+    kpi(38,317,280,'Clientes na fila (estimativa)',len(a['fila']),'Status elegíveis na carteira')
+    kpi(338,317,280,'Interações no período',len(ev),'Todas as origens')
+    kpi(638,317,284,'Ritmo por dia útil',f'{len(ev)/n:.1f}','Interações / dia útil')
+    txt(40,263,'A posição exata (ex.: 1 de 731) depende da fila operacional, que possui regras',12,BLACK,True)
+    txt(40,243,'de prioridade, retorno e busca manual. Não é inferida a partir do total da carteira.',11,GRAY)
+    txt(40,197,'Atenção: a fila é um retrato atual, não uma reconstrução histórica do período.',11,GRAY)
+    txt(40,163,'A contagem exibida é estimativa de clientes elegíveis, não a posição da interface.',11,GRAY)
+    # 6 - andamento
+    slide('05  |  CLIENTES EM ANDAMENTO',f'Pendências atuais • {a["emitido_em"]:%d/%m/%Y %H:%M}')
+    cats=list(a['prioridades'].keys())
+    for i,cat in enumerate(cats): kpi(38+i*226,340,206,cat,len(a['prioridades'][cat]))
+    prioritarios=[]
+    for cat in ['Atrasados','Sem próxima ação','Próximas 24h']:
+        prioritarios.extend([(cat,x['nome'],x['origem'],x['acao']) for x in a['prioridades'][cat]])
+    txt(38,307,'CLIENTES QUE EXIGEM ATENÇÃO',13,BLACK,True)
+    table(['Prioridade','Cliente','Origem','Próxima ação'],prioritarios,38,286,884,rowh=23,maxrows=8)
+    if not prioritarios: txt(42,215,'Nenhuma pendência crítica identificada.',12,GRAY)
+    # 7 - agenda
+    slide('06  |  AGENDA COMERCIAL',f'Compromissos com data útil dentro do filtro • {periodo}')
+    agenda=a['agenda']; agenda_counts=Counter(_exec_clean(e['status']) for e in agenda)
+    kpi(38,330,206,'Compromissos',len(agenda))
+    kpi(264,330,206,'Realizados',agenda_counts['REALIZADO'])
+    kpi(490,330,206,'Programados',agenda_counts['PROGRAMADO'])
+    kpi(716,330,206,'Cancelados',agenda_counts['CANCELADO'])
+    table(['Data','Horário','Cliente / compromisso','Status'],
+          [(e['dia'].strftime('%d/%m/%Y'),e['hora'],e['nome'],e['status']) for e in agenda],38,294,884,rowh=24,maxrows=8)
+    if not agenda: txt(42,238,'Sem compromissos registrados no período selecionado.',11,GRAY)
+    # 8 - veículo
+    slide('07  |  USO DO VEÍCULO',f'Utilizações em dias úteis • {periodo}')
+    kpi(38,332,206,'Utilizações',len(a['veiculos']))
+    kpi(264,332,206,'KM válidos',f'{a["km_total"]:,.1f}'.replace(',','X').replace('.',',').replace('X','.'))
+    kpi(490,332,206,'Usos / dia útil',f'{len(a["veiculos"])/n:.1f}')
+    kpi(716,332,206,'KM inconsistentes',a['km_inconsistentes'])
+    bars(a['usos_tipo'].most_common(8),38,98,430,200,'Quantidade por tipo de uso')
+    bars(sorted(a['km_tipo'].items(),key=lambda x:-x[1]),502,98,420,200,'KM por tipo de uso')
+    # 9 - gestão
+    slide('08  |  SÍNTESE GERENCIAL',f'Indicadores objetivos • {periodo}')
+    alertas=[
+        f'Média de interações por dia útil: {len(ev)/n:.1f}',
+        f'Dias úteis sem registro de interação: {sum(r["interacoes"]==0 for r in a["por_dia"])}',
+        f'Pendências atrasadas: {len(a["prioridades"]["Atrasados"])}',
+        f'Clientes sem próxima ação: {len(a["prioridades"]["Sem próxima ação"])}',
+        f'Próximas ações em até 24 horas: {len(a["prioridades"]["Próximas 24h"])}',
+        f'Resultados classificados como sem retorno: {a["resultados"].get("Sem retorno",0)}',
+        f'Visitas registradas por canal: {sum("VISIT" in e["canal"] for e in ev)}',
+        f'Usos do veículo no período: {len(a["veiculos"])}',
+    ]
+    for i,linha in enumerate(alertas):
+        yy=397-i*39
+        rect(40,yy-15,878,33,WHITE,BORDER,r=7)
+        c.setFillColor(ORANGE); c.circle(58,yy+1,4,fill=1,stroke=0)
+        txt(74,yy-3,linha,12,BLACK,maxw=820)
+    txt(42,60,'Dados históricos = período filtrado. Fila e pendências = situação atual.',10,GRAY)
+    c.save(); buf.seek(0); return buf.getvalue()
 
 
 if menu == "📊 Dashboard":
@@ -5125,6 +5451,50 @@ elif menu == "📈 Relatórios":
             type="primary"
         )
 
+elif menu == "📊 Extrair Relatório Executivo":
+    st.markdown("## 📊 Extrair Relatório Executivo")
+    st.caption("PDF em formato apresentação, com indicadores, gráficos e prioridades para acompanhamento do vendedor.")
+    r1,r2 = st.columns(2)
+    data_inicio = r1.date_input("Data inicial", value=date.today().replace(day=1), format="DD/MM/YYYY", key="exec_inicio")
+    data_fim = r2.date_input("Data final", value=date.today(), format="DD/MM/YYYY", key="exec_fim")
+    feriados_sp = st.checkbox("Excluir feriados nacionais e estaduais de São Paulo", value=True, key="exec_feriados_sp")
+    st.caption("Feriados municipais não são excluídos automaticamente. Você pode acrescentá-los abaixo.")
+    feriados_adicionais = st.text_input("Feriados adicionais (opcional: DD/MM/AAAA, separados por vírgula)", key="exec_feriados_extras")
+    if data_inicio > data_fim:
+        st.error("A data inicial não pode ser posterior à data final.")
+    elif (data_fim-data_inicio).days > 366:
+        st.warning("Selecione no máximo 366 dias por relatório para manter a apresentação legível.")
+    else:
+        extras=[]
+        invalidos=[]
+        for parte in feriados_adicionais.split(','):
+            parte=parte.strip()
+            if not parte: continue
+            try: extras.append(datetime.strptime(parte,"%d/%m/%Y").date())
+            except ValueError: invalidos.append(parte)
+        if invalidos:
+            st.error("Datas adicionais inválidas: " + ", ".join(invalidos))
+        else:
+            uteis = _exec_uteis(data_inicio,data_fim,feriados_sp,extras)
+            st.info(f"📅 {len(uteis)} dias úteis selecionados. Finais de semana e feriados configurados não entram nas médias nem nos indicadores de produção.")
+            st.caption("Produção: histórico filtrado. Fila e clientes em andamento: fotografia atual, identificada no PDF. A fila exibida é uma estimativa de elegíveis, não a posição operacional exata.")
+            if st.button("📄 Gerar apresentação executiva em PDF", type="primary", use_container_width=True):
+                try:
+                    with st.spinner("Consultando a base persistente e montando o relatório..."):
+                        db_exec=carregar_database(forcar_github=True)
+                        analise_exec=_exec_analytics(db_exec,data_inicio,data_fim,feriados_sp,extras)
+                        st.session_state["pdf_executivo_v17"]=gerar_pdf_executivo_v17(analise_exec)
+                        st.session_state["pdf_executivo_v17_periodo"]=(data_inicio,data_fim)
+                    st.success("PDF gerado com sucesso. A base não foi modificada.")
+                except Exception as exc:
+                    st.error(f"Não foi possível gerar o relatório: {exc}")
+            if st.session_state.get("pdf_executivo_v17"):
+                pi,pf=st.session_state.get("pdf_executivo_v17_periodo",(data_inicio,data_fim))
+                st.download_button("⬇️ Baixar relatório executivo (PDF)", data=st.session_state["pdf_executivo_v17"],
+                    file_name=f"relatorio_executivo_comercial_{pi:%Y%m%d}_{pf:%Y%m%d}.pdf",
+                    mime="application/pdf", use_container_width=True)
+
+
 st.sidebar.divider()
 st.sidebar.markdown("**Base de dados**")
 
@@ -5143,5 +5513,6 @@ if st.sidebar.button("🔄 Carregar base de dados", use_container_width=True):
     except Exception as e:
         st.sidebar.error(f"Falha ao carregar: {e}")
 
-st.sidebar.caption("Gestão Comercial • V16 • CRM Integrado")
+st.sidebar.caption("Gestão Comercial • V17 • Relatório Executivo")
+
 
