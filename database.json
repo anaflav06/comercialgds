@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-19T14:30:36",
+    "ultima_atualizacao": "2026-11-19T14:55:40",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -37046,7 +37046,7 @@
     {
       "id": 2168,
       "documento": "119.776.216-91",
-      "nome": "JHONATAN",
+      "nome": "JHONATAN PEÇAS PARA AUTOMÁTICOS",
       "telefone1": "(11) 97762-1691",
       "telefone2": "",
       "telefone3": "",
@@ -37058,7 +37058,9 @@
       "retorno_apos_seq": 2943,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO"
+      "proxima_acao": "ACOMPANHAR EM CLIENTES EM ANDAMENTO",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2169,
