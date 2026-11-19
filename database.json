@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-19T18:29:33",
+    "ultima_atualizacao": "2026-11-19T18:29:53",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -107686,9 +107686,14 @@
       "cliente_compromisso": "TechZone - Raphael",
       "local": "on line",
       "observacao": "",
-      "status": "PROGRAMADO",
+      "status": "REALIZADO",
       "criado_em": "2026-10-19T13:25:35",
-      "usuario": "celso"
+      "usuario": "celso",
+      "resultado": "nan",
+      "observacao_resultado": "nan",
+      "proxima_acao": "nan",
+      "proxima_acao_em": "2026-11-20T18:29",
+      "atualizado_em": "2026-11-19T18:29:53"
     },
     {
       "id": 12,
