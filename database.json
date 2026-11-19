@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-19T18:24:37",
+    "ultima_atualizacao": "2026-11-19T18:25:22",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -107868,6 +107868,18 @@
       "observacao": "",
       "status": "PROGRAMADO",
       "criado_em": "2026-11-19T18:24:37",
+      "usuario": "celso"
+    },
+    {
+      "id": 27,
+      "data": "2026-12-11",
+      "horario": "18:25",
+      "tipo": "OUTRO",
+      "cliente_compromisso": "CURSO VIDEO ON LINE",
+      "local": "SALTO",
+      "observacao": "",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-11-19T18:25:22",
       "usuario": "celso"
     }
   ],
