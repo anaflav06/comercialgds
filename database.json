@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-19T14:07:30",
+    "ultima_atualizacao": "2026-11-19T14:10:24",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -19073,7 +19073,7 @@
     {
       "id": 1118,
       "documento": "114.819.150-00",
-      "nome": "CABRAL  CABRAL TRANSPORTE DE CARGAS LTD",
+      "nome": "CABRAL TRANSPORTE DE CARGAS LTD",
       "telefone1": "(19) 97122-4180",
       "telefone2": "(19) 99991-9297",
       "telefone3": "(19) 99786-0330",
