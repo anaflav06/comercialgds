@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-19T18:31:22",
+    "ultima_atualizacao": "2026-11-19T18:32:27",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -41315,7 +41315,7 @@
     {
       "id": 2401,
       "documento": "",
-      "nome": "ALIBRA INGREDIENTES S.A. / TECNBOPARK",
+      "nome": "ALIBRA INGREDIENTES S.A. / TECNOPARK",
       "email": "",
       "telefone1": "(19) 3716-8888",
       "telefone2": "",
@@ -41328,7 +41328,8 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 2402,
