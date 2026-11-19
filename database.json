@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-19T18:25:22",
+    "ultima_atualizacao": "2026-11-19T18:27:14",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -107782,9 +107782,14 @@
       "cliente_compromisso": "CGO - Capacitação EDI - Electronic Data Interchange",
       "local": "SALTO",
       "observacao": "",
-      "status": "PROGRAMADO",
+      "status": "REALIZADO",
       "criado_em": "2026-11-17T11:56:24",
-      "usuario": "celso"
+      "usuario": "celso",
+      "resultado": "nan",
+      "observacao_resultado": "nan",
+      "proxima_acao": "nan",
+      "proxima_acao_em": "2026-11-20T18:27",
+      "atualizado_em": "2026-11-19T18:27:14"
     },
     {
       "id": 20,
