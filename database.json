@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-19T18:30:15",
+    "ultima_atualizacao": "2026-11-19T18:30:36",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -107662,9 +107662,14 @@
       "cliente_compromisso": "ON TIME LOGISTICA",
       "local": "TIC CAMPINAS",
       "observacao": "ROSE",
-      "status": "PROGRAMADO",
+      "status": "REALIZADO",
       "criado_em": "2026-09-28T17:40:18",
-      "usuario": "celso"
+      "usuario": "celso",
+      "resultado": "nan",
+      "observacao_resultado": "nan",
+      "proxima_acao": "nan",
+      "proxima_acao_em": "2026-11-20T18:30",
+      "atualizado_em": "2026-11-19T18:30:36"
     },
     {
       "id": 10,
