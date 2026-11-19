@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-19T18:01:25",
+    "ultima_atualizacao": "2026-11-19T18:03:38",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -44146,15 +44146,15 @@
       "telefone1": "(11) 97222-1028",
       "telefone2": "",
       "telefone3": "",
-      "status": "EM ANDAMENTO",
-      "observacao_atual": "",
-      "data_primeiro_contato": null,
+      "status": "AGUARDANDO CLIENTE",
+      "observacao_atual": "Cliente reforçou que sua maior demanda é Joiville, e surgindo algo de São Paulo vai nos comunicar e cotar",
+      "data_primeiro_contato": "2026-11-19",
       "criado_em": "2026-11-04T18:04:31",
       "origem": "Cobrar retorno em 24h",
-      "retorno_apos_seq": null,
+      "retorno_apos_seq": 3396,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": ""
+      "proxima_acao": "AGUARDANDO RESPOSTA"
     }
   ],
   "contatos": [
@@ -107346,6 +107346,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-11-19T18:01:25",
       "seq_global": 3195,
+      "usuario": "celso"
+    },
+    {
+      "id": 4616,
+      "empresa_id": 2550,
+      "data_contato": "2026-11-19",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "MENSAGEM ENVIADA / AGUARDANDO RESPOSTA",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "Cliente reforçou que sua maior demanda é Joiville, e surgindo algo de São Paulo vai nos comunicar e cotar",
+      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "data_proxima_acao": null,
+      "criado_em": "2026-11-19T18:03:38",
+      "seq_global": 3196,
       "usuario": "celso"
     }
   ],
