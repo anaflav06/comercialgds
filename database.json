@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-23T12:54:54",
+    "ultima_atualizacao": "2026-11-23T17:24:01",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -108389,6 +108389,18 @@
       "observacao": "",
       "status": "PROGRAMADO",
       "criado_em": "2026-11-19T18:25:22",
+      "usuario": "celso"
+    },
+    {
+      "id": 28,
+      "data": "2026-11-25",
+      "horario": "17:24",
+      "tipo": "REUNIÃO",
+      "cliente_compromisso": "SANDRA CHEN DDP / YQN",
+      "local": "SALTO",
+      "observacao": "REUNIÃO ON LINE",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-11-23T17:24:01",
       "usuario": "celso"
     }
   ],
