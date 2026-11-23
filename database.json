@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-23T17:56:44",
+    "ultima_atualizacao": "2026-11-23T17:57:17",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -16524,7 +16524,7 @@
       "telefone1": "(11) 97270-8058",
       "telefone2": "",
       "telefone3": "",
-      "status": "1ª TENTATIVA SEM RETORNO",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-07-10",
       "criado_em": "2026-08-13T18:21:57",
@@ -16532,7 +16532,9 @@
       "retorno_apos_seq": 3241,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "RETORNAR APÓS 200 CONTATOS"
+      "proxima_acao": "RETORNAR APÓS 200 CONTATOS",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 970,
