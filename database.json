@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-23T18:07:21",
+    "ultima_atualizacao": "2026-11-23T18:08:42",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -17685,7 +17685,7 @@
       "telefone1": "(11) 99839-2889",
       "telefone2": "(19) 99831-6874",
       "telefone3": "(19) 99990-3163",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-07-13",
       "criado_em": "2026-08-13T18:21:57",
@@ -17693,7 +17693,9 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 1037,
