@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-24T20:01:22",
+    "ultima_atualizacao": "2026-11-24T21:02:05",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -110024,6 +110024,18 @@
       "observacao": "REUNIÃO ON LINE",
       "status": "PROGRAMADO",
       "criado_em": "2026-11-23T17:24:01",
+      "usuario": "celso"
+    },
+    {
+      "id": 29,
+      "data": "2026-11-26",
+      "horario": "21:02",
+      "tipo": "REUNIÃO",
+      "cliente_compromisso": "BIGENS",
+      "local": "Salto",
+      "observacao": "On Line",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-11-24T21:02:05",
       "usuario": "celso"
     }
   ],
