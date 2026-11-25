@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-24T21:04:20",
+    "ultima_atualizacao": "2026-11-25T18:23:53",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -110036,6 +110036,18 @@
       "observacao": "On Line",
       "status": "PROGRAMADO",
       "criado_em": "2026-11-24T21:02:05",
+      "usuario": "celso"
+    },
+    {
+      "id": 30,
+      "data": "2026-11-25",
+      "horario": "18:23",
+      "tipo": "OUTRO",
+      "cliente_compromisso": "CURSO SGSO AZUL",
+      "local": "SALTO",
+      "observacao": "EAD",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-11-25T18:23:53",
       "usuario": "celso"
     }
   ],
