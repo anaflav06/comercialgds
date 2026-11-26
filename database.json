@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-25T18:23:53",
+    "ultima_atualizacao": "2026-11-26T13:07:45",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -110048,6 +110048,18 @@
       "observacao": "EAD",
       "status": "PROGRAMADO",
       "criado_em": "2026-11-25T18:23:53",
+      "usuario": "celso"
+    },
+    {
+      "id": 31,
+      "data": "2026-11-26",
+      "horario": "13:07",
+      "tipo": "VISITA",
+      "cliente_compromisso": "CGO - Treinamento Fatores Humanos para Cargas",
+      "local": "SALTO",
+      "observacao": "EAD UNIAZUL",
+      "status": "PROGRAMADO",
+      "criado_em": "2026-11-26T13:07:45",
       "usuario": "celso"
     }
   ],
