@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-26T20:26:57",
+    "ultima_atualizacao": "2026-11-26T20:27:37",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -8557,7 +8557,7 @@
       "telefone1": "(11) 97447-3817",
       "telefone2": "",
       "telefone3": "",
-      "status": "AGUARDANDO CLIENTE",
+      "status": "2ª TENTATIVA SEM RETORNO",
       "observacao_atual": "",
       "data_primeiro_contato": "2026-05-20",
       "criado_em": "2026-08-13T18:21:57",
@@ -8565,7 +8565,9 @@
       "retorno_apos_seq": null,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": null
+      "proxima_acao": "nan",
+      "email": "",
+      "numero_cotacao": "nan"
     },
     {
       "id": 503,
