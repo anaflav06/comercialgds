@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-27T18:13:08",
+    "ultima_atualizacao": "2026-11-27T18:13:33",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -43399,14 +43399,14 @@
       "telefone2": "(11) 94855-0082",
       "telefone3": "",
       "status": "AGUARDANDO CLIENTE",
-      "observacao_atual": "Cliente optou por enviar sua carga com agente de cargas com valor mais baixo e prazo melhor que o nosso para NAT mas comentou que surgindo mais carga, me avisa para cotação.",
+      "observacao_atual": "",
       "data_primeiro_contato": "2026-11-10",
       "criado_em": "2026-10-28T18:16:25",
       "origem": "IMPORTAÇÃO EM LOTE",
-      "retorno_apos_seq": 3395,
+      "retorno_apos_seq": 3596,
       "data_agendamento": null,
       "agendamento_pendente": 0,
-      "proxima_acao": "AGUARDANDO RESPOSTA",
+      "proxima_acao": "⏳ Aguardar cliente",
       "numero_cotacao": ""
     },
     {
@@ -110176,6 +110176,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-11-27T18:13:08",
       "seq_global": 3395,
+      "usuario": "celso"
+    },
+    {
+      "id": 4816,
+      "empresa_id": 2509,
+      "data_contato": "2026-11-27",
+      "tipo_contato": "WHATSAPP",
+      "resultado": "AGUARDANDO CLIENTE",
+      "status_novo": "AGUARDANDO CLIENTE",
+      "observacao": "",
+      "proxima_acao": "⏳ Aguardar cliente",
+      "data_proxima_acao": null,
+      "criado_em": "2026-11-27T18:13:33",
+      "seq_global": 3396,
       "usuario": "celso"
     }
   ],
