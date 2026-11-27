@@ -4,7 +4,7 @@
     "database_version": 1,
     "format": "json",
     "description": "Base persistente do app comercial",
-    "ultima_atualizacao": "2026-11-27T18:39:15",
+    "ultima_atualizacao": "2026-11-27T18:39:31",
     "ultimo_usuario": "celso",
     "veiculo_planilha_importada_v1": true,
     "veiculo_planilha_importada_v1_qtd": 199,
@@ -110260,6 +110260,20 @@
       "data_proxima_acao": null,
       "criado_em": "2026-11-27T18:39:15",
       "seq_global": 3401,
+      "usuario": "celso"
+    },
+    {
+      "id": 4822,
+      "empresa_id": 1019,
+      "data_contato": "2026-11-27",
+      "tipo_contato": "FINALIZAÇÃO RÁPIDA",
+      "resultado": "SEM INTERESSE",
+      "status_novo": "SEM INTERESSE",
+      "observacao": "Finalizado manualmente na fila.",
+      "proxima_acao": "",
+      "data_proxima_acao": null,
+      "criado_em": "2026-11-27T18:39:31",
+      "seq_global": 3402,
       "usuario": "celso"
     }
   ],
